@@ -6,51 +6,14 @@ cache:
 
 stages:
   - deploy
-  - downstream
 
-deploy_data:
+deploy:
   stage: deploy
-  image: openjdk:17
+  image: openjdk:21
   script:
-    - ./gradlew :surf-data:publish --stacktrace
+    - ./gradlew publish
   artifacts:
     paths:
       - build/libs/*.jar
   only:
     - master
-
-deploy_gui:
-  stage: deploy
-  image: openjdk:17
-  needs:
-    - job: deploy_data
-  script:
-    - ./gradlew :surf-gui:publish --stacktrace
-  artifacts:
-    paths:
-      - build/libs/*.jar
-  only:
-    - master
-
-deploy_transaction:
-  stage: deploy
-  image: openjdk:17
-  needs:
-    - job: deploy_data
-  script:
-    - ./gradlew :surf-transaction:publish --stacktrace
-  artifacts:
-    paths:
-      - build/libs/*.jar
-  only:
-    - master
-
-downstream_punish:
-  stage: downstream
-  allow_failure: true
-  only:
-    refs:
-      - master
-  trigger:
-    project: "surf/surf-punish"
-    strategy: depend
