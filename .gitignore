@@ -1,0 +1,17 @@
+### Custom ###
+data/**/*
+target/**/*
+out/
+build/
+.gradle/
+
+### IntelliJ IDEA ###
+/.idea/*
+!/.idea/runConfigurations
+
+*.iws
+*.iml
+*.ipr
+pom.xml.versionsBackup
+
+misc.xml
