@@ -1,9 +1,6 @@
 plugins {
-    `common-conventions`
+    id("dev.slne.surf.surfapi.gradle.core") version "1.21.4+"
 }
 
 dependencies {
-    compileOnlyApi(libs.adventure.api)
-    compileOnlyApi(libs.adventure.gson)
-    compileOnlyApi(libs.fastutil)
 }
