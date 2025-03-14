@@ -16,6 +16,7 @@ val projects: List<Pair<String, String>> = listOf(
     "surf-transaction-core" to "SurfTransactionCore",
     "surf-transaction-bukkit" to "SurfTransactionBukkit",
     "surf-transaction-velocity" to "SurfTransactionVelocity",
+    "surf-transaction-fallback" to "SurfTransactionFallback"
 )
 
 projects.forEach { (path, _) ->

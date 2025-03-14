@@ -20,16 +20,6 @@ enum class TransactionResult {
     /**
      * There was an error with the database
      */
-    DATABASE_ERROR,
-
-    /**
-     * The transaction ID was not generatable
-     */
-    TRANSACTION_ID_NOT_GENERATABLE,
-
-    /**
-     * An unknown error occurred
-     */
-    UNKNOWN_ERROR
+    DATABASE_ERROR;
 
 }

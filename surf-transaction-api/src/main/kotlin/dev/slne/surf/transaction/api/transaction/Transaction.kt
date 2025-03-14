@@ -1,24 +1,46 @@
 package dev.slne.surf.transaction.api.transaction
 
+import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.user.TransactionUser
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap
 import java.math.BigDecimal
-import java.time.ZonedDateTime
 import java.util.*
 
 interface Transaction {
 
+    /**
+     * A unique identifier for the transaction
+     */
     val identifier: UUID
 
+    /**
+     * The sender of the transaction
+     * If the sender is null, the transaction is a system transaction
+     * System transactions are transactions that are not initiated by a user
+     */
     val sender: TransactionUser?
+
+    /**
+     * The receiver of the transaction
+     * If the receiver is null, the transaction is a system transaction
+     * System transactions are transactions that are not initiated by a user
+     */
     val receiver: TransactionUser?
 
+    /**
+     * The currency of the transaction
+     */
     val currency: Currency
+
+    /**
+     * The amount of the transaction
+     */
     val amount: BigDecimal
 
-    val extra: Object2ObjectMap<String, String>
-
-    val createdAt: ZonedDateTime?
-    val updatedAt: ZonedDateTime?
+    /**
+     * Add additional data to the transaction
+     *
+     * @param data The data to add
+     */
+    fun <T : Any> addData(data: T)
 
 }

@@ -1,5 +1,5 @@
 plugins {
-    id("dev.slne.surf.surfapi.gradle.paper-plugin") version "1.21.4+"
+    id("dev.slne.surf.surfapi.gradle.paper-plugin")
 }
 
 dependencies {
