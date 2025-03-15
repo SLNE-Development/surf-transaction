@@ -156,11 +156,11 @@ object TransactionRemoveCommand : CommandAPICommand("remove") {
 
             success("Du hast ")
             variableValue(amount.toString())
-            info(" ")
+            success(" ")
             append(currency.symbolDisplay)
-            info(" von ")
+            success(" von ")
             variableValue(playerName)
-            info(" abgezogen!")
+            success(" abgezogen!")
         }
     }
 }
