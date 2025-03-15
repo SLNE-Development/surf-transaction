@@ -102,8 +102,6 @@ class FallbackTransactionService : TransactionService, Fallback {
                 }
             }
 
-            commit()
-            
             TransactionResult.SUCCESS to transaction
         }
 
@@ -111,6 +109,11 @@ class FallbackTransactionService : TransactionService, Fallback {
         senderTransaction: Transaction,
         receiverTransaction: Transaction
     ): TransactionResultType = newSuspendedTransaction(Dispatchers.IO) {
+        println("Sender transaction: $senderTransaction")
+        println("Receiver transaction: $receiverTransaction")
+        println("#".repeat(30))
+
+        println("Executing sender transaction")
         val senderResult = persistTransaction(senderTransaction)
         if (senderResult.first != TransactionResult.SUCCESS) {
             println("Sender result: $senderResult")
@@ -118,7 +121,9 @@ class FallbackTransactionService : TransactionService, Fallback {
 
             return@newSuspendedTransaction senderResult
         }
+        println("-".repeat(30))
 
+        println("Executing receiver transaction")
         val receiverResult = persistTransaction(receiverTransaction)
         if (receiverResult.first != TransactionResult.SUCCESS) {
             println("Receiver result: $receiverResult")
@@ -126,6 +131,7 @@ class FallbackTransactionService : TransactionService, Fallback {
 
             return@newSuspendedTransaction receiverResult
         }
+        println("-".repeat(30))
 
         TransactionResult.SUCCESS to senderTransaction
     }
