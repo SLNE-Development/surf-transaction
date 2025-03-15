@@ -70,6 +70,7 @@ object TransactionRemoveCommand : CommandAPICommand("remove") {
                 val result = user.withdraw(
                     amount,
                     currency,
+                    ignoreMinimum = true,
                     TransactionData("admin.transaction.remove", sender.uniqueId.toString())
                 )
 
