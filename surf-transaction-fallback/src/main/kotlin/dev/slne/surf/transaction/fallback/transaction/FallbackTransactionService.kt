@@ -28,7 +28,7 @@ class FallbackTransactionService : TransactionService, Fallback {
         user: TransactionUser,
         currency: Currency
     ): BigDecimal = newSuspendedTransaction(Dispatchers.IO) {
-        val result = FallbackTransactionTable
+        FallbackTransactionTable
             .innerJoin(FallbackCurrencyTable)
             .select(FallbackTransactionTable.amount.sum())
             .where {
@@ -36,13 +36,23 @@ class FallbackTransactionService : TransactionService, Fallback {
                         (FallbackTransactionTable.receiver eq user)
             }
             .map { it[FallbackTransactionTable.amount.sum()] }
-            .singleOrNull()
-
-        println("Raw DB result for balanceDecimal: $result")
-
-        result ?: BigDecimal.ZERO
+            .singleOrNull() ?: BigDecimal.ZERO
     }
 
+    private fun internalBalanceDecimal(
+        user: TransactionUser,
+        currency: Currency
+    ): BigDecimal {
+        return FallbackTransactionTable
+            .innerJoin(FallbackCurrencyTable)
+            .select(FallbackTransactionTable.amount.sum())
+            .where {
+                (FallbackCurrencyTable.name eq currency.name) and
+                        (FallbackTransactionTable.receiver eq user)
+            }
+            .map { it[FallbackTransactionTable.amount.sum()] }
+            .singleOrNull() ?: BigDecimal.ZERO
+    }
 
     override suspend fun persistTransaction(transaction: Transaction): TransactionResultType =
         newSuspendedTransaction(Dispatchers.IO) {
@@ -70,27 +80,9 @@ class FallbackTransactionService : TransactionService, Fallback {
                 }
             }
 
-            if (transactionSender != null && transaction.amount < BigDecimal.ZERO) {
+            if (transactionReceiver != null) {
                 val balanceAfterTransaction =
-                    balanceDecimal(transactionSender, transaction.currency)
-
-                println("Balance after transaction sender: $balanceAfterTransaction")
-
-                if (
-                    balanceAfterTransaction < transaction.currency.minimumAmount &&
-                    !transaction.ignoreMinimumAmount
-                ) {
-                    rollback()
-
-                    return@newSuspendedTransaction TransactionResult.SENDER_INSUFFICIENT_FUNDS to null
-                }
-            }
-
-            if (transactionReceiver != null && transaction.amount < BigDecimal.ZERO) {
-                val balanceAfterTransaction =
-                    balanceDecimal(transactionReceiver, transaction.currency)
-
-                println("Balance after transaction receiver: $balanceAfterTransaction")
+                    internalBalanceDecimal(transactionReceiver, transaction.currency)
 
                 if (
                     balanceAfterTransaction < transaction.currency.minimumAmount &&
@@ -109,29 +101,23 @@ class FallbackTransactionService : TransactionService, Fallback {
         senderTransaction: Transaction,
         receiverTransaction: Transaction
     ): TransactionResultType = newSuspendedTransaction(Dispatchers.IO) {
-        println("Sender transaction: $senderTransaction")
-        println("Receiver transaction: $receiverTransaction")
-        println("#".repeat(30))
-
-        println("Executing sender transaction")
         val senderResult = persistTransaction(senderTransaction)
         if (senderResult.first != TransactionResult.SUCCESS) {
-            println("Sender result: $senderResult")
             rollback()
+
+            if (senderResult.first == TransactionResult.RECEIVER_INSUFFICIENT_FUNDS) {
+                return@newSuspendedTransaction TransactionResult.SENDER_INSUFFICIENT_FUNDS to null
+            }
 
             return@newSuspendedTransaction senderResult
         }
-        println("-".repeat(30))
 
-        println("Executing receiver transaction")
         val receiverResult = persistTransaction(receiverTransaction)
         if (receiverResult.first != TransactionResult.SUCCESS) {
-            println("Receiver result: $receiverResult")
             rollback()
 
             return@newSuspendedTransaction receiverResult
         }
-        println("-".repeat(30))
 
         TransactionResult.SUCCESS to senderTransaction
     }
