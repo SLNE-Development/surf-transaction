@@ -4,6 +4,9 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import net.kyori.adventure.text.Component
 
+const val CURRENCY_NAME_MAX_LENGTH = 16
+const val CURRENCY_SYMBOL_MAX_LENGTH = 16
+
 /**
  * A core implementation of [Currency].
  */
