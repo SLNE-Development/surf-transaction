@@ -12,6 +12,7 @@ import dev.slne.surf.transaction.fallback.transaction.FallbackTransactionTable
 import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionDataTable
 import dev.slne.surf.transaction.velocity.commands.balance.BalanceCommand
 import dev.slne.surf.transaction.velocity.commands.currency.CurrencyCommand
+import dev.slne.surf.transaction.velocity.commands.pay.PayCommand
 import dev.slne.surf.transaction.velocity.commands.transaction.TransactionCommand
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -59,5 +60,6 @@ class VelocityMain @Inject constructor(
         TransactionCommand.register()
         CurrencyCommand.register()
         BalanceCommand.register()
+        PayCommand.register();
     }
 }

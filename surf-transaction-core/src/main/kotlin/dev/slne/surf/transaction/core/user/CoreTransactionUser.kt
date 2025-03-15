@@ -73,8 +73,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
 
         val senderTransaction = CoreTransaction(
             identifier = senderTransactionId,
-            sender = this,
-            receiver = receiver,
+            sender = receiver,
+            receiver = this,
             amount = senderAmount,
             currency = currency,
             ignoreMinimumAmount = ignoreSenderMinimum

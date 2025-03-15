@@ -9,6 +9,13 @@ import java.util.*
 interface TransactionApi {
 
     /**
+     * Get the default currency
+     *
+     * @return The default currency
+     */
+    fun getDefaultCurrency(): Currency?
+
+    /**
      * Get the currencies available in memory
      *
      * @return The currencies available in memory

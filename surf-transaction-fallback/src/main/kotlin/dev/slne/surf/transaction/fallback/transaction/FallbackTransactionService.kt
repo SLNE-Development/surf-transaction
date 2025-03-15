@@ -28,7 +28,7 @@ class FallbackTransactionService : TransactionService, Fallback {
         user: TransactionUser,
         currency: Currency
     ): BigDecimal = newSuspendedTransaction(Dispatchers.IO) {
-        FallbackTransactionTable
+        val result = FallbackTransactionTable
             .innerJoin(FallbackCurrencyTable)
             .select(FallbackTransactionTable.amount.sum())
             .where {
@@ -36,7 +36,11 @@ class FallbackTransactionService : TransactionService, Fallback {
                         (FallbackTransactionTable.receiver eq user)
             }
             .map { it[FallbackTransactionTable.amount.sum()] }
-            .singleOrNull() ?: BigDecimal.ZERO
+            .singleOrNull()
+
+        println("Raw DB result for balanceDecimal: $result")
+
+        result ?: BigDecimal.ZERO
     }
 
 
@@ -70,6 +74,8 @@ class FallbackTransactionService : TransactionService, Fallback {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionSender, transaction.currency)
 
+                println("Balance after transaction sender: $balanceAfterTransaction")
+
                 if (
                     balanceAfterTransaction < transaction.currency.minimumAmount &&
                     !transaction.ignoreMinimumAmount
@@ -84,6 +90,8 @@ class FallbackTransactionService : TransactionService, Fallback {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionReceiver, transaction.currency)
 
+                println("Balance after transaction receiver: $balanceAfterTransaction")
+
                 if (
                     balanceAfterTransaction < transaction.currency.minimumAmount &&
                     !transaction.ignoreMinimumAmount
@@ -94,6 +102,8 @@ class FallbackTransactionService : TransactionService, Fallback {
                 }
             }
 
+            commit()
+            
             TransactionResult.SUCCESS to transaction
         }
 
@@ -102,15 +112,16 @@ class FallbackTransactionService : TransactionService, Fallback {
         receiverTransaction: Transaction
     ): TransactionResultType = newSuspendedTransaction(Dispatchers.IO) {
         val senderResult = persistTransaction(senderTransaction)
-        val receiverResult = persistTransaction(receiverTransaction)
-
         if (senderResult.first != TransactionResult.SUCCESS) {
+            println("Sender result: $senderResult")
             rollback()
 
             return@newSuspendedTransaction senderResult
         }
 
+        val receiverResult = persistTransaction(receiverTransaction)
         if (receiverResult.first != TransactionResult.SUCCESS) {
+            println("Receiver result: $receiverResult")
             rollback()
 
             return@newSuspendedTransaction receiverResult

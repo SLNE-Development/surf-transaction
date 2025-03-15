@@ -14,4 +14,6 @@ class FallbackTransactionApi : TransactionApi, Fallback {
     override fun getCurrencyByName(name: String) = currencyService.getCurrencyByName(name)
 
     override fun getTransactionUser(uuid: UUID) = TransactionUserManager.get(uuid)
+
+    override fun getDefaultCurrency() = currencyService.currencies.find { it.defaultCurrency }
 }
