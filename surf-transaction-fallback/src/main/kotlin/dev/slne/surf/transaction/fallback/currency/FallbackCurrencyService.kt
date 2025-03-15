@@ -31,5 +31,6 @@ class FallbackCurrencyService : CurrencyService, Fallback {
         return currencies
     }
 
-    override fun getCurrencyByName(name: String) = currencies.find { it.name == name }
+    override fun getCurrencyByName(name: String) =
+        currencies.find { it.name.lowercase() == name.lowercase() }
 }
