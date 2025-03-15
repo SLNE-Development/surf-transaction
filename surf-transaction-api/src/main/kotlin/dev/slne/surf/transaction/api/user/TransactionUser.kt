@@ -16,6 +16,24 @@ interface TransactionUser {
      */
     val uuid: UUID
 
+    // region Deposit
+    /**
+     * Deposit the amount to the user's account
+     *
+     * @param amount The amount to deposit
+     * @param currency The currency of the amount
+     * @param ignoreMinimum Whether to ignore the minimum balance
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun deposit(
+        amount: BigDecimal,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ): TransactionResultType
+
     /**
      * Deposit the amount to the user's account
      *
@@ -28,6 +46,57 @@ interface TransactionUser {
     suspend fun deposit(
         amount: BigDecimal,
         currency: Currency,
+        vararg additionalData: TransactionData
+    ) = deposit(amount, currency, false, *additionalData)
+
+    /**
+     * Deposit the amount to the user's account
+     *
+     * @param amount The amount to deposit
+     * @param currency The currency of the amount
+     * @param ignoreMinimum Whether to ignore the minimum balance
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun deposit(
+        amount: Double,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ) = deposit(BigDecimal.valueOf(amount), currency, ignoreMinimum, *additionalData)
+
+    /**
+     * Deposit the amount to the user's account
+     *
+     * @param amount The amount to deposit
+     * @param currency The currency of the amount
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun deposit(
+        amount: Double,
+        currency: Currency,
+        vararg additionalData: TransactionData
+    ) = deposit(BigDecimal.valueOf(amount), currency, *additionalData)
+    // endregion Deposit
+
+    // region Withdraw
+    /**
+     * Withdraw the amount from the user's account
+     *
+     * @param amount The amount to withdraw
+     * @param currency The currency of the amount
+     * @param ignoreMinimum Whether to ignore the minimum balance
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun withdraw(
+        amount: BigDecimal,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
         vararg additionalData: TransactionData
     ): TransactionResultType
 
@@ -44,6 +113,63 @@ interface TransactionUser {
         amount: BigDecimal,
         currency: Currency,
         vararg additionalData: TransactionData
+    ) = withdraw(amount, currency, false, *additionalData)
+
+    /**
+     * Withdraw the amount from the user's account
+     *
+     * @param amount The amount to withdraw
+     * @param currency The currency of the amount
+     * @param ignoreMinimum Whether to ignore the minimum balance
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun withdraw(
+        amount: Double,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ) = withdraw(BigDecimal.valueOf(amount), currency, ignoreMinimum, *additionalData)
+
+    /**
+     * Withdraw the amount from the user's account
+     *
+     * @param amount The amount to withdraw
+     * @param currency The currency of the amount
+     * @param additionalData Additional data for the transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun withdraw(
+        amount: Double,
+        currency: Currency,
+        vararg additionalData: TransactionData
+    ) = withdraw(BigDecimal.valueOf(amount), currency, *additionalData)
+    // endregion
+
+    // region Transfer
+    /**
+     * Transfer the amount to the receiver's account
+     *
+     * @param amount The amount to transfer
+     * @param currency The currency of the amount
+     * @param receiver The receiver of the amount
+     * @param ignoreSenderMinimum Whether to ignore the minimum balance of the sender
+     * @param ignoreReceiverMinimum Whether to ignore the minimum balance of the receiver
+     * @param additionalSenderData Additional data for the sender's transaction
+     * @param additionalReceiverData Additional data for the receiver's transaction
+     *
+     * @return The result of the transaction
+     */
+    suspend fun transfer(
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: TransactionUser,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
+        additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
     ): TransactionResultType
 
     /**
@@ -63,46 +189,46 @@ interface TransactionUser {
         receiver: TransactionUser,
         additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
         additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
-    ): TransactionResultType
+    ) = transfer(
+        amount,
+        currency,
+        receiver,
+        ignoreSenderMinimum = false,
+        ignoreReceiverMinimum = false,
+        additionalSenderData,
+        additionalReceiverData
+    )
 
     /**
-     * Get the balance of the user's account
+     * Transfer the amount to the receiver's account
      *
-     * @param currency The currency of the balance
-     *
-     * @return The balance of the user's account
-     */
-    suspend fun balanceDecimal(currency: Currency): BigDecimal
-
-    /**
-     * Deposit the amount to the user's account
-     *
-     * @param amount The amount to deposit
+     * @param amount The amount to transfer
      * @param currency The currency of the amount
-     * @param additionalData Additional data for the transaction
+     * @param receiver The receiver of the amount
+     * @param ignoreSenderMinimum Whether to ignore the minimum balance of the sender
+     * @param ignoreReceiverMinimum Whether to ignore the minimum balance of the receiver
+     * @param additionalSenderData Additional data for the sender's transaction
+     * @param additionalReceiverData Additional data for the receiver's transaction
      *
      * @return The result of the transaction
      */
-    suspend fun deposit(
+    suspend fun transfer(
         amount: Double,
         currency: Currency,
-        vararg additionalData: TransactionData
-    ) = deposit(BigDecimal.valueOf(amount), currency, *additionalData)
-
-    /**
-     * Withdraw the amount from the user's account
-     *
-     * @param amount The amount to withdraw
-     * @param currency The currency of the amount
-     * @param additionalData Additional data for the transaction
-     *
-     * @return The result of the transaction
-     */
-    suspend fun withdraw(
-        amount: Double,
-        currency: Currency,
-        vararg additionalData: TransactionData
-    ) = withdraw(BigDecimal.valueOf(amount), currency, *additionalData)
+        receiver: TransactionUser,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
+        additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
+    ) = transfer(
+        BigDecimal.valueOf(amount),
+        currency,
+        receiver,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData
+    )
 
     /**
      * Transfer the amount to the receiver's account
@@ -128,6 +254,17 @@ interface TransactionUser {
         additionalSenderData,
         additionalReceiverData
     )
+    // endregion
+
+    // region Balance
+    /**
+     * Get the balance of the user's account
+     *
+     * @param currency The currency of the balance
+     *
+     * @return The balance of the user's account
+     */
+    suspend fun balanceDecimal(currency: Currency): BigDecimal
 
     /**
      * Get the balance of the user's account
@@ -137,6 +274,7 @@ interface TransactionUser {
      * @return The balance of the user's account
      */
     suspend fun balance(currency: Currency): Double = balanceDecimal(currency).toDouble()
+    // endregion
 
     companion object {
         /**

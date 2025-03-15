@@ -16,7 +16,8 @@ object FallbackCurrencyTable : LongIdTable("transaction_currencies") {
     val symbolDisplay = largeText("symbol_display").transform(
         { GsonComponentSerializer.gson().deserialize(it) },
         { GsonComponentSerializer.gson().serialize(it) })
-    val scale = enumeration("scale", CurrencyScale::class)
+    val scale = enumerationByName<CurrencyScale>("scale", 255)
     val defaultCurrency = bool("default_currency")
+    val minimumAmount = decimal("minimum_amount", 20, 10)
 
 }

@@ -21,10 +21,10 @@ import net.kyori.adventure.sound.Sound
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-object TransactionAddCommand : CommandAPICommand("add") {
+object TransactionRemoveCommand : CommandAPICommand("remove") {
 
     init {
-        withPermission("surf.transaction.admin.add")
+        withPermission("surf.transaction.admin.remove")
 
         playerUuidArgument("playerName", showSuggestions = true)
         currencyArgument("currency")
@@ -67,13 +67,14 @@ object TransactionAddCommand : CommandAPICommand("add") {
                 }
 
                 val user = TransactionUser.get(uuid)
-                val result = user.deposit(
+                val result = user.withdraw(
                     amount,
                     currency,
-                    TransactionData("admin.transaction.add", sender.uniqueId.toString())
+                    TransactionData("admin.transaction.remove", sender.uniqueId.toString())
                 )
 
                 val player = plugin.proxy.getPlayer(uuid).getOrNull()
+
                 when (result.first) {
                     TransactionResult.SUCCESS -> handleSuccess(
                         sender,
@@ -102,6 +103,7 @@ object TransactionAddCommand : CommandAPICommand("add") {
                     )
                 }
             }
+
         }
     }
 
@@ -112,7 +114,7 @@ object TransactionAddCommand : CommandAPICommand("add") {
             error("Es ist ein Fehler aufgetreten!")
         }
 
-        error("An error occurred when trying to add money to player with UUID $receiverUuid. Result: $result")
+        error("An error occurred when trying to remove money from player with UUID $receiverUuid. Result: $result")
     }
 
     private fun handleSuccess(
@@ -130,13 +132,12 @@ object TransactionAddCommand : CommandAPICommand("add") {
                 variableKey("Admin")
                 darkSpacer("] ")
 
-                info("Du hast ")
+                variableValue(sender.username)
+                info(" hat dir ")
                 variableValue(amount.toString())
                 info(" ")
                 append(currency.symbolDisplay)
-                info(" von ")
-                variableValue(sender.username)
-                info(" erhalten!")
+                info(" abgezogen!")
             }
 
             player.playSound {
@@ -155,11 +156,11 @@ object TransactionAddCommand : CommandAPICommand("add") {
 
             success("Du hast ")
             variableValue(amount.toString())
-            success(" ")
+            info(" ")
             append(currency.symbolDisplay)
-            success(" an ")
+            info(" von ")
             variableValue(playerName)
-            success(" gesendet!")
+            info(" abgezogen!")
         }
     }
 }

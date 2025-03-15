@@ -18,6 +18,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
     override suspend fun deposit(
         amount: BigDecimal,
         currency: Currency,
+        ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResultType {
         val transactionId = transactionService.generateTransactionId()
@@ -27,7 +28,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             sender = null,
             receiver = this,
             amount = amount,
-            currency = currency
+            currency = currency,
+            ignoreMinimumAmount = ignoreMinimum
         ).apply { data.addAll(additionalData) }
 
         return transactionService.persistTransaction(transaction)
@@ -36,6 +38,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
     override suspend fun withdraw(
         amount: BigDecimal,
         currency: Currency,
+        ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResultType {
         val transactionId = transactionService.generateTransactionId()
@@ -46,7 +49,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             sender = this,
             receiver = null,
             amount = usableAmount,
-            currency = currency
+            currency = currency,
+            ignoreMinimumAmount = ignoreMinimum
         ).apply { data.addAll(additionalData) }
 
         return transactionService.persistTransaction(transaction)
@@ -56,6 +60,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
         amount: BigDecimal,
         currency: Currency,
         receiver: TransactionUser,
+        ignoreSenderMinimum: Boolean,
+        ignoreReceiverMinimum: Boolean,
         additionalSenderData: ObjectSet<TransactionData>,
         additionalReceiverData: ObjectSet<TransactionData>
     ): TransactionResultType {
@@ -70,7 +76,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             sender = this,
             receiver = receiver,
             amount = senderAmount,
-            currency = currency
+            currency = currency,
+            ignoreMinimumAmount = ignoreSenderMinimum
         ).apply { data.addAll(additionalSenderData) }
 
         val receiverTransaction = CoreTransaction(
@@ -78,7 +85,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             sender = this,
             receiver = receiver,
             amount = receiverAmount,
-            currency = currency
+            currency = currency,
+            ignoreMinimumAmount = ignoreReceiverMinimum
         ).apply { data.addAll(additionalReceiverData) }
 
         return transactionService.transfer(senderTransaction, receiverTransaction)
@@ -86,4 +94,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
 
     override suspend fun balanceDecimal(currency: Currency) =
         transactionService.balanceDecimal(this, currency)
+
+    override fun toString(): String {
+        return "CoreTransactionUser(uuid=$uuid)"
+    }
 }

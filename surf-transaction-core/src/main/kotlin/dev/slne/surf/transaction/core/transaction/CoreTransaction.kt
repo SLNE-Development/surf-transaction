@@ -17,6 +17,12 @@ class CoreTransaction(
     override val receiver: TransactionUser?,
     override val currency: Currency,
     override val amount: BigDecimal,
+    override val ignoreMinimumAmount: Boolean = false
 ) : Transaction {
     override val data = mutableObjectSetOf<TransactionData>()
+
+    override fun toString(): String {
+        return "CoreTransaction(identifier=$identifier, sender=$sender, receiver=$receiver, currency=$currency, amount=$amount, ignoreMinimumAmount=$ignoreMinimumAmount, data=$data)"
+    }
+    
 }

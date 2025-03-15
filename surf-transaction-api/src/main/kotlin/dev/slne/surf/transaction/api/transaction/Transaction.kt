@@ -43,4 +43,9 @@ interface Transaction {
      */
     val data: ObjectSet<TransactionData>
 
+    /**
+     * If the transaction should ignore the minimum amount of the currency
+     */
+    val ignoreMinimumAmount: Boolean
+
 }

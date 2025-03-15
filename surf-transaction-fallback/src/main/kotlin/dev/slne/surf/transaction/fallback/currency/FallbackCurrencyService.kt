@@ -89,6 +89,7 @@ class FallbackCurrencyService : CurrencyService, Fallback {
                 symbolDisplay = currency.symbolDisplay
                 scale = currency.scale
                 defaultCurrency = currency.defaultCurrency
+                minimumAmount = currency.minimumAmount
             }
 
             _fallbackCurrencies.add(newCurrency)

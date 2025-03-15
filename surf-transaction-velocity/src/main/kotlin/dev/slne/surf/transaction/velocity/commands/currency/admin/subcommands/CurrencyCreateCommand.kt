@@ -4,38 +4,36 @@ import com.github.shynixn.mccoroutine.velocity.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.*
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.surfapi.velocity.api.command.args.miniMessageArgument
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.api.transactionApi
 import dev.slne.surf.transaction.core.currency.*
 import dev.slne.surf.transaction.velocity.plugin
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.Component
+import java.math.BigDecimal
 
 object CurrencyCreateCommand : CommandAPICommand("create") {
     init {
         withPermission("surf.transaction.currency.admin.create")
 
-        // /currency create <currencyName> <symbol> <scale> <defaultCurrency> <displayName> <symbolDisplay>
-
         stringArgument("name")
         multiLiteralArgument("scale", CurrencyScale.entries.map { it.name.lowercase() })
         stringArgument("symbol")
         booleanArgument("defaultCurrency")
-        stringArgument("displayName")
-        stringArgument("symbolDisplay")
+        doubleArgument("minimumAmount")
+        miniMessageArgument("displayName")
+        miniMessageArgument("symbolDisplay")
 
         anyExecutor { commandSource, args ->
             val name: String by args
             val scale: String by args
             val symbol: String by args
             val defaultCurrency: Boolean by args
-            val displayName: String by args
-            val symbolDisplay: String by args
+            val minimumAmount: Double by args
+            val displayName: Component by args
+            val symbolDisplay: Component by args
 
             val currencyScale = CurrencyScale.valueOf(scale.uppercase())
-
-            val miniMessage = MiniMessage.miniMessage()
-            val currencyDisplayName = miniMessage.deserialize(displayName)
-            val currencySymbolDisplay = miniMessage.deserialize(symbolDisplay)
 
             transactionApi.getCurrencyByName(name)?.let {
                 commandSource.sendText {
@@ -49,10 +47,11 @@ object CurrencyCreateCommand : CommandAPICommand("create") {
                 val currency = CoreCurrency(
                     name = name,
                     scale = currencyScale,
-                    displayName = currencyDisplayName,
+                    displayName = displayName,
                     symbol = symbol,
-                    symbolDisplay = currencySymbolDisplay,
+                    symbolDisplay = symbolDisplay,
                     defaultCurrency = defaultCurrency,
+                    minimumAmount = BigDecimal.valueOf(minimumAmount)
                 )
 
                 val result = currencyService.createCurrency(currency)

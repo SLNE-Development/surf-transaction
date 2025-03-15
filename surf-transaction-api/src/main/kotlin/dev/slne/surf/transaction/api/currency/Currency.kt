@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.api.currency
 
 import net.kyori.adventure.text.Component
+import java.math.BigDecimal
 
 interface Currency {
 
@@ -38,5 +39,10 @@ interface Currency {
      * If the currency is the default currency
      */
     val defaultCurrency: Boolean
+
+    /**
+     * The minimum amount of the currency
+     */
+    val minimumAmount: BigDecimal
 
 }

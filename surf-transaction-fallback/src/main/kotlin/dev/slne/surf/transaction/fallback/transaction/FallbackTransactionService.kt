@@ -70,7 +70,10 @@ class FallbackTransactionService : TransactionService, Fallback {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionSender, transaction.currency)
 
-                if (balanceAfterTransaction < BigDecimal.ZERO) {
+                if (
+                    balanceAfterTransaction < transaction.currency.minimumAmount &&
+                    !transaction.ignoreMinimumAmount
+                ) {
                     rollback()
 
                     return@newSuspendedTransaction TransactionResult.SENDER_INSUFFICIENT_FUNDS to null
@@ -81,7 +84,10 @@ class FallbackTransactionService : TransactionService, Fallback {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionReceiver, transaction.currency)
 
-                if (balanceAfterTransaction < BigDecimal.ZERO) {
+                if (
+                    balanceAfterTransaction < transaction.currency.minimumAmount &&
+                    !transaction.ignoreMinimumAmount
+                ) {
                     rollback()
 
                     return@newSuspendedTransaction TransactionResult.RECEIVER_INSUFFICIENT_FUNDS to null

@@ -14,6 +14,7 @@ class FallbackCurrency(id: EntityID<Long>) : LongEntity(id) {
     var symbolDisplay by FallbackCurrencyTable.symbolDisplay
     var scale by FallbackCurrencyTable.scale
     var defaultCurrency by FallbackCurrencyTable.defaultCurrency
+    var minimumAmount by FallbackCurrencyTable.minimumAmount
 
     fun toCurrency() = CoreCurrency(
         name,
@@ -21,6 +22,7 @@ class FallbackCurrency(id: EntityID<Long>) : LongEntity(id) {
         symbol,
         symbolDisplay,
         scale,
-        defaultCurrency
+        defaultCurrency,
+        minimumAmount
     )
 }
