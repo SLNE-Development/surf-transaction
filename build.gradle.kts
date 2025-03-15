@@ -14,7 +14,9 @@ buildscript {
 allprojects {
     group = "dev.slne.surf"
     version = findProperty("version") as String
+}
 
+subprojects {
     afterEvaluate {
         configure<PublishingExtension> {
             repositories {
