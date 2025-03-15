@@ -1,3 +1,5 @@
+import dev.slne.surf.surfapi.gradle.util.slneReleases
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -12,4 +14,14 @@ buildscript {
 allprojects {
     group = "dev.slne.surf"
     version = findProperty("version") as String
+}
+
+subprojects {
+    afterEvaluate {
+        configure<PublishingExtension> {
+            repositories {
+                slneReleases()
+            }
+        }
+    }
 }
