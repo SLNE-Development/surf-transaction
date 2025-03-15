@@ -1,7 +1,9 @@
 package dev.slne.surf.transaction.api.transaction
 
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
+import it.unimi.dsi.fastutil.objects.ObjectSet
 import java.math.BigDecimal
 import java.util.*
 
@@ -37,10 +39,8 @@ interface Transaction {
     val amount: BigDecimal
 
     /**
-     * Add additional data to the transaction
-     *
-     * @param data The data to add
+     * The data of the transaction
      */
-    fun <T : Any> addData(data: T)
+    val data: ObjectSet<TransactionData>
 
 }

@@ -3,6 +3,7 @@ package dev.slne.surf.transaction.api.user
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
+import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.transactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import java.math.BigDecimal
@@ -27,7 +28,7 @@ interface TransactionUser {
     suspend fun deposit(
         amount: BigDecimal,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ): TransactionResultType
 
     /**
@@ -42,7 +43,7 @@ interface TransactionUser {
     suspend fun withdraw(
         amount: BigDecimal,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ): TransactionResultType
 
     /**
@@ -60,8 +61,8 @@ interface TransactionUser {
         amount: BigDecimal,
         currency: Currency,
         receiver: TransactionUser,
-        additionalSenderData: ObjectSet<Any> = objectSetOf(),
-        additionalReceiverData: ObjectSet<Any> = objectSetOf()
+        additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
+        additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
     ): TransactionResultType
 
     /**
@@ -85,7 +86,7 @@ interface TransactionUser {
     suspend fun deposit(
         amount: Double,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ) = deposit(BigDecimal.valueOf(amount), currency, *additionalData)
 
     /**
@@ -100,7 +101,7 @@ interface TransactionUser {
     suspend fun withdraw(
         amount: Double,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ) = withdraw(BigDecimal.valueOf(amount), currency, *additionalData)
 
     /**
@@ -118,8 +119,8 @@ interface TransactionUser {
         amount: Double,
         currency: Currency,
         receiver: TransactionUser,
-        additionalSenderData: ObjectSet<Any> = objectSetOf(),
-        additionalReceiverData: ObjectSet<Any> = objectSetOf()
+        additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
+        additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
     ) = transfer(
         BigDecimal.valueOf(amount),
         currency,

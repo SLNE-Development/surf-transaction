@@ -8,10 +8,10 @@ import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.core.currency.currencyService
-import dev.slne.surf.transaction.core.transaction.CoreTransaction
 import dev.slne.surf.transaction.core.transaction.TransactionService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyTable
+import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.kyori.adventure.util.Services.Fallback
@@ -49,13 +49,21 @@ class FallbackTransactionService : TransactionService, Fallback {
             val transactionSender = transaction.sender
             val transactionReceiver = transaction.receiver
 
-            FallbackTransaction.new {
+            val fallbackTransaction = FallbackTransaction.new {
                 identifier = transaction.identifier
                 sender = transactionSender
                 receiver = transactionReceiver
                 amount = transaction.amount
                 currency = fallbackCurrency
-                extra = (transaction as CoreTransaction).data
+            }
+
+            transaction.data.forEach {
+                FallbackTransactionData.new {
+                    this.transaction = fallbackTransaction.id
+
+                    key = it.key
+                    value = it.value
+                }
             }
 
             if (transactionSender != null) {

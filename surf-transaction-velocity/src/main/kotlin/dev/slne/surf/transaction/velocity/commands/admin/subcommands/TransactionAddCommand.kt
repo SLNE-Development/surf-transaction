@@ -9,9 +9,9 @@ import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
+import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.transactionApi
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.velocity.TestData
 import dev.slne.surf.transaction.velocity.plugin
 import kotlin.jvm.optionals.getOrNull
 
@@ -53,7 +53,7 @@ class TransactionAddCommand : CommandAPICommand("add") {
                 }
 
                 val user = TransactionUser.get(uuid)
-                user.deposit(amount, currency, TestData("admin-add"))
+                user.deposit(amount, currency, TransactionData("test.message", "Dies ist ein Test"))
 
                 commandSource.sendText {
                     success("Successfully added $amount ${currency.name} to $playerName")
