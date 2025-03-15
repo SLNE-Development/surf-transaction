@@ -1,6 +1,8 @@
 package dev.slne.surf.transaction.api.currency
 
+import dev.slne.surf.surfapi.core.api.messages.Colors
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import java.math.BigDecimal
 
 interface Currency {
@@ -44,5 +46,26 @@ interface Currency {
      * The minimum amount of the currency
      */
     val minimumAmount: BigDecimal
+
+    /**
+     * Formats the amount to a component
+     *
+     * @param amount The amount to format
+     * @param color The color of the component
+     *
+     * @return The formatted component
+     */
+    fun format(amount: BigDecimal, color: TextColor = Colors.VARIABLE_VALUE): Component
+
+    /**
+     * Formats the amount to a component
+     *
+     * @param amount The amount to format
+     * @param color The color of the component
+     *
+     * @return The formatted component
+     */
+    fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
+        format(BigDecimal.valueOf(amount), color)
 
 }

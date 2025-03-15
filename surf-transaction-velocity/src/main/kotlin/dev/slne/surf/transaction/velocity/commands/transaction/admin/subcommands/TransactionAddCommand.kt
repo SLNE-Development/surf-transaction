@@ -131,9 +131,7 @@ object TransactionAddCommand : CommandAPICommand("add") {
                 darkSpacer("] ")
 
                 info("Du hast ")
-                variableValue(amount.toString())
-                info(" ")
-                append(currency.symbolDisplay)
+                append(currency.format(amount.toBigDecimal()))
                 info(" von ")
                 variableValue(sender.username)
                 info(" erhalten!")
@@ -154,9 +152,7 @@ object TransactionAddCommand : CommandAPICommand("add") {
             darkSpacer("] ")
 
             success("Du hast ")
-            variableValue(amount.toString())
-            success(" ")
-            append(currency.symbolDisplay)
+            append(currency.format(amount.toBigDecimal()))
             success(" an ")
             variableValue(playerName)
             success(" gesendet!")

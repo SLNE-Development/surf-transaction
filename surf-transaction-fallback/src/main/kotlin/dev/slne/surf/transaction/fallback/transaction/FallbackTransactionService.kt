@@ -66,7 +66,7 @@ class FallbackTransactionService : TransactionService, Fallback {
                 }
             }
 
-            if (transactionSender != null) {
+            if (transactionSender != null && transaction.amount < BigDecimal.ZERO) {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionSender, transaction.currency)
 
@@ -80,7 +80,7 @@ class FallbackTransactionService : TransactionService, Fallback {
                 }
             }
 
-            if (transactionReceiver != null) {
+            if (transactionReceiver != null && transaction.amount < BigDecimal.ZERO) {
                 val balanceAfterTransaction =
                     balanceDecimal(transactionReceiver, transaction.currency)
 

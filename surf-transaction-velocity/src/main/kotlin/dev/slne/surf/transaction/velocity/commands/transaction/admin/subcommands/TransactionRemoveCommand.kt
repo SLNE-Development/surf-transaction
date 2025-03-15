@@ -135,9 +135,7 @@ object TransactionRemoveCommand : CommandAPICommand("remove") {
 
                 variableValue(sender.username)
                 info(" hat dir ")
-                variableValue(amount.toString())
-                info(" ")
-                append(currency.symbolDisplay)
+                append(currency.format(amount.toBigDecimal()))
                 info(" abgezogen!")
             }
 
@@ -156,9 +154,7 @@ object TransactionRemoveCommand : CommandAPICommand("remove") {
             darkSpacer("] ")
 
             success("Du hast ")
-            variableValue(amount.toString())
-            success(" ")
-            append(currency.symbolDisplay)
+            append(currency.format(amount.toBigDecimal()))
             success(" von ")
             variableValue(playerName)
             success(" abgezogen!")
