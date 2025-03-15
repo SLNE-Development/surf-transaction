@@ -33,6 +33,15 @@ interface CurrencyService {
     fun getCurrencyByName(name: String): Currency?
 
     /**
+     * Creates a currency
+     *
+     * @param currency the currency to create
+     *
+     * @return the created currency
+     */
+    suspend fun createCurrency(currency: Currency): CurrencyCreateResult
+
+    /**
      * Returns a currency from memory
      *
      * @param name the name of the currency

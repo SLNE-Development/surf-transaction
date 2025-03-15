@@ -2,6 +2,7 @@ package dev.slne.surf.transaction.core.user
 
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
+import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.core.transaction.CoreTransaction
 import dev.slne.surf.transaction.core.transaction.transactionService
@@ -17,7 +18,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
     override suspend fun deposit(
         amount: BigDecimal,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ): TransactionResultType {
         val transactionId = transactionService.generateTransactionId()
 
@@ -27,7 +28,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = this,
             amount = amount,
             currency = currency
-        ).apply { additionalData.forEach { this.addData(it) } }
+        ).apply { data.addAll(additionalData) }
 
         return transactionService.persistTransaction(transaction)
     }
@@ -35,7 +36,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
     override suspend fun withdraw(
         amount: BigDecimal,
         currency: Currency,
-        vararg additionalData: Any
+        vararg additionalData: TransactionData
     ): TransactionResultType {
         val transactionId = transactionService.generateTransactionId()
         val usableAmount = amount.abs().negate()
@@ -46,7 +47,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = null,
             amount = usableAmount,
             currency = currency
-        ).apply { additionalData.forEach { this.addData(it) } }
+        ).apply { data.addAll(additionalData) }
 
         return transactionService.persistTransaction(transaction)
     }
@@ -55,8 +56,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
         amount: BigDecimal,
         currency: Currency,
         receiver: TransactionUser,
-        additionalSenderData: ObjectSet<Any>,
-        additionalReceiverData: ObjectSet<Any>
+        additionalSenderData: ObjectSet<TransactionData>,
+        additionalReceiverData: ObjectSet<TransactionData>
     ): TransactionResultType {
         val senderTransactionId = transactionService.generateTransactionId()
         val receiverTransactionId = transactionService.generateTransactionId()
@@ -70,7 +71,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = receiver,
             amount = senderAmount,
             currency = currency
-        ).apply { additionalSenderData.forEach { this.addData(it) } }
+        ).apply { data.addAll(additionalSenderData) }
 
         val receiverTransaction = CoreTransaction(
             identifier = receiverTransactionId,
@@ -78,7 +79,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = receiver,
             amount = receiverAmount,
             currency = currency
-        ).apply { additionalReceiverData.forEach { this.addData(it) } }
+        ).apply { data.addAll(additionalReceiverData) }
 
         return transactionService.transfer(senderTransaction, receiverTransaction)
     }
