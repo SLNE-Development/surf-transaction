@@ -10,6 +10,8 @@ import dev.slne.surf.transaction.core.currency.currencyService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyTable
 import dev.slne.surf.transaction.fallback.transaction.FallbackTransactionTable
 import dev.slne.surf.transaction.velocity.commands.TransactionCommand
+import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionDataTable
+import dev.slne.surf.transaction.velocity.commands.transaction.TransactionCommand
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -33,7 +35,11 @@ class VelocityMain @Inject constructor(
 
         DatabaseProvider(dataPath, dataPath / "storage").connect()
         transaction {
-            SchemaUtils.create(FallbackCurrencyTable, FallbackTransactionTable)
+            SchemaUtils.create(
+                FallbackCurrencyTable,
+                FallbackTransactionTable,
+                FallbackTransactionDataTable
+            )
 
 //            FallbackCurrency.new {
 //                name = "CastCoin"

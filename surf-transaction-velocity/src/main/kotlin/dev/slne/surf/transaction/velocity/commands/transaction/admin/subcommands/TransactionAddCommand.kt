@@ -1,4 +1,4 @@
-package dev.slne.surf.transaction.velocity.commands.admin.subcommands
+package dev.slne.surf.transaction.velocity.commands.transaction.admin.subcommands
 
 import com.github.shynixn.mccoroutine.velocity.launch
 import dev.jorel.commandapi.CommandAPICommand
@@ -15,7 +15,7 @@ import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.velocity.plugin
 import kotlin.jvm.optionals.getOrNull
 
-class TransactionAddCommand : CommandAPICommand("add") {
+object TransactionAddCommand : CommandAPICommand("add") {
 
     init {
         withPermission("surf.transaction.admin.add")
