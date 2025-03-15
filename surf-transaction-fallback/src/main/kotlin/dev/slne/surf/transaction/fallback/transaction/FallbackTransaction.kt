@@ -31,4 +31,8 @@ class FallbackTransaction(id: EntityID<Long>) : LongEntity(id) {
             TransactionData(it.key, it.value)
         })
     }
+
+    override fun toString(): String {
+        return toTransaction().toString()
+    }
 }
