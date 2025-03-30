@@ -43,15 +43,6 @@ class VelocityMain @Inject constructor(
                 FallbackTransactionDataTable
             )
 
-//            FallbackCurrency.new {
-//                name = "CastCoin"
-//                displayName = buildText { success("CastCoin") }
-//                symbol = "CC"
-//                symbolDisplay = buildText { success("CC") }
-//                scale = CurrencyScale.INTEGER
-//                defaultCurrency = true
-//            }
-
             runBlocking {
                 currencyService.fetchCurrencies()
             }

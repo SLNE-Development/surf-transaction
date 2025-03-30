@@ -4,14 +4,10 @@ plugins {
 
 dependencies {
     api(project(":surf-transaction-core"))
+    api(project(":surf-transaction-fallback"))
 }
 
 surfPaperPluginApi {
-    mainClass("dev.slne.surf.cloud.bukkit.BukkitMain")
-    bootstrapper("dev.slne.surf.cloud.bukkit.BukkitBootstrap")
+    mainClass("dev.slne.surf.transaction.bukkit.BukkitMain")
     authors.add("Ammo")
-
-    runServer {
-        jvmArgs("-Dsurf.cloud.serverName=test-server01")
-    }
 }
