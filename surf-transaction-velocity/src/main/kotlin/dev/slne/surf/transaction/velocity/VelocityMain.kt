@@ -5,18 +5,13 @@ import com.google.inject.Inject
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
-import dev.slne.surf.database.DatabaseProvider
 import dev.slne.surf.transaction.core.currency.currencyService
-import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyTable
-import dev.slne.surf.transaction.fallback.transaction.FallbackTransactionTable
-import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionDataTable
+import dev.slne.surf.transaction.fallback.FallbackManager
 import dev.slne.surf.transaction.velocity.commands.balance.BalanceCommand
 import dev.slne.surf.transaction.velocity.commands.currency.CurrencyCommand
 import dev.slne.surf.transaction.velocity.commands.pay.PayCommand
 import dev.slne.surf.transaction.velocity.commands.transaction.TransactionCommand
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.nio.file.Path
 import kotlin.io.path.div
 
@@ -33,19 +28,10 @@ class VelocityMain @Inject constructor(
         plugin = this
         suspendingPluginContainer.initialize(this)
 
-        println("Hello, Velocity!")
-
-        DatabaseProvider(dataPath, dataPath / "storage").connect()
-        transaction {
-            SchemaUtils.create(
-                FallbackCurrencyTable,
-                FallbackTransactionTable,
-                FallbackTransactionDataTable
-            )
-
-            runBlocking {
-                currencyService.fetchCurrencies()
-            }
+        runBlocking {
+            FallbackManager.init(dataPath, dataPath / "storage")
+            
+            currencyService.fetchCurrencies()
         }
 
         TransactionCommand.register()

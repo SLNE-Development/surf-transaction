@@ -8,5 +8,5 @@ velocityPluginFile {
 
 dependencies {
     api(project(":surf-transaction-core"))
-    api(project(":surf-transaction-fallback"))
+    implementation(project(":surf-transaction-fallback"))
 }
