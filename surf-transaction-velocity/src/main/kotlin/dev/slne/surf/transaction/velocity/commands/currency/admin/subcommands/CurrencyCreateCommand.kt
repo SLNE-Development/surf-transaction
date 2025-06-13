@@ -17,7 +17,10 @@ object CurrencyCreateCommand : CommandAPICommand("create") {
         withPermission("surf.transaction.currency.admin.create")
 
         stringArgument("name")
-        multiLiteralArgument("scale", CurrencyScale.entries.map { it.name.lowercase() })
+        multiLiteralArgument(
+            "scale",
+            *CurrencyScale.entries.map { it.name.lowercase() }.toTypedArray()
+        )
         stringArgument("symbol")
         booleanArgument("defaultCurrency")
         doubleArgument("minimumAmount")
