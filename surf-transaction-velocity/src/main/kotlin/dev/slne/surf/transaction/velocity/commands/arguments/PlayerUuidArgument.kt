@@ -29,7 +29,7 @@ class PlayerUuidArgument(nodeName: String, showSuggestions: Boolean = false) :
     init {
         if (showSuggestions) {
             replaceSuggestions(ArgumentSuggestions.stringCollection { _ ->
-                plugin.proxy.getAllPlayers().map { it.username }
+                plugin.proxy.allPlayers.map { it.username }
             })
         }
     }

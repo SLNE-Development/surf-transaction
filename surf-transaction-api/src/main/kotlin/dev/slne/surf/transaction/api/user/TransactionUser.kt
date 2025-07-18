@@ -1,10 +1,10 @@
 package dev.slne.surf.transaction.api.user
 
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.transaction.api.TransactionApi
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.transactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import java.math.BigDecimal
 import java.util.*
@@ -284,7 +284,7 @@ interface TransactionUser {
          *
          * @return The transaction user
          */
-        fun get(uuid: UUID) = transactionApi.getTransactionUser(uuid)
+        operator fun get(uuid: UUID) = TransactionApi.getTransactionUser(uuid)
     }
 
 }

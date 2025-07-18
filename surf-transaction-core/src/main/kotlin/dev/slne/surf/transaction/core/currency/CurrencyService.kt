@@ -3,6 +3,7 @@ package dev.slne.surf.transaction.core.currency
 import dev.slne.surf.surfapi.core.api.util.requiredService
 import dev.slne.surf.transaction.api.currency.Currency
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import org.jetbrains.annotations.UnmodifiableView
 
 /**
  * A service that provides access to currencies.
@@ -14,14 +15,17 @@ interface CurrencyService {
      *
      * @return a list of all currencies
      */
-    suspend fun fetchCurrencies(): ObjectSet<Currency>
+    suspend fun fetchCurrencies(): ObjectSet<out Currency>
+
 
     /**
      * Returns a list of all currencies
      *
      * @return a list of all currencies
      */
-    val currencies: ObjectSet<Currency>
+    val currencies: @UnmodifiableView ObjectSet<out Currency>
+
+    val defaultCurrency: Currency
 
     /**
      * Returns a currency from memory
@@ -39,7 +43,18 @@ interface CurrencyService {
      *
      * @return the created currency
      */
-    suspend fun createCurrency(currency: Currency): CurrencyCreateResult
+    suspend fun createCurrency(currency: CoreCurrency): CurrencyCreateResult
+
+    /**
+     * Sets the specified currency as the default currency in the system.
+     *
+     * <b>This method will also create the currency in the database
+     * if it does not already exist.</b>
+     *
+     * @param currency The currency to set as the default.
+     * @return A [CurrencyCreateResult] indicating the result of the operation.
+     */
+    suspend fun makeDefaultCurrency(currency: CoreCurrency): CurrencyCreateResult
 
     /**
      * Returns a currency from memory
@@ -50,15 +65,9 @@ interface CurrencyService {
      */
     operator fun get(name: String): Currency? = getCurrencyByName(name)
 
-    companion object {
-        /**
-         * The instance of the currency service
-         */
-        val INSTANCE = requiredService<CurrencyService>()
+    companion object : CurrencyService by INSTANCE {
+        val instance = INSTANCE
     }
 }
 
-/**
- * The instance of the currency service
- */
-val currencyService get() = CurrencyService.INSTANCE
+private val INSTANCE = requiredService<CurrencyService>()

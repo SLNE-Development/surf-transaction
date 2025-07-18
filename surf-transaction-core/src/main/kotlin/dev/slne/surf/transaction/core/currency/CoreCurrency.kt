@@ -13,25 +13,33 @@ const val CURRENCY_SYMBOL_MAX_LENGTH = 16
 /**
  * A core implementation of [Currency].
  */
-class CoreCurrency(
+data class CoreCurrency(
     override val name: String,
     override val displayName: Component,
     override val symbol: String,
     override val symbolDisplay: Component,
     override val scale: CurrencyScale,
-    override val defaultCurrency: Boolean,
+    var defaultCurrency: Boolean,
     override val minimumAmount: BigDecimal = BigDecimal.ZERO
 ) : Currency {
 
     override fun format(amount: BigDecimal, color: TextColor): Component {
         return buildText {
-            append(Component.text("${scale.format(amount)}", color))
-            append(Component.text(" "))
+            text(scale.formatString(amount), color)
+            appendSpace()
             append(symbolDisplay)
         }
     }
 
-    override fun toString(): String {
-        return "CoreCurrency(name='$name', displayName=$displayName, symbol='$symbol', symbolDisplay=$symbolDisplay, scale=$scale, defaultCurrency=$defaultCurrency, minimumAmount=$minimumAmount)"
+    companion object {
+        val DEFAULT = CoreCurrency(
+            name = "default",
+            displayName = buildText { text("Default Currency") },
+            symbol = "$",
+            symbolDisplay = buildText { text("$") },
+            scale = CurrencyScale.DECIMAL_2,
+            defaultCurrency = true,
+            minimumAmount = BigDecimal.ZERO
+        )
     }
 }

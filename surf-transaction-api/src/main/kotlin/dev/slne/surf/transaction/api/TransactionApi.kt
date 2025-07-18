@@ -4,23 +4,32 @@ import dev.slne.surf.surfapi.core.api.util.requiredService
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.user.TransactionUser
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import org.jetbrains.annotations.UnmodifiableView
 import java.util.*
 
 interface TransactionApi {
 
     /**
-     * Get the default currency
+     * Represents the default currency used in transactions.
      *
-     * @return The default currency
+     * This currency is utilized as the primary or standard currency when
+     * performing financial operations within the application. It is expected
+     * to align with the default settings configured for the transaction system.
      */
-    fun getDefaultCurrency(): Currency?
+    val defaultCurrency: Currency
 
     /**
-     * Get the currencies available in memory
+     * Represents the set of available currencies within the transaction system.
      *
-     * @return The currencies available in memory
+     * This property provides a read-only view of the supported currencies that can be used
+     * for financial transactions. Each currency in this set includes metadata such as its
+     * name, display name, symbol, and other relevant attributes. The set is unmodifiable,
+     * ensuring that the available currencies cannot be altered at runtime.
+     *
+     * @see Currency for details about the properties of each currency
+     * @see TransactionApi.getCurrencies for dynamically retrieving the available currencies
      */
-    fun getCurrencies(): ObjectSet<Currency>
+    val currencies: @UnmodifiableView ObjectSet<out Currency>
 
     /**
      * Returns a currency from memory
@@ -40,16 +49,5 @@ interface TransactionApi {
      */
     fun getTransactionUser(uuid: UUID): TransactionUser
 
-    companion object {
-        /**
-         * The instance of the TransactionApi
-         */
-        val INSTANCE = requiredService<TransactionApi>()
-    }
-
+    companion object : TransactionApi by requiredService<TransactionApi>()
 }
-
-/**
- * The instance of the TransactionApi
- */
-val transactionApi get() = TransactionApi.INSTANCE

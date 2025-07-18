@@ -57,16 +57,5 @@ interface TransactionService {
      */
     suspend fun generateTransactionId(vararg excludingIds: UUID): UUID
 
-    companion object {
-        /**
-         * The instance of the TransactionService
-         */
-        val INSTANCE = requiredService<TransactionService>()
-    }
-
+    companion object : TransactionService by requiredService<TransactionService>()
 }
-
-/**
- * The instance of the TransactionService
- */
-val transactionService get() = TransactionService.INSTANCE

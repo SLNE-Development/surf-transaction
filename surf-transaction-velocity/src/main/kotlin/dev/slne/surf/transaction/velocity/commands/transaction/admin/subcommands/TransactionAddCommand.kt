@@ -6,9 +6,11 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
+import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.surfapi.core.api.generated.SoundKeys
 import dev.slne.surf.surfapi.core.api.messages.adventure.playSound
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
@@ -21,141 +23,125 @@ import net.kyori.adventure.sound.Sound
 import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
-object TransactionAddCommand : CommandAPICommand("add") {
+private val log = logger()
 
-    init {
-        withPermission("surf.transaction.admin.add")
+fun CommandAPICommand.transactionAddCommand() = subcommand("add") {
+    withPermission("surf.transaction.admin.add")
 
-        playerUuidArgument("playerName", showSuggestions = true)
-        currencyArgument("currency")
-        doubleArgument("amount", min = 1.0)
+    playerUuidArgument("playerName", showSuggestions = true)
+    currencyArgument("currency")
+    doubleArgument("amount", min = 1.0)
 
-        playerExecutor { sender, args ->
-            val suppliedPlayer: PlayerUuidArgumentType = args.getUnchecked("playerName") ?: run {
+    playerExecutor { sender, args ->
+        val (playerName, uuidDeferred) = args.getUnchecked<PlayerUuidArgumentType>("playerName")
+            ?: error("Player UUID argument is missing or invalid")
+
+        val currency: Currency by args
+        val amount: Double by args
+
+        plugin.container.launch {
+            val uuid = uuidDeferred.await() ?: run {
                 sender.sendText {
                     appendPrefix()
 
-                    error("Der Benutzer konnte nicht gefunden werden!")
+                    error("Der Benutzer ")
+                    variableValue(playerName)
+                    error(" konnte nicht gefunden werden!")
                 }
 
-                return@playerExecutor
+                return@launch
             }
 
-            val currency: Currency by args
-            val amount: Double by args
+            val user = TransactionUser[uuid]
+            val (result) = user.deposit(
+                amount,
+                currency,
+                TransactionData("admin.transaction.add", sender.uniqueId.toString())
+            )
 
-            if (amount <= 0) {
-                sender.sendText {
-                    appendPrefix()
-
-                    error("Der Betrag muss größer als 0 sein!")
-                }
-            }
-
-            plugin.container.launch {
-                val playerName = suppliedPlayer.first
-                val uuid = suppliedPlayer.second.await() ?: run {
-                    sender.sendText {
-                        appendPrefix()
-
-                        error("Der Benutzer ")
-                        variableValue(playerName)
-                        error(" konnte nicht gefunden werden!")
-                    }
-
-                    return@launch
-                }
-
-                val user = TransactionUser.get(uuid)
-                val result = user.deposit(
+            val player = plugin.proxy.getPlayer(uuid).getOrNull()
+            when (result) {
+                TransactionResult.SUCCESS -> handleSuccess(
+                    sender,
+                    player,
+                    playerName,
                     amount,
-                    currency,
-                    TransactionData("admin.transaction.add", sender.uniqueId.toString())
+                    currency
                 )
 
-                val player = plugin.proxy.getPlayer(uuid).getOrNull()
-                when (result.first) {
-                    TransactionResult.SUCCESS -> handleSuccess(
-                        sender,
-                        player,
-                        playerName,
-                        amount,
-                        currency
-                    )
+                TransactionResult.RECEIVER_INSUFFICIENT_FUNDS -> handleError(
+                    sender,
+                    result,
+                    uuid
+                )
 
-                    TransactionResult.RECEIVER_INSUFFICIENT_FUNDS -> handleError(
-                        sender,
-                        result.first,
-                        uuid
-                    )
+                TransactionResult.SENDER_INSUFFICIENT_FUNDS -> handleError(
+                    sender,
+                    result,
+                    uuid
+                )
 
-                    TransactionResult.SENDER_INSUFFICIENT_FUNDS -> handleError(
-                        sender,
-                        result.first,
-                        uuid
-                    )
-
-                    TransactionResult.DATABASE_ERROR -> handleError(
-                        sender,
-                        result.first,
-                        uuid
-                    )
-                }
+                is TransactionResult.DATABASE_ERROR -> handleError(
+                    sender,
+                    result,
+                    uuid
+                )
             }
         }
     }
+}
 
-    private fun handleError(sender: Player, result: TransactionResult, receiverUuid: UUID) {
-        sender.sendText {
-            appendPrefix()
-
-            error("Es ist ein Fehler aufgetreten!")
-        }
-
-        error("An error occurred when trying to add money to player with UUID $receiverUuid. Result: $result")
+private fun handleError(sender: Player, result: TransactionResult, receiverUuid: UUID) {
+    sender.sendText {
+        appendPrefix()
+        error("Es ist ein Fehler aufgetreten!")
     }
 
-    private fun handleSuccess(
-        sender: Player,
-        player: Player?,
-        playerName: String,
-        amount: Double,
-        currency: Currency
-    ) {
-        if (player != null) {
-            player.sendText {
-                appendPrefix()
+    log.atSevere()
+        .withCause((result as? TransactionResult.DATABASE_ERROR)?.cause)
+        .log("An error occurred when trying to add money to player with UUID $receiverUuid: ${result.message ?: "No message provided"}")
+}
 
-                darkSpacer("[")
-                variableKey("Admin")
-                darkSpacer("] ")
-
-                info("Du hast ")
-                append(currency.format(amount.toBigDecimal()))
-                info(" von ")
-                variableValue(sender.username)
-                info(" erhalten!")
-            }
-
-            player.playSound {
-                type(SoundKeys.ENTITY_CHICKEN_EGG)
-                volume(.5f)
-                source(Sound.Source.PLAYER)
-            }
-        }
-
-        sender.sendText {
+private fun handleSuccess(
+    sender: Player,
+    player: Player?,
+    playerName: String,
+    amount: Double,
+    currency: Currency
+) {
+    if (player != null) {
+        player.sendText {
             appendPrefix()
 
             darkSpacer("[")
             variableKey("Admin")
             darkSpacer("] ")
 
-            success("Du hast ")
-            append(currency.format(amount.toBigDecimal()))
-            success(" an ")
-            variableValue(playerName)
-            success(" gesendet!")
+            info("Du hast ")
+            append(currency.format(amount))
+            info(" von ")
+            variableValue(sender.username)
+            info(" erhalten!")
         }
+
+        player.playSound {
+            type(SoundKeys.ENTITY_CHICKEN_EGG)
+            volume(0.5f)
+            source(Sound.Source.PLAYER)
+        }
+    }
+
+    sender.sendText {
+        appendPrefix()
+
+        darkSpacer("[")
+        variableKey("Admin")
+        darkSpacer("] ")
+
+        success("Du hast ")
+        append(currency.format(amount))
+        success(" an ")
+        variableValue(playerName)
+        success(" gesendet!")
     }
 }

@@ -10,15 +10,15 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.CommandAPIArgumentType
 import dev.jorel.commandapi.executors.CommandArguments
 import dev.slne.surf.surfapi.core.api.messages.adventure.text
+import dev.slne.surf.transaction.api.TransactionApi
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transactionApi
 
 class CurrencyArgument(nodeName: String) :
     Argument<Currency>(nodeName, StringArgumentType.string()) {
 
     init {
         replaceSuggestions(ArgumentSuggestions.stringCollection { _ ->
-            transactionApi.getCurrencies().map { it.name }
+            TransactionApi.currencies.map { it.name }
         })
     }
 
@@ -37,7 +37,7 @@ class CurrencyArgument(nodeName: String) :
     ): Currency {
         val currencyString = StringArgumentType.getString(cmdCtx, key)
 
-        return transactionApi.getCurrencyByName(currencyString) ?: throw SimpleCommandExceptionType(
+        return TransactionApi.getCurrencyByName(currencyString) ?: throw SimpleCommandExceptionType(
             VelocityBrigadierMessage.tooltip(text("Currency $currencyString not found"))
         ).create()
     }

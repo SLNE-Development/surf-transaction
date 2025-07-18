@@ -4,6 +4,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
 import it.unimi.dsi.fastutil.objects.ObjectSet
+import org.jetbrains.annotations.Unmodifiable
 import java.math.BigDecimal
 import java.util.*
 
@@ -41,7 +42,7 @@ interface Transaction {
     /**
      * The data of the transaction
      */
-    val data: ObjectSet<TransactionData>
+    val data: @Unmodifiable ObjectSet<TransactionData>
 
     /**
      * If the transaction should ignore the minimum amount of the currency

@@ -7,7 +7,7 @@ import dev.slne.surf.transaction.api.transaction.Transaction
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.core.currency.currencyService
+import dev.slne.surf.transaction.core.currency.CurrencyService
 import dev.slne.surf.transaction.core.transaction.TransactionService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyTable
@@ -56,7 +56,7 @@ class FallbackTransactionService : TransactionService, Fallback {
 
     override suspend fun persistTransaction(transaction: Transaction): TransactionResultType =
         newSuspendedTransaction(Dispatchers.IO) {
-            val fallbackCurrencyService = currencyService as FallbackCurrencyService
+            val fallbackCurrencyService = CurrencyService.instance as FallbackCurrencyService
             val fallbackCurrency =
                 fallbackCurrencyService.fallbackCurrencies.find { it.name == transaction.currency.name }!!
 

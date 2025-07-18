@@ -25,8 +25,4 @@ class FallbackCurrency(id: EntityID<Long>) : LongEntity(id) {
         defaultCurrency,
         minimumAmount
     )
-
-    override fun toString(): String {
-        return toCurrency().toString()
-    }
 }

@@ -1,11 +1,12 @@
 package dev.slne.surf.transaction.core.user
 
+import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.core.transaction.CoreTransaction
-import dev.slne.surf.transaction.core.transaction.transactionService
+import dev.slne.surf.transaction.core.transaction.TransactionService
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import java.math.BigDecimal
 import java.util.*
@@ -21,7 +22,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResultType {
-        val transactionId = transactionService.generateTransactionId()
+        val transactionId = TransactionService.generateTransactionId()
 
         val transaction = CoreTransaction(
             identifier = transactionId,
@@ -29,10 +30,11 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = this,
             amount = amount,
             currency = currency,
-            ignoreMinimumAmount = ignoreMinimum
-        ).apply { data.addAll(additionalData) }
+            ignoreMinimumAmount = ignoreMinimum,
+            data = additionalData.toMutableObjectSet()
+        )
 
-        return transactionService.persistTransaction(transaction)
+        return TransactionService.persistTransaction(transaction)
     }
 
     override suspend fun withdraw(
@@ -41,7 +43,7 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResultType {
-        val transactionId = transactionService.generateTransactionId()
+        val transactionId = TransactionService.generateTransactionId()
         val usableAmount = amount.abs().negate()
 
         val transaction = CoreTransaction(
@@ -50,10 +52,11 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = this,
             amount = usableAmount,
             currency = currency,
-            ignoreMinimumAmount = ignoreMinimum
-        ).apply { data.addAll(additionalData) }
+            ignoreMinimumAmount = ignoreMinimum,
+            data = additionalData.toMutableObjectSet()
+        )
 
-        return transactionService.persistTransaction(transaction)
+        return TransactionService.persistTransaction(transaction)
     }
 
     override suspend fun transfer(
@@ -65,8 +68,8 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
         additionalSenderData: ObjectSet<TransactionData>,
         additionalReceiverData: ObjectSet<TransactionData>
     ): TransactionResultType {
-        val senderTransactionId = transactionService.generateTransactionId()
-        val receiverTransactionId = transactionService.generateTransactionId()
+        val senderTransactionId = TransactionService.generateTransactionId()
+        val receiverTransactionId = TransactionService.generateTransactionId()
 
         val senderAmount = amount.abs().negate()
         val receiverAmount = amount.abs()
@@ -77,8 +80,9 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = this,
             amount = senderAmount,
             currency = currency,
-            ignoreMinimumAmount = ignoreSenderMinimum
-        ).apply { data.addAll(additionalSenderData) }
+            ignoreMinimumAmount = ignoreSenderMinimum,
+            data = additionalSenderData.toMutableObjectSet()
+        )
 
         val receiverTransaction = CoreTransaction(
             identifier = receiverTransactionId,
@@ -86,14 +90,15 @@ class CoreTransactionUser(override val uuid: UUID) : TransactionUser {
             receiver = receiver,
             amount = receiverAmount,
             currency = currency,
-            ignoreMinimumAmount = ignoreReceiverMinimum
-        ).apply { data.addAll(additionalReceiverData) }
+            ignoreMinimumAmount = ignoreReceiverMinimum,
+            data = additionalReceiverData.toMutableObjectSet()
+        )
 
-        return transactionService.transfer(senderTransaction, receiverTransaction)
+        return TransactionService.transfer(senderTransaction, receiverTransaction)
     }
 
     override suspend fun balanceDecimal(currency: Currency) =
-        transactionService.balanceDecimal(this, currency)
+        TransactionService.balanceDecimal(this, currency)
 
     override fun toString(): String {
         return "CoreTransactionUser(uuid=$uuid)"

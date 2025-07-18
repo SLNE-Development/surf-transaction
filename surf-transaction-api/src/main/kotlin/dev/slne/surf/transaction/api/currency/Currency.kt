@@ -38,11 +38,6 @@ interface Currency {
     val scale: CurrencyScale
 
     /**
-     * If the currency is the default currency
-     */
-    val defaultCurrency: Boolean
-
-    /**
      * The minimum amount of the currency
      */
     val minimumAmount: BigDecimal
@@ -67,5 +62,4 @@ interface Currency {
      */
     fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
         format(BigDecimal.valueOf(amount), color)
-
 }

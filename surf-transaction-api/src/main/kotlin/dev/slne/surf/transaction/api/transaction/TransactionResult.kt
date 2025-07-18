@@ -2,26 +2,26 @@ package dev.slne.surf.transaction.api.transaction
 
 typealias TransactionResultType = Pair<TransactionResult, Transaction?>
 
-enum class TransactionResult {
+@Suppress("ClassName")
+sealed class TransactionResult(val message: String? = null) {
 
     /**
      * Transaction was successful
      */
-    SUCCESS,
+    data object SUCCESS : TransactionResult(null)
 
     /**
      * The receiver of the transaction has insufficient funds
      */
-    RECEIVER_INSUFFICIENT_FUNDS,
+    data object RECEIVER_INSUFFICIENT_FUNDS : TransactionResult("The receiver has insufficient funds to complete this transaction.")
 
     /**
      * The sender of the transaction has insufficient funds
      */
-    SENDER_INSUFFICIENT_FUNDS,
+    data object SENDER_INSUFFICIENT_FUNDS : TransactionResult("The sender has insufficient funds to complete this transaction.")
 
     /**
      * There was an error with the database
      */
-    DATABASE_ERROR;
-
+    data class DATABASE_ERROR(val cause: Throwable) : TransactionResult("An error occurred with the database.")
 }
