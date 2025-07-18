@@ -18,6 +18,7 @@ import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.velocity.commands.arguments.PlayerUuidArgumentType
 import dev.slne.surf.transaction.velocity.commands.arguments.currencyArgument
 import dev.slne.surf.transaction.velocity.commands.arguments.playerUuidArgument
+import dev.slne.surf.transaction.velocity.commands.transaction.admin.subcommands.handleSuccess
 import dev.slne.surf.transaction.velocity.plugin
 import net.kyori.adventure.sound.Sound
 import java.util.*
@@ -60,32 +61,11 @@ fun CommandAPICommand.transactionAddCommand() = subcommand("add") {
             )
 
             val player = plugin.proxy.getPlayer(uuid).getOrNull()
-            when (result) {
-                TransactionResult.SUCCESS -> handleSuccess(
-                    sender,
-                    player,
-                    playerName,
-                    amount,
-                    currency
-                )
 
-                TransactionResult.RECEIVER_INSUFFICIENT_FUNDS -> handleError(
-                    sender,
-                    result,
-                    uuid
-                )
-
-                TransactionResult.SENDER_INSUFFICIENT_FUNDS -> handleError(
-                    sender,
-                    result,
-                    uuid
-                )
-
-                is TransactionResult.DATABASE_ERROR -> handleError(
-                    sender,
-                    result,
-                    uuid
-                )
+            if (result == TransactionResult.SUCCESS) {
+                handleSuccess(sender, player, playerName, amount, currency)
+            } else {
+                handleError(sender, result, uuid)
             }
         }
     }

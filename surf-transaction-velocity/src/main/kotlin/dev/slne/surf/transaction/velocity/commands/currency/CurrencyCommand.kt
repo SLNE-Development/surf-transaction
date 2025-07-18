@@ -1,13 +1,9 @@
 package dev.slne.surf.transaction.velocity.commands.currency
 
-import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.transaction.velocity.commands.currency.admin.CurrencyAdminCommand
+import dev.jorel.commandapi.kotlindsl.commandAPICommand
+import dev.slne.surf.transaction.velocity.commands.currency.admin.currencyAdminCommand
 
-object CurrencyCommand : CommandAPICommand("currency") {
-    init {
-        withPermission("surf.transaction.currency")
-
-        subcommand(CurrencyAdminCommand)
-    }
+fun currencyCommand() = commandAPICommand("currency") {
+    withPermission("surf.transaction.currency")
+    currencyAdminCommand()
 }

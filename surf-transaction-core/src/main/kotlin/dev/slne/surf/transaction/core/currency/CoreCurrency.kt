@@ -19,7 +19,7 @@ data class CoreCurrency(
     override val symbol: String,
     override val symbolDisplay: Component,
     override val scale: CurrencyScale,
-    var defaultCurrency: Boolean,
+    override var defaultCurrency: Boolean,
     override val minimumAmount: BigDecimal = BigDecimal.ZERO
 ) : Currency {
 

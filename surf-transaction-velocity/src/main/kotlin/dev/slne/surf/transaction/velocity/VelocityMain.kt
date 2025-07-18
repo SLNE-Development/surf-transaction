@@ -7,10 +7,9 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory
 import com.velocitypowered.api.proxy.ProxyServer
 import dev.slne.surf.transaction.core.currency.CurrencyService
 import dev.slne.surf.transaction.fallback.FallbackManager
-import dev.slne.surf.transaction.velocity.commands.balance.BalanceCommand
-import dev.slne.surf.transaction.velocity.commands.currency.CurrencyCommand
-import dev.slne.surf.transaction.velocity.commands.pay.PayCommand
-import dev.slne.surf.transaction.velocity.commands.transaction.TransactionCommand
+import dev.slne.surf.transaction.velocity.commands.balance.balanceCommand
+import dev.slne.surf.transaction.velocity.commands.currency.currencyCommand
+import dev.slne.surf.transaction.velocity.commands.pay.payCommand
 import dev.slne.surf.transaction.velocity.commands.transaction.transactionCommand
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
@@ -36,8 +35,8 @@ class VelocityMain @Inject constructor(
         }
 
         transactionCommand()
-        CurrencyCommand.register()
-        BalanceCommand.register()
-        PayCommand.register();
+        currencyCommand()
+        balanceCommand()
+        payCommand()
     }
 }

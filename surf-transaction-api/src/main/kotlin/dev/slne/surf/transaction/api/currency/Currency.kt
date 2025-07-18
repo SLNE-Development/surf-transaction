@@ -19,6 +19,8 @@ interface Currency {
      */
     val displayName: Component
 
+    val defaultCurrency: Boolean
+
     /**
      * The symbol of the currency
      * e.g. $

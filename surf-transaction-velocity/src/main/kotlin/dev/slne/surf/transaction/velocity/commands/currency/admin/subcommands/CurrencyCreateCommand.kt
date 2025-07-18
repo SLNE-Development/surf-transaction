@@ -12,82 +12,78 @@ import dev.slne.surf.transaction.velocity.plugin
 import net.kyori.adventure.text.Component
 import java.math.BigDecimal
 
-object CurrencyCreateCommand : CommandAPICommand("create") {
-    init {
-        withPermission("surf.transaction.currency.admin.create")
+fun CommandAPICommand.currencyCreateCommand() = subcommand("create") {
+    withPermission("surf.transaction.currency.admin.create")
 
-        stringArgument("name")
-        multiLiteralArgument(
-            "scale",
-            *CurrencyScale.entries.map { it.name.lowercase() }.toTypedArray()
-        )
-        stringArgument("symbol")
-        booleanArgument("defaultCurrency")
-        doubleArgument("minimumAmount")
-        miniMessageArgument("displayName")
-        miniMessageArgument("symbolDisplay")
+    stringArgument("name")
+    multiLiteralArgument(
+        "scale",
+        *CurrencyScale.entries.map { it.name.lowercase() }.toTypedArray()
+    )
+    stringArgument("symbol")
+    doubleArgument("minimumAmount")
+    miniMessageArgument("displayName")
+    miniMessageArgument("symbolDisplay")
 
-        anyExecutor { commandSource, args ->
-            val name: String by args
-            val scale: String by args
-            val symbol: String by args
-            val defaultCurrency: Boolean by args
-            val minimumAmount: Double by args
-            val displayName: Component by args
-            val symbolDisplay: Component by args
+    anyExecutor { commandSource, args ->
+        val name: String by args
+        val scale: String by args
+        val symbol: String by args
+        val minimumAmount: Double by args
+        val displayName: Component by args
+        val symbolDisplay: Component by args
 
-            val currencyScale = CurrencyScale.valueOf(scale.uppercase())
+        val currencyScale = CurrencyScale.valueOf(scale.uppercase())
 
-            TransactionApi.getCurrencyByName(name)?.let {
-                commandSource.sendText {
-                    error("Currency with name $name already exists")
-                }
-
-                return@anyExecutor
+        TransactionApi.getCurrencyByName(name)?.let {
+            commandSource.sendText {
+                error("Currency with name $name already exists")
             }
 
-            plugin.container.launch {
-                val currency = CoreCurrency(
-                    name = name,
-                    scale = currencyScale,
-                    displayName = displayName,
-                    symbol = symbol,
-                    symbolDisplay = symbolDisplay,
-                    defaultCurrency = defaultCurrency,
-                    minimumAmount = BigDecimal.valueOf(minimumAmount)
-                )
+            return@anyExecutor
+        }
 
-                val result = CurrencyService.createCurrency(currency)
+        plugin.container.launch {
+            val currency = CoreCurrency(
+                name = name,
+                scale = currencyScale,
+                displayName = displayName,
+                symbol = symbol,
+                symbolDisplay = symbolDisplay,
+                defaultCurrency = false,
+                minimumAmount = BigDecimal.valueOf(minimumAmount)
+            )
 
-                when (result) {
-                    CurrencyCreateResult.SUCCESS -> {
-                        commandSource.sendText {
-                            success("Currency $name created successfully")
-                        }
+            val result = CurrencyService.createCurrency(currency)
+
+            when (result) {
+                CurrencyCreateResult.SUCCESS -> {
+                    commandSource.sendText {
+                        success("Currency $name created successfully")
                     }
+                }
 
-                    CurrencyCreateResult.ALREADY_EXISTS -> {
-                        commandSource.sendText {
-                            error("Currency with name $name already exists")
-                        }
+                CurrencyCreateResult.ALREADY_EXISTS -> {
+                    commandSource.sendText {
+                        error("Currency with name $name already exists")
                     }
+                }
 
-                    CurrencyCreateResult.DEFAULT_ALREADY_EXISTS -> {
-                        commandSource.sendText {
-                            error("Default currency already exists")
-                        }
+                CurrencyCreateResult.DEFAULT_ALREADY_EXISTS -> {
+                    commandSource.sendText {
+                        error("Default currency already exists")
                     }
+                }
 
-                    CurrencyCreateResult.INVALID_NAME -> {
-                        commandSource.sendText {
-                            error("Invalid currency name, must be between 1 and $CURRENCY_NAME_MAX_LENGTH characters")
-                        }
+                CurrencyCreateResult.INVALID_NAME -> {
+                    commandSource.sendText {
+                        error("Invalid currency name, must be between 1 and $CURRENCY_NAME_MAX_LENGTH characters")
                     }
+                }
 
-                    CurrencyCreateResult.INVALID_SYMBOL -> {
-                        commandSource.sendText {
-                            error("Invalid currency symbol, must be between 1 and $CURRENCY_SYMBOL_MAX_LENGTH characters")
-                        }
+                CurrencyCreateResult.INVALID_SYMBOL -> {
+                    commandSource.sendText {
+                        error("Invalid currency symbol, must be between 1 and $CURRENCY_SYMBOL_MAX_LENGTH characters")
                     }
                 }
             }
