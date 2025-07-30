@@ -57,7 +57,7 @@ class CurrencyRepository {
             .singleOrNull()
 
         if (existing != null) {
-            if (existing.defaultCurrency && overrideDefault) {
+            if (overrideDefault) {
                 CurrencyEntity.find { CurrencyTable.defaultCurrency eq true }
                     .forUpdate()
                     .singleOrNull()
