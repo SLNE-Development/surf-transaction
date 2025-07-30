@@ -15,10 +15,11 @@ private val pagination = Pagination<Currency> {
         listOf(
             buildText {
                 append(CommonComponents.EM_DASH)
+                appendSpace()
                 append(currency)
                 appendSpace()
                 append(CommonComponents.EM_DASH)
-                variableKey("Default: ")
+                variableKey(" Default: ")
                 variableValue(currency.defaultCurrency)
             }
         )

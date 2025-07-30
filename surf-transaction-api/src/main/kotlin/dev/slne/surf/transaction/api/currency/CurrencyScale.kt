@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.api.currency
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.*
 
@@ -18,7 +19,7 @@ enum class CurrencyScale {
      */
     INTEGER {
         override fun format(amount: BigDecimal): BigDecimal {
-            return amount.setScale(0)
+            return amount.setScale(0, RoundingMode.HALF_UP)
         }
     },
 
@@ -27,7 +28,7 @@ enum class CurrencyScale {
      */
     DECIMAL_2 {
         override fun format(amount: BigDecimal): BigDecimal {
-            return amount.setScale(2)
+            return amount.setScale(2, RoundingMode.HALF_UP)
         }
     };
 
