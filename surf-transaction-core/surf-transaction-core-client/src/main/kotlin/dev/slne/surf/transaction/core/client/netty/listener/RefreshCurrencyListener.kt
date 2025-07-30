@@ -6,11 +6,11 @@ import dev.slne.surf.transaction.core.netty.packets.ClientboundRefreshCurrencies
 import org.springframework.stereotype.Component
 
 @Component
+@Suppress("unused")
 class RefreshCurrencyListener(private val clientCurrencyBridge: ClientCurrencyBridge) {
 
     @SurfNettyPacketHandler
     fun handleRefreshCurrencies(packet: ClientboundRefreshCurrencies) {
         clientCurrencyBridge.updateCurrencies(packet.currencies)
-        throw RuntimeException("Currencies refreshed: ${packet.currencies.size} currencies")
     }
 }

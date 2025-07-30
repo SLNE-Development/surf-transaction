@@ -79,7 +79,7 @@ class TransactionRepository(private val currencyRepository: CurrencyRepository) 
             }
         }
 
-        return TransactionResult.SUCCESS
+        return TransactionResult.SUCCESS(transaction)
     }
 
     /**
@@ -98,17 +98,17 @@ class TransactionRepository(private val currencyRepository: CurrencyRepository) 
         receiverTransaction: Transaction
     ): TransactionResult {
         val senderResult = persistTransaction(senderTransaction)
-        if (senderResult != TransactionResult.SUCCESS) {
+        if (!senderResult.success) {
             TransactionManager.current().rollback()
             return if (senderResult == TransactionResult.RECEIVER_INSUFFICIENT_FUNDS) TransactionResult.SENDER_INSUFFICIENT_FUNDS else senderResult
         }
 
         val receiverResult = persistTransaction(receiverTransaction)
-        if (receiverResult != TransactionResult.SUCCESS) {
+        if (!receiverResult.success) {
             TransactionManager.current().rollback()
             return receiverResult
         }
 
-        return TransactionResult.SUCCESS
+        return TransactionResult.TRANSFER_SUCCESS(senderTransaction, receiverTransaction)
     }
 }

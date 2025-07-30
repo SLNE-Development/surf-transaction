@@ -9,7 +9,7 @@ on:
 env:
   SLNE_RELEASES_REPO_USERNAME: ${{ secrets.SLNE_RELEASES_REPO_USERNAME }}
   SLNE_RELEASES_REPO_PASSWORD: ${{ secrets.SLNE_RELEASES_REPO_PASSWORD }}
-  MODULE_REGEX: "surf-transaction-api.*-all\\.jar$|surf-transaction-core.*-all\\.jar$|surf-transaction-bukkit.*-all\\.jar$|surf-transaction-velocity.*-all\\.jar$|surf-transaction-fallback.*-all\\.jar$"
+  MODULE_REGEX: "surf-transaction-api.*-all\\.jar$|surf-transaction-core.*-all\\.jar$|surf-transaction-paper.*-all\\.jar$|surf-transaction-velocity.*-all\\.jar$|surf-transaction-fallback.*-all\\.jar$"
 
 jobs:
   build:

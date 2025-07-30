@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import java.math.BigDecimal
 
-
 @Serializable
 data class CurrencyImpl(
     override val name: String,

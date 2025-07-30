@@ -1,0 +1,21 @@
+package dev.slne.surf.transaction.paper.commands
+
+import dev.slne.surf.surfapi.bukkit.api.permission.PermissionRegistry
+
+object CommandPermission: PermissionRegistry() {
+    private const val PREFIX = "surf.transaction.command"
+
+    val BALANCE = create("$PREFIX.balance")
+
+    val CURRENCY = create("$PREFIX.currency")
+    val CURRENCY_ADMIN = create("$CURRENCY.admin")
+    val CURRENCY_ADMIN_CREATE = create("$CURRENCY_ADMIN.create")
+    val CURRENCY_ADMIN_MAKE_DEFAULT = create("$CURRENCY_ADMIN.make-default")
+
+    val PAY = create("$PREFIX.pay")
+
+    val TRANSACTION = create("$PREFIX.transaction")
+    val TRANSACTION_ADMIN = create("$TRANSACTION.admin")
+    val TRANSACTION_ADMIN_ADD = create("$TRANSACTION_ADMIN.add")
+    val TRANSACTION_ADMIN_REMOVE = create("$TRANSACTION_ADMIN.remove")
+}

@@ -6,7 +6,7 @@ plugins {
 
 val projects: List<Pair<String, String>> = listOf(
     "surf-transaction-api" to "SurfTransactionApi",
-    "surf-transaction-bukkit" to "SurfTransactionBukkit",
+    "surf-transaction-paper" to "SurfTransactionBukkit",
     "surf-transaction-velocity" to "SurfTransactionVelocity",
 //    "surf-transaction-fallback" to "SurfTransactionFallback"
 )

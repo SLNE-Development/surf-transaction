@@ -20,7 +20,7 @@ import kotlinx.serialization.Transient
  */
 @Serializable
 @Suppress("ClassName")
-sealed class TransactionResult(val message: String) {
+sealed class TransactionResult(val message: String, val success: Boolean = false) {
 
     /**
      * Indicates that the transaction executed without issues.
@@ -28,7 +28,24 @@ sealed class TransactionResult(val message: String) {
      * @property transaction the completed transaction instance
      */
     data class SUCCESS(val transaction: SerializableTransaction) :
-        TransactionResult("Transaction completed successfully.")
+        TransactionResult("Transaction completed successfully.", true)
+
+    /**
+     * Represents a successful transfer of funds between two transactions.
+     *
+     * The `TRANSFER_SUCCESS` class serves as a result wrapper indicating the success
+     * of a monetary operation. It provides references to both the sender's and receiver's
+     * transactions under the `senderTransaction` and `receiverTransaction` properties, respectively.
+     *
+     * Inherits from `TransactionResult`, using a predefined success message and success status.
+     *
+     * @property senderTransaction the transaction instance representing the sender's side.
+     * @property receiverTransaction the transaction instance representing the receiver's side.
+     */
+    data class TRANSFER_SUCCESS(
+        val senderTransaction: SerializableTransaction,
+        val receiverTransaction: SerializableTransaction
+    ): TransactionResult("Transfer completed successfully.", true)
 
     /**
      * The receiver lacked sufficient balance to accept the transfer.
