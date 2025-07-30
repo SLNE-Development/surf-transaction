@@ -11,6 +11,7 @@ object CommandPermission: PermissionRegistry() {
     val CURRENCY_ADMIN = create("$CURRENCY.admin")
     val CURRENCY_ADMIN_CREATE = create("$CURRENCY_ADMIN.create")
     val CURRENCY_ADMIN_MAKE_DEFAULT = create("$CURRENCY_ADMIN.make-default")
+    val CURRENCY_ADMIN_LIST = create("$CURRENCY_ADMIN.list")
 
     val PAY = create("$PREFIX.pay")
 

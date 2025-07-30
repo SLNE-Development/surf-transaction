@@ -2,6 +2,7 @@ package dev.slne.surf.transaction.paper.commands.transaction.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandTree
+import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
@@ -27,7 +28,7 @@ import java.util.*
 
 private val log = logger()
 
-fun CommandTree.transactionRemoveCommand() = literalArgument("remove") {
+fun Argument<*>.transactionRemoveCommand() = literalArgument("remove") {
     withPermission(CommandPermission.TRANSACTION_ADMIN_REMOVE)
 
     offlineCloudPlayerArgument("player") {

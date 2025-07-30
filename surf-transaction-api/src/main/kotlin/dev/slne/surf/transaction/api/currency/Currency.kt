@@ -1,10 +1,12 @@
 package dev.slne.surf.transaction.api.currency
 
 import dev.slne.surf.surfapi.core.api.messages.Colors
+import dev.slne.surf.transaction.api.currency.Currency.Companion.byName
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.TextColor
 import org.jetbrains.annotations.UnmodifiableView
 import java.math.BigDecimal
@@ -22,7 +24,7 @@ import java.math.BigDecimal
  */
 @OptIn(InternalTransactionApi::class)
 @Serializable(with = CurrencySerializer::class)
-interface Currency {
+interface Currency : ComponentLike {
 
     /** Unique identifier (≤ [ CURRENCY_NAME_MAX_LENGTH ] characters), e.g. `"castcoin"`. */
     val name: String
@@ -63,6 +65,8 @@ interface Currency {
      */
     fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
         format(amount.toBigDecimal(), color)
+
+    override fun asComponent(): Component = displayName
 
     companion object {
         /** Maximum allowed length for [name]. */

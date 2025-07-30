@@ -2,7 +2,7 @@ package dev.slne.surf.transaction.paper.commands.currency.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPI
-import dev.jorel.commandapi.CommandTree
+import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.literalArgument
 import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
@@ -17,7 +17,7 @@ import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import dev.slne.surf.transaction.paper.plugin
 import org.bukkit.command.CommandSender
 
-fun CommandTree.currencyMakeDefaultCommand() = literalArgument("makeDefault") {
+fun Argument<*>.currencyMakeDefaultCommand() = literalArgument("makeDefault") {
     withPermission(CommandPermission.CURRENCY_ADMIN_MAKE_DEFAULT)
 
     currencyArgument("currencyName") {

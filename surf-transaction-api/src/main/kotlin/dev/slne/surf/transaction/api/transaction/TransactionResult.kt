@@ -27,6 +27,7 @@ sealed class TransactionResult(val message: String, val success: Boolean = false
      *
      * @property transaction the completed transaction instance
      */
+    @Serializable
     data class SUCCESS(val transaction: SerializableTransaction) :
         TransactionResult("Transaction completed successfully.", true)
 
@@ -42,6 +43,7 @@ sealed class TransactionResult(val message: String, val success: Boolean = false
      * @property senderTransaction the transaction instance representing the sender's side.
      * @property receiverTransaction the transaction instance representing the receiver's side.
      */
+    @Serializable
     data class TRANSFER_SUCCESS(
         val senderTransaction: SerializableTransaction,
         val receiverTransaction: SerializableTransaction
@@ -50,12 +52,14 @@ sealed class TransactionResult(val message: String, val success: Boolean = false
     /**
      * The receiver lacked sufficient balance to accept the transfer.
      */
+    @Serializable
     data object RECEIVER_INSUFFICIENT_FUNDS :
         TransactionResult("The receiver has insufficient funds to complete this transaction.")
 
     /**
      * The sender lacked sufficient balance to perform the transfer.
      */
+    @Serializable
     data object SENDER_INSUFFICIENT_FUNDS :
         TransactionResult("The sender has insufficient funds to complete this transaction.")
 
@@ -64,6 +68,7 @@ sealed class TransactionResult(val message: String, val success: Boolean = false
      *
      * @param cause root exception; excluded from serialization via [Transient]
      */
+    @Serializable
     data class DATABASE_ERROR(@Transient val cause: Throwable = Throwable("Unknown cause")) :
         TransactionResult("An error occurred with the database.")
 }

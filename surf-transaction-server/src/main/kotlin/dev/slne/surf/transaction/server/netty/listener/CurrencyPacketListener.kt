@@ -9,6 +9,7 @@ import dev.slne.surf.transaction.server.currency.CurrencyService
 import org.springframework.stereotype.Component
 
 @Component
+@Suppress("unused")
 class CurrencyPacketListener(private val currencyService: CurrencyService) {
 
     @SurfNettyPacketHandler
@@ -17,6 +18,7 @@ class CurrencyPacketListener(private val currencyService: CurrencyService) {
         packet.respond(CurrencyCreateResultResponsePacket(result))
     }
 
+    @SurfNettyPacketHandler
     suspend fun handleMakeDefaultCurrency(packet: ServerboundMakeDefaultCurrencyPacket) {
         val result = currencyService.makeDefaultCurrency(packet.currency as CurrencyImpl)
         packet.respond(CurrencyCreateResultResponsePacket(result))

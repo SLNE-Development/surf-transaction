@@ -2,7 +2,7 @@ package dev.slne.surf.transaction.paper.commands.currency.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPIBukkit
-import dev.jorel.commandapi.CommandTree
+import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.*
 import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
 import dev.slne.surf.surfapi.bukkit.api.command.args.MiniMessageArgument
@@ -22,7 +22,7 @@ import dev.slne.surf.transaction.paper.plugin
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 
-fun CommandTree.currencyCreateCommand() = literalArgument("create") {
+fun Argument<*>.currencyCreateCommand() = literalArgument("create") {
     withPermission(CommandPermission.CURRENCY_ADMIN_CREATE)
 
     stringArgument("name") {
