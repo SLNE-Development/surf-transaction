@@ -44,6 +44,15 @@ private fun pay(
     val senderUser =
         sender.toOfflineCloudPlayer() ?: error("Sender is not a valid OfflineCloudPlayer")
     val receiverUser = receiver.await() ?: return@launch
+
+    if (senderUser.uuid == receiverUser.uuid) {
+        sender.sendText {
+            appendPrefix()
+            error("Du kannst dir kein Geld selbst überweisen!")
+        }
+        return@launch
+    }
+
     val currency = Currency.default()
     val result = senderUser.transfer(amount, currency, receiverUser)
 
