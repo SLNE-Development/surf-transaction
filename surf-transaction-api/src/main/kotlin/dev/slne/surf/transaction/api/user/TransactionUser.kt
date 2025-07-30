@@ -1,3 +1,15 @@
+/**
+ * Provides extension utilities for performing currency transactions on an [OfflineCloudPlayer].
+ *
+ * All functions are `suspend` and delegate to [InternalTransactionUserBridge] for execution.
+ * Amounts are primarily accepted as [BigDecimal] to avoid precision issues; `Double` overloads
+ * are offered for convenience and convert internally via [BigDecimal.valueOf].
+ *
+ * ### Conventions
+ * * `ignoreMinimum` flags allow bypassing configured minimum-balance requirements.
+ * * Additional transaction metadata can be supplied via [TransactionData] (vararg or set).
+ * * Each call returns a [TransactionResult] describing success, failure, and context data.
+ */
 @file:OptIn(InternalTransactionApi::class)
 
 package dev.slne.surf.transaction.api.user
@@ -14,14 +26,14 @@ import java.math.BigDecimal
 
 // region Deposit
 /**
- * Deposit the amount to the user's account
+ * Deposits [amount] into this player's account in the given [currency].
  *
- * @param amount The amount to deposit
- * @param currency The currency of the amount
- * @param ignoreMinimum Whether to ignore the minimum balance
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be credited
+ * @param amount the amount to deposit; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param ignoreMinimum `true` to bypass minimum-balance validation
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.deposit(
     amount: BigDecimal,
@@ -37,13 +49,13 @@ suspend fun OfflineCloudPlayer.deposit(
 )
 
 /**
- * Deposit the amount to the user's account
+ * Convenience overload delegating to [deposit] with `ignoreMinimum = false`.
  *
- * @param amount The amount to deposit
- * @param currency The currency of the amount
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be credited
+ * @param amount the amount to deposit; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.deposit(
     amount: BigDecimal,
@@ -52,30 +64,31 @@ suspend fun OfflineCloudPlayer.deposit(
 ) = deposit(amount, currency, false, *additionalData)
 
 /**
- * Deposit the amount to the user's account
+ * Deposits [amount] (converted from `Double`) into this player's account.
  *
- * @param amount The amount to deposit
- * @param currency The currency of the amount
- * @param ignoreMinimum Whether to ignore the minimum balance
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be credited
+ * @param amount the amount to deposit; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param ignoreMinimum `true` to bypass minimum-balance validation
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.deposit(
     amount: Double,
     currency: Currency,
     ignoreMinimum: Boolean = false,
     vararg additionalData: TransactionData
-) = deposit(BigDecimal.valueOf(amount), currency, ignoreMinimum, *additionalData)
+) = deposit(amount.toBigDecimal(), currency, ignoreMinimum, *additionalData)
 
 /**
- * Deposit the amount to the user's account
+ * Convenience overload delegating to the `Double`-based [deposit] with
+ * `ignoreMinimum = false`.
  *
- * @param amount The amount to deposit
- * @param currency The currency of the amount
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be credited
+ * @param amount the amount to deposit; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.deposit(
     amount: Double,
@@ -86,14 +99,14 @@ suspend fun OfflineCloudPlayer.deposit(
 
 // region Withdraw
 /**
- * Withdraw the amount from the user's account
+ * Withdraws [amount] from this player's account in the given [currency].
  *
- * @param amount The amount to withdraw
- * @param currency The currency of the amount
- * @param ignoreMinimum Whether to ignore the minimum balance
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be debited
+ * @param amount the amount to withdraw; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param ignoreMinimum `true` to bypass minimum-balance validation
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.withdraw(
     amount: BigDecimal,
@@ -109,13 +122,13 @@ suspend fun OfflineCloudPlayer.withdraw(
 )
 
 /**
- * Withdraw the amount from the user's account
+ * Convenience overload delegating to [withdraw] with `ignoreMinimum = false`.
  *
- * @param amount The amount to withdraw
- * @param currency The currency of the amount
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be debited
+ * @param amount the amount to withdraw; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.withdraw(
     amount: BigDecimal,
@@ -124,51 +137,52 @@ suspend fun OfflineCloudPlayer.withdraw(
 ) = withdraw(amount, currency, false, *additionalData)
 
 /**
- * Withdraw the amount from the user's account
+ * Withdraws [amount] (converted from `Double`) from this player's account.
  *
- * @param amount The amount to withdraw
- * @param currency The currency of the amount
- * @param ignoreMinimum Whether to ignore the minimum balance
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be debited
+ * @param amount the amount to withdraw; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param ignoreMinimum `true` to bypass minimum-balance validation
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.withdraw(
     amount: Double,
     currency: Currency,
     ignoreMinimum: Boolean = false,
     vararg additionalData: TransactionData
-) = withdraw(BigDecimal.valueOf(amount), currency, ignoreMinimum, *additionalData)
+) = withdraw(amount.toBigDecimal(), currency, ignoreMinimum, *additionalData)
 
 /**
- * Withdraw the amount from the user's account
+ * Convenience overload delegating to the `Double`-based [withdraw] with
+ * `ignoreMinimum = false`.
  *
- * @param amount The amount to withdraw
- * @param currency The currency of the amount
- * @param additionalData Additional data for the transaction
- *
- * @return The result of the transaction
+ * @receiver the player whose balance will be debited
+ * @param amount the amount to withdraw; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param additionalData optional metadata attached to the transaction
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.withdraw(
     amount: Double,
     currency: Currency,
     vararg additionalData: TransactionData
-) = withdraw(BigDecimal.valueOf(amount), currency, *additionalData)
+) = withdraw(amount.toBigDecimal(), currency, *additionalData)
 // endregion
 
 // region Transfer
 /**
- * Transfer the amount to the receiver's account
+ * Transfers [amount] from this player's account to [receiver].
  *
- * @param amount The amount to transfer
- * @param currency The currency of the amount
- * @param receiver The receiver of the amount
- * @param ignoreSenderMinimum Whether to ignore the minimum balance of the sender
- * @param ignoreReceiverMinimum Whether to ignore the minimum balance of the receiver
- * @param additionalSenderData Additional data for the sender's transaction
- * @param additionalReceiverData Additional data for the receiver's transaction
- *
- * @return The result of the transaction
+ * @receiver the player sending the funds
+ * @param amount the amount to transfer; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param receiver the player receiving the funds
+ * @param ignoreSenderMinimum `true` to bypass sender's minimum-balance validation
+ * @param ignoreReceiverMinimum `true` to bypass receiver's minimum-balance validation
+ * @param additionalSenderData optional metadata attached to the sender's leg
+ * @param additionalReceiverData optional metadata attached to the receiver's leg
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.transfer(
     amount: BigDecimal,
@@ -190,15 +204,16 @@ suspend fun OfflineCloudPlayer.transfer(
 )
 
 /**
- * Transfer the amount to the receiver's account
+ * Convenience overload delegating to [transfer] with `ignoreSenderMinimum` and
+ * `ignoreReceiverMinimum` defaulting to `false`.
  *
- * @param amount The amount to transfer
- * @param currency The currency of the amount
- * @param receiver The receiver of the amount
- * @param additionalSenderData Additional data for the sender's transaction
- * @param additionalReceiverData Additional data for the receiver's transaction
- *
- * @return The result of the transaction
+ * @receiver the player sending the funds
+ * @param amount the amount to transfer; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param receiver the player receiving the funds
+ * @param additionalSenderData optional metadata attached to the sender's leg
+ * @param additionalReceiverData optional metadata attached to the receiver's leg
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.transfer(
     amount: BigDecimal,
@@ -217,17 +232,17 @@ suspend fun OfflineCloudPlayer.transfer(
 )
 
 /**
- * Transfer the amount to the receiver's account
+ * Transfers [amount] (converted from `Double`) from this player to [receiver].
  *
- * @param amount The amount to transfer
- * @param currency The currency of the amount
- * @param receiver The receiver of the amount
- * @param ignoreSenderMinimum Whether to ignore the minimum balance of the sender
- * @param ignoreReceiverMinimum Whether to ignore the minimum balance of the receiver
- * @param additionalSenderData Additional data for the sender's transaction
- * @param additionalReceiverData Additional data for the receiver's transaction
- *
- * @return The result of the transaction
+ * @receiver the player sending the funds
+ * @param amount the amount to transfer; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param receiver the player receiving the funds
+ * @param ignoreSenderMinimum `true` to bypass sender's minimum-balance validation
+ * @param ignoreReceiverMinimum `true` to bypass receiver's minimum-balance validation
+ * @param additionalSenderData optional metadata attached to the sender's leg
+ * @param additionalReceiverData optional metadata attached to the receiver's leg
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.transfer(
     amount: Double,
@@ -238,7 +253,7 @@ suspend fun OfflineCloudPlayer.transfer(
     additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
     additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
 ) = transfer(
-    BigDecimal.valueOf(amount),
+    amount.toBigDecimal(),
     currency,
     receiver,
     ignoreSenderMinimum,
@@ -248,15 +263,16 @@ suspend fun OfflineCloudPlayer.transfer(
 )
 
 /**
- * Transfer the amount to the receiver's account
+ * Convenience overload delegating to the `Double`-based [transfer] with
+ * `ignoreSenderMinimum` and `ignoreReceiverMinimum` defaulting to `false`.
  *
- * @param amount The amount to transfer
- * @param currency The currency of the amount
- * @param receiver The receiver of the amount
- * @param additionalSenderData Additional data for the sender's transaction
- * @param additionalReceiverData Additional data for the receiver's transaction
- *
- * @return The result of the transaction
+ * @receiver the player sending the funds
+ * @param amount the amount to transfer; must be non-negative
+ * @param currency the monetary unit of [amount]
+ * @param receiver the player receiving the funds
+ * @param additionalSenderData optional metadata attached to the sender's leg
+ * @param additionalReceiverData optional metadata attached to the receiver's leg
+ * @return a [TransactionResult] describing the outcome
  */
 suspend fun OfflineCloudPlayer.transfer(
     amount: Double,
@@ -265,7 +281,7 @@ suspend fun OfflineCloudPlayer.transfer(
     additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
     additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
 ) = transfer(
-    BigDecimal.valueOf(amount),
+    amount.toBigDecimal(),
     currency,
     receiver,
     additionalSenderData,
@@ -275,22 +291,26 @@ suspend fun OfflineCloudPlayer.transfer(
 
 // region Balance
 /**
- * Get the balance of the user's account
+ * Retrieves this player's balance in [currency] as a [BigDecimal].
  *
- * @param currency The currency of the balance
- *
- * @return The balance of the user's account
+ * @receiver the player whose balance is requested
+ * @param currency the monetary unit of the returned balance
+ * @return the current balance
  */
-suspend fun OfflineCloudPlayer.balanceDecimal(currency: Currency): BigDecimal =
+suspend fun OfflineCloudPlayer.balance(currency: Currency): BigDecimal =
     InternalTransactionUserBridge.instance.balanceDecimal(this, currency)
 
 /**
- * Get the balance of the user's account
+ * Convenience wrapper returning the balance as `Double`.
  *
- * @param currency The currency of the balance
- *
- * @return The balance of the user's account
+ * @receiver the player whose balance is requested
+ * @param currency the monetary unit of the returned balance
+ * @return the current balance
  */
-suspend fun OfflineCloudPlayer.balance(currency: Currency): Double =
-    balanceDecimal(currency).toDouble()
+@Deprecated(
+    "Use balance(currency: Currency): BigDecimal instead for precision",
+    ReplaceWith("balance(currency).toDouble()")
+)
+suspend fun OfflineCloudPlayer.balanceDouble(currency: Currency): Double =
+    balance(currency).toDouble()
 // endregion

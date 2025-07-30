@@ -2,11 +2,19 @@ package dev.slne.surf.transaction.api.currency
 
 import java.math.BigDecimal
 import java.text.NumberFormat
+import java.util.*
 
+/**
+ * Supported decimal precisions for monetary values.
+ *
+ * Each entry provides a custom implementation of [format] that clamps a
+ * [BigDecimal] to the appropriate scale. Helper overloads are supplied for
+ * `Double` conversion and locale-aware string formatting via [NumberFormat].
+ */
 enum class CurrencyScale {
 
     /**
-     * No decimal places
+     * No fractional digits (`scale = 0`).
      */
     INTEGER {
         override fun format(amount: BigDecimal): BigDecimal {
@@ -15,7 +23,7 @@ enum class CurrencyScale {
     },
 
     /**
-     * Two decimal places
+     * Exactly two fractional digits (`scale = 2`).
      */
     DECIMAL_2 {
         override fun format(amount: BigDecimal): BigDecimal {
@@ -23,41 +31,25 @@ enum class CurrencyScale {
         }
     };
 
-
     /**
-     * Formats the given amount to the scale of the currency
+     * Returns [amount] rounded to this scale.
      *
-     * @param amount The amount to format
-     *
-     * @return The formatted amount
+     * @param amount value to adjust
+     * @return a new [BigDecimal] with the correct scale
      */
     abstract fun format(amount: BigDecimal): BigDecimal
 
-
     /**
-     * Formats the given amount to the scale of the currency
+     * Returns a locale-aware string representation of [amount] after applying
+     * this scale’s rounding rules.
      *
-     * @param amount The amount to format
-     *
-     * @return The formatted amount
+     * @param amount  value to convert and scale
+     * @param locale  formatting locale; defaults to the JVM’s current
+     *                [`FORMAT`](https://docs.oracle.com/javase/8/docs/api/java/util/Locale.Category.html#FORMAT) locale
+     * @return        human-readable number, e.g. `"1,234.00"`
      */
-    fun format(amount: Double): BigDecimal = format(amount.toBigDecimal())
-
-    /**
-     * Formats the given amount as a string representation using the number formatting
-     * rules of the currency's scale.
-     *
-     * @param amount The amount to format as a string.
-     * @return The formatted string representation of the amount.
-     */
-    fun formatString(amount: BigDecimal): String =
-        NumberFormat.getNumberInstance().format(format(amount))
-
-    /**
-     * Formats the given amount to a string representation.
-     *
-     * @param amount The amount as a double to be formatted.
-     * @return The formatted string representation of the amount.
-     */
-    fun formatString(amount: Double): String = formatString(amount.toBigDecimal())
+    fun formatString(
+        amount: BigDecimal,
+        locale: Locale = Locale.getDefault(Locale.Category.FORMAT)
+    ): String = NumberFormat.getNumberInstance(locale).format(format(amount))
 }

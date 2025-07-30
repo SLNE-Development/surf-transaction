@@ -1,6 +1,5 @@
 package dev.slne.surf.transaction.server.transaction.db
 
-import dev.slne.surf.cloud.api.common.util.mutableObjectSetOf
 import dev.slne.surf.cloud.api.server.exposed.table.AuditableLongEntity
 import dev.slne.surf.cloud.api.server.exposed.table.AuditableLongEntityClass
 import dev.slne.surf.transaction.core.transaction.TransactionImpl
@@ -24,6 +23,6 @@ class TransactionEntity(id: EntityID<Long>) : AuditableLongEntity(id, Transactio
         receiverUuid = receiver,
         amount = amount,
         currencyName = currency.name,
-        data = data.mapTo(mutableObjectSetOf()) { it.toApi() }
+        data = data.map { it.toApi() }.toSet()
     )
 }

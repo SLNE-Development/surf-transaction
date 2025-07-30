@@ -28,7 +28,7 @@ class TransactionService(private val transactionRepository: TransactionRepositor
             amount = amount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreMinimum,
-            data = additionalData.toMutableObjectSet()
+            data = additionalData.toSet()
         )
 
         return transactionRepository.persistTransaction(transaction)
@@ -50,7 +50,7 @@ class TransactionService(private val transactionRepository: TransactionRepositor
             amount = usableAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreMinimum,
-            data = additionalData.toMutableObjectSet()
+            data = additionalData.toSet()
         )
 
         return transactionRepository.persistTransaction(transaction)
@@ -76,7 +76,7 @@ class TransactionService(private val transactionRepository: TransactionRepositor
             amount = senderAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreSenderMinimum,
-            data = additionalSenderData.toMutableObjectSet()
+            data = additionalSenderData.toSet()
         )
 
         val receiverTransaction = TransactionImpl(
@@ -86,7 +86,7 @@ class TransactionService(private val transactionRepository: TransactionRepositor
             amount = receiverAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreReceiverMinimum,
-            data = additionalReceiverData.toMutableObjectSet()
+            data = additionalReceiverData.toSet()
         )
 
         return transactionRepository.transfer(senderTransaction, receiverTransaction)

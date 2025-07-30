@@ -8,7 +8,7 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-@InternalTransactionApi
+@OptIn(InternalTransactionApi::class)
 typealias SerializableCurrency = @Serializable(with = CurrencySerializer::class) Currency
 
 @InternalTransactionApi
