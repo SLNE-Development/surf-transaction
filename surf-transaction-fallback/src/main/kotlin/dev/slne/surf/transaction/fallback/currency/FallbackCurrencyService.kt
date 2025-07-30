@@ -5,6 +5,8 @@ import dev.slne.surf.surfapi.core.api.util.freeze
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
 import dev.slne.surf.transaction.core.currency.*
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +26,7 @@ class FallbackCurrencyService : CurrencyService, Fallback {
     private val _fallbackCurrencies = mutableObjectSetOf<FallbackCurrency>()
     val fallbackCurrencies = _fallbackCurrencies.freeze()
 
-    private val _currencies = mutableObjectSetOf<CoreCurrency>()
+    private val _currencies = mutableObjectSetOf<CurrencyImpl>()
     override val currencies = _currencies.freeze()
 
     override suspend fun fetchCurrencies(): ObjectSet<out Currency> {
@@ -47,13 +49,13 @@ class FallbackCurrencyService : CurrencyService, Fallback {
                     .log("No default currency found in the database. Creating a fallback default currency...")
 
                 val fallbackDefaultCurrency = FallbackCurrency.new {
-                    name = CoreCurrency.DEFAULT.name
-                    displayName = CoreCurrency.DEFAULT.displayName
-                    symbol = CoreCurrency.DEFAULT.symbol
-                    symbolDisplay = CoreCurrency.DEFAULT.symbolDisplay
-                    scale = CoreCurrency.DEFAULT.scale
-                    this.defaultCurrency = CoreCurrency.DEFAULT.defaultCurrency
-                    minimumAmount = CoreCurrency.DEFAULT.minimumAmount
+                    name = CurrencyImpl.DEFAULT.name
+                    displayName = CurrencyImpl.DEFAULT.displayName
+                    symbol = CurrencyImpl.DEFAULT.symbol
+                    symbolDisplay = CurrencyImpl.DEFAULT.symbolDisplay
+                    scale = CurrencyImpl.DEFAULT.scale
+                    this.defaultCurrency = CurrencyImpl.DEFAULT.defaultCurrency
+                    minimumAmount = CurrencyImpl.DEFAULT.minimumAmount
                 }
 
                 _fallbackCurrencies.add(fallbackDefaultCurrency)
@@ -67,16 +69,16 @@ class FallbackCurrencyService : CurrencyService, Fallback {
         return currencies
     }
 
-    override suspend fun createCurrency(currency: CoreCurrency): CurrencyCreateResult {
+    override suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult {
         return createCurrency(currency, false)
     }
 
-    override suspend fun makeDefaultCurrency(currency: CoreCurrency): CurrencyCreateResult {
+    override suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyCreateResult {
         return createCurrency(currency, true)
     }
 
     private suspend fun createCurrency(
-        currency: CoreCurrency,
+        currency: CurrencyImpl,
         overrideDefault: Boolean
     ): CurrencyCreateResult =
         newSuspendedTransaction(Dispatchers.IO) {
@@ -136,7 +138,7 @@ class FallbackCurrencyService : CurrencyService, Fallback {
             return@newSuspendedTransaction CurrencyCreateResult.SUCCESS
         }
 
-    private fun validate(c: CoreCurrency): CurrencyCreateResult? {
+    private fun validate(c: CurrencyImpl): CurrencyCreateResult? {
         fun invalidName() = c.name.isBlank() || c.name.length > CURRENCY_NAME_MAX_LENGTH
         fun invalidSymbol() = c.symbol.isBlank() || c.symbol.length > CURRENCY_SYMBOL_MAX_LENGTH
 

@@ -15,3 +15,5 @@ build/
 pom.xml.versionsBackup
 
 misc.xml
+
+**/migration.properties

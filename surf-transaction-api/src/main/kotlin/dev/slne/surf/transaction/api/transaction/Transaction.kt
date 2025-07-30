@@ -1,8 +1,8 @@
 package dev.slne.surf.transaction.api.transaction
 
+import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.TransactionUser
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.jetbrains.annotations.Unmodifiable
 import java.math.BigDecimal
@@ -20,14 +20,14 @@ interface Transaction {
      * If the sender is null, the transaction is a system transaction
      * System transactions are transactions that are not initiated by a user
      */
-    val sender: TransactionUser?
+    val sender: OfflineCloudPlayer?
 
     /**
      * The receiver of the transaction
      * If the receiver is null, the transaction is a system transaction
      * System transactions are transactions that are not initiated by a user
      */
-    val receiver: TransactionUser?
+    val receiver: OfflineCloudPlayer?
 
     /**
      * The currency of the transaction

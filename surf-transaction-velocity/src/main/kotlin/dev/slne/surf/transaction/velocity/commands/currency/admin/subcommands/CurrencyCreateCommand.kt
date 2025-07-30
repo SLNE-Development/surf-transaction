@@ -3,11 +3,16 @@ package dev.slne.surf.transaction.velocity.commands.currency.admin.subcommands
 import com.github.shynixn.mccoroutine.velocity.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.*
+import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.velocity.api.command.args.miniMessageArgument
-import dev.slne.surf.transaction.api.TransactionApi
+import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
 import dev.slne.surf.transaction.api.currency.CurrencyScale
-import dev.slne.surf.transaction.core.currency.*
+import dev.slne.surf.transaction.core.currency.CurrencyCreateResult
+import dev.slne.surf.transaction.core.currency.CurrencyImpl
+import dev.slne.surf.transaction.core.netty.packets.ServerboundCreateCurrencyPacket
 import dev.slne.surf.transaction.velocity.plugin
 import net.kyori.adventure.text.Component
 import java.math.BigDecimal
@@ -25,7 +30,7 @@ fun CommandAPICommand.currencyCreateCommand() = subcommand("create") {
     miniMessageArgument("displayName")
     miniMessageArgument("symbolDisplay")
 
-    anyExecutor { commandSource, args ->
+    anyExecutor { sender, args ->
         val name: String by args
         val scale: String by args
         val symbol: String by args
@@ -34,17 +39,18 @@ fun CommandAPICommand.currencyCreateCommand() = subcommand("create") {
         val symbolDisplay: Component by args
 
         val currencyScale = CurrencyScale.valueOf(scale.uppercase())
+        val existingCurrency = Currency.byName(name)
 
-        TransactionApi.getCurrencyByName(name)?.let {
-            commandSource.sendText {
-                error("Currency with name $name already exists")
+        if (existingCurrency != null) {
+            sender.sendText {
+                error("Currency ")
+                append(existingCurrency.displayName)
+                error(" already exists")
             }
-
-            return@anyExecutor
         }
 
         plugin.container.launch {
-            val currency = CoreCurrency(
+            val currency = CurrencyImpl(
                 name = name,
                 scale = currencyScale,
                 displayName = displayName,
@@ -54,36 +60,42 @@ fun CommandAPICommand.currencyCreateCommand() = subcommand("create") {
                 minimumAmount = BigDecimal.valueOf(minimumAmount)
             )
 
-            val result = CurrencyService.createCurrency(currency)
+            val result = ServerboundCreateCurrencyPacket(currency).fireAndAwaitOrThrow().result
 
             when (result) {
-                CurrencyCreateResult.SUCCESS -> {
-                    commandSource.sendText {
+                is CurrencyCreateResult.SUCCESS -> {
+                    sender.sendText {
                         success("Currency $name created successfully")
                     }
                 }
 
                 CurrencyCreateResult.ALREADY_EXISTS -> {
-                    commandSource.sendText {
+                    sender.sendText {
                         error("Currency with name $name already exists")
                     }
                 }
 
                 CurrencyCreateResult.DEFAULT_ALREADY_EXISTS -> {
-                    commandSource.sendText {
+                    sender.sendText {
                         error("Default currency already exists")
                     }
                 }
 
                 CurrencyCreateResult.INVALID_NAME -> {
-                    commandSource.sendText {
+                    sender.sendText {
                         error("Invalid currency name, must be between 1 and $CURRENCY_NAME_MAX_LENGTH characters")
                     }
                 }
 
                 CurrencyCreateResult.INVALID_SYMBOL -> {
-                    commandSource.sendText {
+                    sender.sendText {
                         error("Invalid currency symbol, must be between 1 and $CURRENCY_SYMBOL_MAX_LENGTH characters")
+                    }
+                }
+
+                CurrencyCreateResult.CHANGED_DEFAULT_CURRENCY -> {
+                    sender.sendText {
+                        success("Currency $name created and set as default currency")
                     }
                 }
             }

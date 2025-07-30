@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.fallback.currency
 
-import dev.slne.surf.transaction.core.currency.CoreCurrency
+import dev.slne.surf.transaction.core.currency.CurrencyImpl
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -16,7 +16,7 @@ class FallbackCurrency(id: EntityID<Long>) : LongEntity(id) {
     var defaultCurrency by FallbackCurrencyTable.defaultCurrency
     var minimumAmount by FallbackCurrencyTable.minimumAmount
 
-    fun toCurrency() = CoreCurrency(
+    fun toCurrency() = CurrencyImpl(
         name,
         displayName,
         symbol,

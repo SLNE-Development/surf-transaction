@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.fallback.transaction
 
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.core.transaction.CoreTransaction
+import dev.slne.surf.transaction.core.transaction.TransactionImpl
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrency
 import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionData
 import dev.slne.surf.transaction.fallback.transaction.data.FallbackTransactionDataTable
@@ -20,7 +20,7 @@ class FallbackTransaction(id: EntityID<Long>) : LongEntity(id) {
 
     val data by FallbackTransactionData referrersOn FallbackTransactionDataTable.transaction
 
-    fun toTransaction() = CoreTransaction(
+    fun toTransaction() = TransactionImpl(
         identifier = identifier,
         sender = sender,
         receiver = receiver,

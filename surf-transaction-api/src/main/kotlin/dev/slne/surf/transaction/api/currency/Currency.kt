@@ -1,10 +1,16 @@
 package dev.slne.surf.transaction.api.currency
 
 import dev.slne.surf.surfapi.core.api.messages.Colors
+import dev.slne.surf.transaction.api.util.InternalTransactionApi
+import it.unimi.dsi.fastutil.objects.ObjectSet
+import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import org.jetbrains.annotations.UnmodifiableView
 import java.math.BigDecimal
 
+@OptIn(InternalTransactionApi::class)
+@Serializable(with = CurrencySerializer::class)
 interface Currency {
 
     /**
@@ -64,4 +70,18 @@ interface Currency {
      */
     fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
         format(BigDecimal.valueOf(amount), color)
+
+    companion object {
+        const val CURRENCY_NAME_MAX_LENGTH = 16
+        const val CURRENCY_SYMBOL_MAX_LENGTH = 16
+
+        fun default(): Currency = InternalCurrencyBridge.instance.defaultCurrency
+        fun all(): @UnmodifiableView ObjectSet<out Currency> =
+            InternalCurrencyBridge.instance.currencies
+
+        fun byName(name: String): Currency? =
+            InternalCurrencyBridge.instance.getCurrencyByName(name)
+
+        operator fun get(name: String): Currency? = byName(name)
+    }
 }

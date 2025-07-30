@@ -1,14 +1,12 @@
 package dev.slne.surf.transaction.fallback
 
 import com.google.auto.service.AutoService
-import dev.slne.surf.transaction.api.TransactionApi
-import dev.slne.surf.transaction.core.currency.CurrencyService
-import dev.slne.surf.transaction.core.user.TransactionUserManager
+import dev.slne.surf.transaction.api.InternalTransactionApiBridge
 import net.kyori.adventure.util.Services.Fallback
 import java.util.*
 
-@AutoService(TransactionApi::class)
-class FallbackTransactionApi : TransactionApi, Fallback {
+@AutoService(InternalTransactionApiBridge::class)
+class FallbackTransactionApi : InternalTransactionApiBridge, Fallback {
     override val defaultCurrency get() = CurrencyService.defaultCurrency
     override val currencies get() = CurrencyService.currencies
     override fun getCurrencyByName(name: String) = CurrencyService.getCurrencyByName(name)

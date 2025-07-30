@@ -1,3 +1,4 @@
+import dev.slne.surf.surfapi.gradle.util.slnePublic
 import dev.slne.surf.surfapi.gradle.util.slneReleases
 
 buildscript {
@@ -10,6 +11,10 @@ buildscript {
     }
 }
 
+plugins {
+    java
+}
+
 
 allprojects {
     group = "dev.slne.surf"
@@ -17,11 +22,12 @@ allprojects {
 }
 
 subprojects {
-    afterEvaluate {
-        configure<PublishingExtension> {
-            repositories {
-                slneReleases()
-            }
-        }
+    apply(plugin = "java")
+    repositories {
+        slnePublic()
+        slneReleases()
+    }
+    dependencies {
+        implementation(platform("dev.slne.surf.cloud:surf-cloud-bom:1.21.7+"))
     }
 }

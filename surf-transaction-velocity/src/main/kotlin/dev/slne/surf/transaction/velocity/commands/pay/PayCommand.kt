@@ -6,17 +6,18 @@ import dev.jorel.commandapi.kotlindsl.commandAPICommand
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
+import dev.slne.surf.cloud.api.client.velocity.command.args.offlineCloudPlayerArgument
+import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.cloud.api.common.player.toOfflineCloudPlayer
 import dev.slne.surf.surfapi.core.api.generated.SoundKeys
 import dev.slne.surf.surfapi.core.api.messages.adventure.playSound
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
-import dev.slne.surf.transaction.api.TransactionApi
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
-import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.velocity.commands.arguments.PlayerUuidArgumentType
-import dev.slne.surf.transaction.velocity.commands.arguments.playerUuidArgument
+import dev.slne.surf.transaction.api.user.transfer
 import dev.slne.surf.transaction.velocity.plugin
+import kotlinx.coroutines.Deferred
 import net.kyori.adventure.sound.Sound
 
 private val log = logger()
@@ -25,38 +26,25 @@ fun payCommand() = commandAPICommand("pay") {
     withPermission("surf.transaction.pay")
     withAliases("bezahlen", "überweisen")
 
-    playerUuidArgument("receiver")
+    offlineCloudPlayerArgument("receiver")
     doubleArgument("amount", min = 1.0)
 
     playerExecutor { sender, args ->
-        val (playerName, uuidDeferred) = args.getUnchecked<PlayerUuidArgumentType>("receiver")
-            ?: error("Player UUID argument is missing")
+        val receiver: Deferred<OfflineCloudPlayer?> by args
         val amount: Double by args
 
         plugin.container.launch {
-            val uuid = uuidDeferred.await() ?: run {
-                sender.sendText {
-                    appendPrefix()
-
-                    error("Der Benutzer ")
-                    variableValue(playerName)
-                    error(" konnte nicht gefunden werden!")
-                }
-
-                return@launch
-            }
-
-            val senderUser = TransactionUser[sender.uniqueId]
-            val receiverUser = TransactionUser[uuid]
-            val currency = TransactionApi.defaultCurrency
-
-            val (result) = senderUser.transfer(amount, currency, receiverUser)
+            val senderUser =
+                sender.toOfflineCloudPlayer() ?: error("Sender is not a valid OfflineCloudPlayer")
+            val receiverUser = receiver.await() ?: return@launch
+            val currency = Currency.default()
+            val result = senderUser.transfer(amount, currency, receiverUser)
 
             when (result) {
-                TransactionResult.SUCCESS -> handleSuccess(sender, playerName, amount, currency)
+                TransactionResult.SUCCESS -> handleSuccess(sender, receiverUser, amount, currency)
                 TransactionResult.RECEIVER_INSUFFICIENT_FUNDS -> handleReceiverInsufficientFunds(
                     sender,
-                    playerName,
+                    receiverUser,
                     currency
                 )
 
@@ -71,9 +59,9 @@ fun payCommand() = commandAPICommand("pay") {
     }
 }
 
-private fun handleSuccess(
+private suspend fun handleSuccess(
     sender: Player,
-    receiver: String,
+    receiver: OfflineCloudPlayer,
     amount: Double,
     currency: Currency
 ) {
@@ -83,13 +71,13 @@ private fun handleSuccess(
         info("Du hast ")
         append(currency.format(amount))
         info(" an ")
-        variableValue(receiver)
+        append(receiver.displayName())
         info(" überwiesen.")
     }
 
-    val receiverPlayer = plugin.proxy.getPlayer(receiver).orElse(null) ?: return
+    val onlineReceiver = receiver.player ?: return
 
-    receiverPlayer.sendText {
+    onlineReceiver.sendText {
         appendPrefix()
 
         info("Du hast ")
@@ -99,7 +87,7 @@ private fun handleSuccess(
         info(" erhalten.")
     }
 
-    receiverPlayer.playSound {
+    onlineReceiver.playSound {
         type(SoundKeys.ENTITY_CHICKEN_EGG)
         volume(.5f)
         source(Sound.Source.PLAYER)
@@ -127,16 +115,16 @@ private fun handleSenderInsufficientFunds(sender: Player, currency: Currency) {
     }
 }
 
-private fun handleReceiverInsufficientFunds(
+private suspend fun handleReceiverInsufficientFunds(
     sender: Player,
-    receiver: String,
+    receiver: OfflineCloudPlayer,
     currency: Currency
 ) {
     sender.sendText {
         appendPrefix()
 
         error("Der Benutzer ")
-        variableValue(receiver)
+        append(receiver.displayName())
         error(" hat nicht genügend ")
         append(currency.displayName)
         error(" um diese Transaktion durchzuführen!")

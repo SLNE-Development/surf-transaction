@@ -2,7 +2,6 @@ package dev.slne.surf.transaction.api.currency
 
 import java.math.BigDecimal
 import java.text.NumberFormat
-import java.util.logging.Formatter
 
 enum class CurrencyScale {
 
@@ -51,7 +50,8 @@ enum class CurrencyScale {
      * @param amount The amount to format as a string.
      * @return The formatted string representation of the amount.
      */
-    fun formatString(amount: BigDecimal): String = NumberFormat.getNumberInstance().format(format(amount))
+    fun formatString(amount: BigDecimal): String =
+        NumberFormat.getNumberInstance().format(format(amount))
 
     /**
      * Formats the given amount to a string representation.

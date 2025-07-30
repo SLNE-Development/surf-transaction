@@ -6,9 +6,13 @@ import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.jorel.commandapi.kotlindsl.subcommand
+import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
-import dev.slne.surf.transaction.api.TransactionApi
-import dev.slne.surf.transaction.core.currency.*
+import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
+import dev.slne.surf.transaction.core.currency.CurrencyCreateResult
+import dev.slne.surf.transaction.core.netty.packets.ServerboundMakeDefaultCurrencyPacket
 import dev.slne.surf.transaction.velocity.plugin
 
 fun currencyMakeDefaultCommand() = subcommand("makeDefault") {
@@ -18,19 +22,20 @@ fun currencyMakeDefaultCommand() = subcommand("makeDefault") {
 
     anyExecutor { sender, args ->
         val currencyName: String by args
-        val currency = TransactionApi.getCurrencyByName(currencyName)
+        val currency = Currency[currencyName]
         if (currency == null) {
             throw CommandAPI.failWithString("Currency with name '$currencyName' does not exist.")
         }
+
         if (currency.defaultCurrency) {
             throw CommandAPI.failWithString("Currency '$currencyName' is already the default currency.")
         }
 
         plugin.container.launch {
-            val result = CurrencyService.makeDefaultCurrency(currency as CoreCurrency)
+            val result = ServerboundMakeDefaultCurrencyPacket(currency).fireAndAwaitOrThrow().result
 
             when (result) {
-                CurrencyCreateResult.SUCCESS -> {
+                is CurrencyCreateResult.SUCCESS, CurrencyCreateResult.CHANGED_DEFAULT_CURRENCY -> {
                     sender.sendText {
                         success("Currency $name has been set as the default currency")
                     }
@@ -59,6 +64,7 @@ fun currencyMakeDefaultCommand() = subcommand("makeDefault") {
                         error("Invalid currency symbol, must be between 1 and $CURRENCY_SYMBOL_MAX_LENGTH characters")
                     }
                 }
+
             }
         }
     }

@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":surf-transaction-core"))
+    implementation(project(":surf-transaction-core:surf-transaction-core-common"))
     implementation(libs.surf.database)
 }

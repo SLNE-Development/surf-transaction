@@ -7,7 +7,6 @@ import dev.slne.surf.transaction.api.transaction.Transaction
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionResultType
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.core.currency.CurrencyService
 import dev.slne.surf.transaction.core.transaction.TransactionService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyService
 import dev.slne.surf.transaction.fallback.currency.FallbackCurrencyTable
