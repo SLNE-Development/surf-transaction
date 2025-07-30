@@ -10,7 +10,7 @@ dependencies {
 }
 
 surfPaperPluginApi {
-    mainClass("dev.slne.surf.transaction.paper.BukkitMain")
+    mainClass("dev.slne.surf.transaction.paper.PaperMain")
     bootstrapper("dev.slne.surf.transaction.paper.PaperBootstrap")
     authors.addAll("Ammo", "twisti")
     generateLibraryLoader(false)
