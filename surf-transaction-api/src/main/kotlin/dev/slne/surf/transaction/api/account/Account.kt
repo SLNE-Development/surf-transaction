@@ -31,6 +31,11 @@ interface Account {
          */
         suspend operator fun get(accountId: UUID?): Account? =
             accountId?.let { InternalAccountBridge.instance.getAccountByAccountId(it) }
+
+        suspend fun create(
+            owner: OfflineCloudPlayer,
+            name: String
+        ):  = InternalAccountBridge.instance.createAccount(owner, name)
     }
 
 }

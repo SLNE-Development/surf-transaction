@@ -2,6 +2,8 @@ package dev.slne.surf.transaction.server.netty.listener
 
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacketHandler
 import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundAccountResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundCreateAccountResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundCreateAccountPacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundGetAccountPacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundGetDefaultAccountPacket
 import dev.slne.surf.transaction.server.account.AccountService
@@ -25,6 +27,18 @@ class AccountPacketListener(
         packet.respond(
             ClientboundAccountResponsePacket(
                 accountService.getDefaultAccount(packet.player)
+            )
+        )
+    }
+
+    @SurfNettyPacketHandler
+    suspend fun handleCreateAccount(packet: ServerboundCreateAccountPacket) {
+        packet.respond(
+            ClientboundCreateAccountResponsePacket(
+                accountService.createAccount(
+                    packet.owner,
+                    packet.name
+                )
             )
         )
     }
