@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.server.transaction
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
+import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
@@ -15,7 +15,8 @@ import java.util.*
 class TransactionService(private val transactionRepository: TransactionRepository) {
 
     suspend fun deposit(
-        player: OfflineCloudPlayer,
+        initiator: OfflineCloudPlayer?,
+        accountId: UUID,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -23,8 +24,9 @@ class TransactionService(private val transactionRepository: TransactionRepositor
     ): TransactionResult {
         val transaction = TransactionImpl(
             identifier = UUID.randomUUID(),
-            senderUuid = null,
-            receiverUuid = player.uuid,
+            initiator = initiator,
+            senderAccountId = null,
+            receiverAccountId = accountId,
             amount = amount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreMinimum,
@@ -35,7 +37,8 @@ class TransactionService(private val transactionRepository: TransactionRepositor
     }
 
     suspend fun withdraw(
-        player: OfflineCloudPlayer,
+        initiator: OfflineCloudPlayer?,
+        accountId: UUID,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -45,8 +48,9 @@ class TransactionService(private val transactionRepository: TransactionRepositor
 
         val transaction = TransactionImpl(
             identifier = UUID.randomUUID(),
-            senderUuid = null,
-            receiverUuid = player.uuid,
+            senderAccountId = null,
+            initiator = initiator,
+            receiverAccountId = accountId,
             amount = usableAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreMinimum,
@@ -57,10 +61,11 @@ class TransactionService(private val transactionRepository: TransactionRepositor
     }
 
     suspend fun transfer(
-        sender: OfflineCloudPlayer,
+        initiator: OfflineCloudPlayer?,
+        senderAccountId: UUID,
         amount: BigDecimal,
         currency: Currency,
-        receiver: OfflineCloudPlayer,
+        receiverAccountId: UUID,
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: ObjectSet<TransactionData>,
@@ -70,9 +75,10 @@ class TransactionService(private val transactionRepository: TransactionRepositor
         val receiverAmount = amount.abs()
 
         val senderTransaction = TransactionImpl(
+            initiator = initiator,
             identifier = UUID.randomUUID(),
-            senderUuid = receiver.uuid,
-            receiverUuid = sender.uuid,
+            senderAccountId = receiverAccountId,
+            receiverAccountId = senderAccountId,
             amount = senderAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreSenderMinimum,
@@ -80,9 +86,10 @@ class TransactionService(private val transactionRepository: TransactionRepositor
         )
 
         val receiverTransaction = TransactionImpl(
+            initiator = initiator,
             identifier = UUID.randomUUID(),
-            senderUuid = sender.uuid,
-            receiverUuid = receiver.uuid,
+            senderAccountId = senderAccountId,
+            receiverAccountId = receiverAccountId,
             amount = receiverAmount,
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreReceiverMinimum,
@@ -94,7 +101,12 @@ class TransactionService(private val transactionRepository: TransactionRepositor
 
 
     suspend fun balanceDecimal(
-        player: OfflineCloudPlayer,
+        account: Account,
         currency: Currency
-    ): BigDecimal = transactionRepository.balanceDecimal(player, currency)
+    ): BigDecimal = transactionRepository.balanceDecimal(account.accountId, currency)
+
+    suspend fun balanceDecimal(
+        accountId: UUID,
+        currency: Currency,
+    ): BigDecimal = transactionRepository.balanceDecimal(accountId, currency)
 }

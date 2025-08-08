@@ -1,4 +1,4 @@
-package dev.slne.surf.transaction.core.netty.packets
+package dev.slne.surf.transaction.core.netty.packets.clientbound
 
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacket
 import dev.slne.surf.cloud.api.common.netty.network.protocol.PacketFlow

@@ -1,10 +1,10 @@
 package dev.slne.surf.transaction.server.transaction
 
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.cloud.api.server.plugin.CoroutineTransactional
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.Transaction
 import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.server.account.AccountRepository
 import dev.slne.surf.transaction.server.currency.CurrencyRepository
 import dev.slne.surf.transaction.server.currency.db.CurrencyTable
 import dev.slne.surf.transaction.server.transaction.db.TransactionDataTable
@@ -23,27 +23,37 @@ import java.util.*
  */
 @Repository
 @CoroutineTransactional
-class TransactionRepository(private val currencyRepository: CurrencyRepository) {
+class TransactionRepository(
+    private val currencyRepository: CurrencyRepository,
+    private val accountRepository: AccountRepository
+) {
 
     /**
-     * Get the balance of a user
+     * Get the balance of an account
      *
-     * @param user The user to get the balance of
-     * @param currency The currency to get the balance in
+     * @param accountId The [UUID] of the account to get the balance of
+     * @param currency The [Currency] to get the balance in
      *
-     * @return The balance of the user
+     * @return The balance of the account
      */
-    suspend fun balanceDecimal(user: OfflineCloudPlayer, currency: Currency, forUpdate: Boolean = false): BigDecimal =
-        TransactionTable
+    suspend fun balanceDecimal(
+        accountId: UUID,
+        currency: Currency,
+        forUpdate: Boolean = false
+    ): BigDecimal {
+        val account = accountRepository.fetchByAccountId(accountId)
+
+        return TransactionTable
             .innerJoin(CurrencyTable)
             .select(TransactionTable.amount.sum())
             .where {
                 (CurrencyTable.name eq currency.name) and
-                        (TransactionTable.receiver eq user.uuid)
+                        (TransactionTable.receiver eq account?.id)
             }
             .let { if (forUpdate) it.forUpdate() else it }
             .map { it[TransactionTable.amount.sum()] }
             .singleOrNull() ?: BigDecimal.ZERO
+    }
 
     /**
      * Execute a transaction
@@ -55,12 +65,18 @@ class TransactionRepository(private val currencyRepository: CurrencyRepository) 
     suspend fun persistTransaction(transaction: Transaction): TransactionResult {
         val currency = currencyRepository.fetchCurrencyByName(transaction.currency.name)
             ?: error("Currency not found: ${transaction.currency.name}")
-        val receiver = transaction.receiver
+
+        val receiver = transaction.receiver()
+        val sender = transaction.sender()
+
+        val senderAccount = sender?.accountId?.let { accountRepository.fetchByAccountId(it) }
+        val receiverAccount = receiver?.accountId?.let { accountRepository.fetchByAccountId(it) }
 
         val persistedTransaction = TransactionEntity.new {
             identifier = transaction.identifier
-            sender = transaction.sender?.uuid
-            this.receiver = receiver?.uuid
+            this.initiator = transaction.initiator?.uuid
+            this.senderAccount = senderAccount
+            this.receiverAccount = receiverAccount
             amount = transaction.amount
             this.currency = currency
         }
@@ -72,7 +88,8 @@ class TransactionRepository(private val currencyRepository: CurrencyRepository) 
         }
 
         if (receiver != null && !transaction.ignoreMinimumAmount) {
-            val balanceAfterTransaction = balanceDecimal(receiver, transaction.currency, forUpdate = true)
+            val balanceAfterTransaction =
+                balanceDecimal(receiver.accountId, transaction.currency, forUpdate = true)
             if (balanceAfterTransaction < transaction.currency.minimumAmount) {
                 TransactionManager.current().rollback()
                 return TransactionResult.RECEIVER_INSUFFICIENT_FUNDS

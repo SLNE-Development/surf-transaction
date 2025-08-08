@@ -1,4 +1,4 @@
-package dev.slne.surf.transaction.core.netty.packets
+package dev.slne.surf.transaction.core.netty.packets.bidirectional
 
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacket
 import dev.slne.surf.cloud.api.common.netty.network.protocol.PacketFlow
@@ -8,4 +8,5 @@ import kotlinx.serialization.Serializable
 
 @SurfNettyPacket("transaction:bidirectional:currency_create_result", PacketFlow.BIDIRECTIONAL)
 @Serializable
-data class CurrencyCreateResultResponsePacket(val result: CurrencyCreateResult): ResponseNettyPacket()
+data class CurrencyCreateResultResponsePacket(val result: CurrencyCreateResult) :
+    ResponseNettyPacket()

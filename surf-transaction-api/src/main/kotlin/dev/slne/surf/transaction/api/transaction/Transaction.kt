@@ -1,10 +1,10 @@
 package dev.slne.surf.transaction.api.transaction
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
-import it.unimi.dsi.fastutil.objects.ObjectSet
 import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.Unmodifiable
 import java.math.BigDecimal
@@ -16,7 +16,7 @@ import java.util.*
  * A transaction moves an [amount] of a specified [currency] from an optional [sender]
  * to an optional [receiver]. When either participant is `null`, the transfer is treated
  * as a **system transaction**—originating from or destined to the platform itself
- * rather than a player.
+ * rather than an [Account].
  *
  * All properties are read-only; implementations are expected to be thread-safe.
  */
@@ -28,24 +28,48 @@ interface Transaction {
     val identifier: UUID
 
     /**
-     * Player initiating the transfer, or `null` for system credits.
+     * The [OfflineCloudPlayer] who initiated this transaction.
+     */
+    val initiator: OfflineCloudPlayer?
+
+    /**
+     * The uuid of the [Account] initiating the transfer, or `null` for system credits.
      *
      * When `null`, the funds originate from the platform (e.g. daily rewards).
      */
-    val sender: OfflineCloudPlayer?
+    val senderAccountId: UUID?
 
     /**
-     * Player receiving the funds, or `null` for system debits.
+     * The uuid of the [Account] receiving the funds, or `null` for system debits.
      *
      * When `null`, the funds are removed from circulation by the platform
      * (e.g., taxes, sinks).
      */
-    val receiver: OfflineCloudPlayer?
+    val receiverAccountId: UUID?
 
-    /** Currency in which the [amount] is denominated. */
+    /**
+     * Asynchronously retrieves the [Account] initiating the transfer, or `null` for system credits.
+     *
+     * When `null`, the funds originate from the platform (e.g. daily rewards).
+     */
+    suspend fun sender(): Account?
+
+    /**
+     * Asynchronously retrieves the [Account] receiving the funds, or `null` for system debits.
+     *
+     * When `null`, the funds are removed from circulation by the platform
+     * (e.g., taxes, sinks).
+     */
+    suspend fun receiver(): Account?
+
+    /**
+     * Currency in which the [amount] is denominated.
+     * */
     val currency: Currency
 
-    /** Absolute value transferred, expressed with high-precision decimal arithmetic. */
+    /**
+     * Absolute value transferred, expressed with high-precision decimal arithmetic.
+     */
     val amount: BigDecimal
 
     /**

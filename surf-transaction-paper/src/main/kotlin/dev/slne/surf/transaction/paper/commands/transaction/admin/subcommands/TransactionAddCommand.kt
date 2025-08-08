@@ -1,7 +1,6 @@
 package dev.slne.surf.transaction.paper.commands.transaction.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.jorel.commandapi.CommandTree
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.doubleArgument
@@ -55,11 +54,13 @@ private fun add(
 ) = plugin.launch {
     val user = player.await() ?: return@launch
     val result = user.deposit(
-        amount,
-        currency,
-        TransactionData(
-            "admin.transaction.add",
-            (sender as? Player)?.uniqueId?.toString() ?: sender.name
+        amount = amount,
+        currency = currency,
+        additionalData = arrayOf(
+            TransactionData(
+                "admin.transaction.add",
+                (sender as? Player)?.uniqueId?.toString() ?: sender.name
+            )
         )
     )
 

@@ -54,7 +54,11 @@ private fun pay(
     }
 
     val currency = Currency.default()
-    val result = senderUser.transfer(amount, currency, receiverUser)
+    val result = senderUser.transfer(
+        amount = amount,
+        currency = currency,
+        receiver = receiverUser
+    )
 
     when (result) {
         is TransactionResult.SUCCESS, is TransactionResult.TRANSFER_SUCCESS -> handleSuccess(

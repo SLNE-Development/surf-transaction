@@ -1,7 +1,6 @@
 package dev.slne.surf.transaction.paper.commands.transaction.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.jorel.commandapi.CommandTree
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.doubleArgument
@@ -55,12 +54,14 @@ private fun remove(
 ) = plugin.launch {
     val user = player.await() ?: return@launch
     val result = user.withdraw(
-        amount,
-        currency,
+        amount = amount,
+        currency = currency,
         ignoreMinimum = true,
-        TransactionData(
-            "admin.transaction.remove",
-            (sender as? Player)?.uniqueId?.toString() ?: sender.name
+        additionalData = arrayOf(
+            TransactionData(
+                "admin.transaction.remove",
+                (sender as? Player)?.uniqueId?.toString() ?: sender.name
+            )
         )
     )
 

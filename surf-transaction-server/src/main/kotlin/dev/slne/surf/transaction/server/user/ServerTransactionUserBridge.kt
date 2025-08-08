@@ -1,49 +1,76 @@
 package dev.slne.surf.transaction.server.user
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.InternalTransactionUserBridge
+import dev.slne.surf.transaction.server.account.AccountService
 import dev.slne.surf.transaction.server.transaction.TransactionService
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class ServerTransactionUserBridge(private val service: TransactionService) :
-    InternalTransactionUserBridge {
-    override suspend fun deposit(
-        player: OfflineCloudPlayer,
-        amount: BigDecimal,
-        currency: Currency,
-        ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
-    ): TransactionResult = service.deposit(player, amount, currency, ignoreMinimum, *additionalData)
+class ServerTransactionUserBridge(
+    private val transactionService: TransactionService,
+    private val accountService: AccountService,
+) : InternalTransactionUserBridge {
 
-    override suspend fun withdraw(
-        player: OfflineCloudPlayer,
+    override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer) =
+        accountService.getDefaultAccount(player)
+
+    override suspend fun deposit(
+        account: Account,
+        initiator: OfflineCloudPlayer?,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResult =
-        service.withdraw(player, amount, currency, ignoreMinimum, *additionalData)
+        transactionService.deposit(
+            initiator,
+            account.accountId,
+            amount,
+            currency,
+            ignoreMinimum,
+            *additionalData
+        )
 
-    override suspend fun transfer(
-        sender: OfflineCloudPlayer,
+    override suspend fun withdraw(
+        account: Account,
+        initiator: OfflineCloudPlayer?,
         amount: BigDecimal,
         currency: Currency,
-        receiver: OfflineCloudPlayer,
+        ignoreMinimum: Boolean,
+        vararg additionalData: TransactionData
+    ): TransactionResult =
+        transactionService.withdraw(
+            initiator,
+            account.accountId,
+            amount,
+            currency,
+            ignoreMinimum,
+            *additionalData
+        )
+
+    override suspend fun transfer(
+        initiator: OfflineCloudPlayer?,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: ObjectSet<TransactionData>,
         additionalReceiverData: ObjectSet<TransactionData>
-    ): TransactionResult = service.transfer(
-        sender,
+    ): TransactionResult = transactionService.transfer(
+        initiator,
+        sender.accountId,
         amount,
         currency,
-        receiver,
+        receiver.accountId,
         ignoreSenderMinimum,
         ignoreReceiverMinimum,
         additionalSenderData,
@@ -51,7 +78,7 @@ class ServerTransactionUserBridge(private val service: TransactionService) :
     )
 
     override suspend fun balanceDecimal(
-        player: OfflineCloudPlayer,
+        account: Account,
         currency: Currency
-    ): BigDecimal = service.balanceDecimal(player, currency)
+    ): BigDecimal = transactionService.balanceDecimal(account, currency)
 }

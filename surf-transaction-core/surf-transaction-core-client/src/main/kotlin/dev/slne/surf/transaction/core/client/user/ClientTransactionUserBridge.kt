@@ -3,27 +3,32 @@ package dev.slne.surf.transaction.core.client.user
 import dev.slne.surf.cloud.api.client.netty.packet.awaitOrThrow
 import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.InternalTransactionUserBridge
-import dev.slne.surf.transaction.core.netty.packets.ServerboundBalancePacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundExecuteSingleTransactionPacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundTransferTransactionPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundBalancePacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundExecuteSingleTransactionPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundGetDefaultAccountPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundTransferTransactionPacket
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
 class ClientTransactionUserBridge : InternalTransactionUserBridge {
+
     override suspend fun deposit(
-        player: OfflineCloudPlayer,
+        account: Account,
+        initiator: OfflineCloudPlayer?,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResult = ServerboundExecuteSingleTransactionPacket(
-        player,
+        account.accountId,
+        initiator,
         amount,
         currency,
         ignoreMinimum,
@@ -31,15 +36,16 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
         ServerboundExecuteSingleTransactionPacket.Type.DEPOSIT
     ).fireAndAwaitOrThrow().result
 
-
     override suspend fun withdraw(
-        player: OfflineCloudPlayer,
+        account: Account,
+        initiator: OfflineCloudPlayer?,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResult = ServerboundExecuteSingleTransactionPacket(
-        player,
+        account.accountId,
+        initiator,
         amount,
         currency,
         ignoreMinimum,
@@ -48,19 +54,21 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
     ).fireAndAwaitOrThrow().result
 
     override suspend fun transfer(
-        sender: OfflineCloudPlayer,
+        initiator: OfflineCloudPlayer?,
+        sender: Account,
         amount: BigDecimal,
         currency: Currency,
-        receiver: OfflineCloudPlayer,
+        receiver: Account,
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: ObjectSet<TransactionData>,
         additionalReceiverData: ObjectSet<TransactionData>
     ): TransactionResult = ServerboundTransferTransactionPacket(
-        sender,
+        initiator,
+        sender.accountId,
         amount,
         currency,
-        receiver,
+        receiver.accountId,
         ignoreSenderMinimum,
         ignoreReceiverMinimum,
         additionalSenderData,
@@ -68,7 +76,10 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
     ).fireAndAwaitOrThrow().result
 
     override suspend fun balanceDecimal(
-        player: OfflineCloudPlayer,
+        account: Account,
         currency: Currency
-    ): BigDecimal = ServerboundBalancePacket(player, currency).awaitOrThrow()
+    ): BigDecimal = ServerboundBalancePacket(account.accountId, currency).awaitOrThrow()
+
+    override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer): Account? =
+        ServerboundGetDefaultAccountPacket(player).fireAndAwaitOrThrow().account
 }
