@@ -1,5 +1,0 @@
-[versions]
-surf-database = "2.0.4-SNAPSHOT"
-
-[libraries]
-surf-database = { module = "dev.slne.surf:surf-database", version.ref = "surf-database" }

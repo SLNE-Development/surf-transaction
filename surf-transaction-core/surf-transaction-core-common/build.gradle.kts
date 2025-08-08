@@ -2,9 +2,12 @@ plugins {
     id("dev.slne.surf.surfapi.gradle.core")
 }
 
+surfCoreApi {
+    withCloudCommon()
+}
+
 dependencies {
     api(project(":surf-transaction-api"))
-    compileOnly("dev.slne.surf.cloud:surf-cloud-api-common:1.21.7+")
 }
 
 kotlin {

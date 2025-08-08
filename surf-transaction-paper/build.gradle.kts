@@ -6,7 +6,6 @@ plugins {
 
 dependencies {
     api(project(":surf-transaction-core:surf-transaction-core-client"))
-    compileOnly("dev.slne.surf.cloud:surf-cloud-api-client-paper:1.21.7+")
 }
 
 surfPaperPluginApi {
@@ -15,6 +14,8 @@ surfPaperPluginApi {
     authors.addAll("Ammo", "twisti")
     generateLibraryLoader(false)
 
+    withCloudClientPaper()
+    
     bootstrapDependencies {
         registerRequired("surf-cloud-bukkit")
     }
