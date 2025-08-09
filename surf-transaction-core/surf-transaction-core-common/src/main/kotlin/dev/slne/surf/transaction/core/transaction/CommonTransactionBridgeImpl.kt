@@ -5,10 +5,8 @@ import dev.slne.surf.transaction.api.transaction.Transaction
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import org.springframework.stereotype.Component
 
-@Component
-class TransactionBridgeImpl: InternalTransactionBridge {
+abstract class CommonTransactionBridgeImpl : InternalTransactionBridge {
     override val descriptor: SerialDescriptor
         get() = TransactionImpl.serializer().descriptor
 

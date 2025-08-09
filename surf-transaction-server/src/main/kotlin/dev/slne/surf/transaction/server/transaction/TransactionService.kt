@@ -98,8 +98,7 @@ class TransactionService(private val transactionRepository: TransactionRepositor
 
         return transactionRepository.transfer(senderTransaction, receiverTransaction)
     }
-
-
+    
     suspend fun balanceDecimal(
         account: Account,
         currency: Currency

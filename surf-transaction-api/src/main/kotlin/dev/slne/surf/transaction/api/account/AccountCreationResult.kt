@@ -6,7 +6,7 @@ import net.kyori.adventure.text.Component
 
 @Serializable
 sealed class AccountCreationResult(val message: suspend () -> Component) {
-    
+
     @Serializable
     data class Success(val account: Account) : AccountCreationResult({
         buildText {
@@ -26,5 +26,8 @@ sealed class AccountCreationResult(val message: suspend () -> Component) {
     @Serializable
     enum class FailureReason {
         NAME_ALREADY_EXISTS,
+        NAME_TOO_LONG,
+        NAME_TOO_SHORT,
+        NAME_IS_UUID
     }
 }

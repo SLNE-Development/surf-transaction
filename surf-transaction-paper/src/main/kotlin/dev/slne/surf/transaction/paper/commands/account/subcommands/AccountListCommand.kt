@@ -7,7 +7,7 @@ import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.cloud.api.common.player.toCloudPlayer
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.mapAsync
-import dev.slne.surf.transaction.api.user.accounts
+import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.plugin
 
@@ -17,7 +17,8 @@ fun CommandAPICommand.accountListCommand() = subcommand("list") {
     playerExecutor { player, args ->
         plugin.launch {
             val cloudPlayer = player.toCloudPlayer() ?: return@launch
-            val accounts = cloudPlayer.accounts().mapAsync { it to it.asComponent() }
+            val accounts =
+                cloudPlayer.transactionUser().getAllAccounts().mapAsync { it to it.asComponent() }
 
             cloudPlayer.sendText {
                 info("Deine Accounts: ")

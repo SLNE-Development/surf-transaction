@@ -13,7 +13,7 @@ import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
-import dev.slne.surf.transaction.api.user.transfer
+import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.plugin
 import kotlinx.coroutines.Deferred
@@ -54,10 +54,10 @@ private fun pay(
     }
 
     val currency = Currency.default()
-    val result = senderUser.transfer(
-        amount = amount,
+    val result = senderUser.transactionUser().transfer(
+        amount = amount.toBigDecimal(),
         currency = currency,
-        receiver = receiverUser
+        receiver = receiverUser.transactionUser().getDefaultAccount()
     )
 
     when (result) {

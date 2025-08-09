@@ -1,4 +1,4 @@
-package dev.slne.surf.transaction.core.client.user
+package dev.slne.surf.transaction.core.client.transaction
 
 import dev.slne.surf.cloud.api.client.netty.packet.awaitOrThrow
 import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
@@ -7,20 +7,20 @@ import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.InternalTransactionUserBridge
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundBalancePacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundExecuteSingleTransactionPacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundTransferTransactionPacket
+import dev.slne.surf.transaction.core.transaction.CommonTransactionBridgeImpl
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.springframework.stereotype.Component
 import java.math.BigDecimal
 
 @Component
-class ClientTransactionUserBridge : InternalTransactionUserBridge {
+class ClientTransactionBridge : CommonTransactionBridgeImpl() {
 
     override suspend fun deposit(
         account: Account,
-        initiator: OfflineCloudPlayer?,
+        initiator: OfflineCloudPlayer,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -37,7 +37,7 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
 
     override suspend fun withdraw(
         account: Account,
-        initiator: OfflineCloudPlayer?,
+        initiator: OfflineCloudPlayer,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -53,7 +53,7 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
     ).fireAndAwaitOrThrow().result
 
     override suspend fun transfer(
-        initiator: OfflineCloudPlayer?,
+        initiator: OfflineCloudPlayer,
         sender: Account,
         amount: BigDecimal,
         currency: Currency,
@@ -74,7 +74,7 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
         additionalReceiverData
     ).fireAndAwaitOrThrow().result
 
-    override suspend fun balanceDecimal(
+    override suspend fun balance(
         account: Account,
         currency: Currency
     ): BigDecimal = ServerboundBalancePacket(account.accountId, currency).awaitOrThrow()

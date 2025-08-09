@@ -13,6 +13,26 @@ class AccountService(private val accountRepository: AccountRepository) {
         name: String,
         defaultAccount: Boolean
     ): AccountCreationResult {
+        val name = name.trim().replace(" ", "_")
+
+        if (name.length < 3) {
+            return AccountCreationResult.Failure(
+                AccountCreationResult.FailureReason.NAME_TOO_SHORT
+            )
+        }
+
+        if (name.length > 32) {
+            return AccountCreationResult.Failure(
+                AccountCreationResult.FailureReason.NAME_TOO_LONG
+            )
+        }
+        
+        if (runCatching { UUID.fromString(name) }.getOrNull() != null) {
+            return AccountCreationResult.Failure(
+                AccountCreationResult.FailureReason.NAME_IS_UUID
+            )
+        }
+
         val account = accountRepository.getByAccountName(name)
 
         if (account != null) {

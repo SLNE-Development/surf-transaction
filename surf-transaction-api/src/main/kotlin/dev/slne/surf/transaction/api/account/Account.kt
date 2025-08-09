@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.user.HasTransactions
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
@@ -8,7 +9,7 @@ import java.util.*
 
 @OptIn(InternalTransactionApi::class)
 @Serializable(with = AccountSerializer::class)
-interface Account {
+interface Account : HasTransactions {
 
     /**
      * Unique identifier for the account.

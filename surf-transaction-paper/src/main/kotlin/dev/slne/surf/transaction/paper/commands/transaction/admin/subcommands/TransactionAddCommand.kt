@@ -15,7 +15,7 @@ import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.deposit
+import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import dev.slne.surf.transaction.paper.plugin
@@ -53,8 +53,8 @@ private fun add(
     amount: Double
 ) = plugin.launch {
     val user = player.await() ?: return@launch
-    val result = user.deposit(
-        amount = amount,
+    val result = user.transactionUser().deposit(
+        amount = amount.toBigDecimal(),
         currency = currency,
         additionalData = arrayOf(
             TransactionData(

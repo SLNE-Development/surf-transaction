@@ -16,6 +16,7 @@ data class AccountImpl(
     override val name: String,
     override val defaultAccount: Boolean = false
 ) : Account {
+    
     override val owner: OfflineCloudPlayer
         get() = ownerUuid.toOfflineCloudPlayer()
 

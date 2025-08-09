@@ -11,8 +11,7 @@ import dev.jorel.commandapi.arguments.StringArgument
 import dev.slne.surf.cloud.api.common.player.toCloudPlayer
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.api.user.accountByName
-import dev.slne.surf.transaction.api.user.accounts
+import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.paper.plugin
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
@@ -30,7 +29,7 @@ class AccountArgument(nodeName: String) : CustomArgument<Deferred<Account?>, Str
         val deferred = CompletableDeferred<Account?>()
 
         plugin.launch {
-            val account = cloudPlayer.accountByName(input)
+            val account = cloudPlayer.transactionUser().getAccountByName(input)
 
             if (account == null) {
                 sender.sendText {
@@ -57,7 +56,7 @@ class AccountArgument(nodeName: String) : CustomArgument<Deferred<Account?>, Str
                 ?: return@stringCollectionAsync CompletableFuture.completedFuture(emptyList<String>())
 
             plugin.scope.future {
-                cloudPlayer.accounts()
+                cloudPlayer.transactionUser().getAllAccounts()
                     .sortedBy { it.name }
                     .map { it.name }
             }

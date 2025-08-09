@@ -16,8 +16,7 @@ class ClientAccountBridge : CommonAccountBridge() {
 
     override suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
         ServerboundGetAllAccountsPacket(owner).fireAndAwaitOrThrow().accounts.toObjectSet()
-
-
+    
     override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer): Account? =
         ServerboundGetDefaultAccountPacket(player).fireAndAwaitOrThrow().account
 

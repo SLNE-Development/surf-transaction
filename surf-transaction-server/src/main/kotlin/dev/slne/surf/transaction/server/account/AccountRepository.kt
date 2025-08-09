@@ -111,7 +111,7 @@ class AccountRepository {
     suspend fun createByPlayer(player: CloudPlayer) = AccountEntity.new {
         owner = player.uuid
         accountId = UUID.randomUUID()
-        name = player.name
+        name = player.uuid.toString()
     }
 
     /**

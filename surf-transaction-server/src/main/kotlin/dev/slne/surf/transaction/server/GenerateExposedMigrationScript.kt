@@ -14,6 +14,6 @@ fun main() {
         TransactionDataTable,
         CurrencyTable,
         AccountTable,
-        scriptName = "V3__add_foreign_key_constraints",
+        scriptName = "V4__modify_accounts_table",
     )
 }

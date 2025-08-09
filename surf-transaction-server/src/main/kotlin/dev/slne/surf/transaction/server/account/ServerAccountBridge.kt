@@ -11,15 +11,12 @@ class ServerAccountBridge(private val accountService: AccountService) : CommonAc
     override suspend fun getAccountByAccountId(accountId: UUID) =
         accountService.findAccountByAccountId(accountId)
 
-    override suspend fun createAccount(
-        owner: OfflineCloudPlayer,
-        name: String
-    ) = accountService.createAccount(owner, name, false)
+    override suspend fun createAccount(owner: OfflineCloudPlayer, name: String) =
+        accountService.createAccount(owner, name, false)
 
     override suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
         accountService.getAllAccountsByOwner(owner)
-
-
+    
     override suspend fun getAccounts(player: OfflineCloudPlayer) =
         accountService.getAllAccountsByOwner(player)
 
@@ -29,7 +26,6 @@ class ServerAccountBridge(private val accountService: AccountService) : CommonAc
     override suspend fun getAccountByName(name: String) =
         accountService.getAccountByName(name)
 
-    override suspend fun deleteAccount(
-        account: Account
-    ) = accountService.deleteAccount(account.accountId)
+    override suspend fun deleteAccount(account: Account) =
+        accountService.deleteAccount(account.accountId)
 }
