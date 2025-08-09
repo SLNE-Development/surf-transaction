@@ -66,6 +66,13 @@ interface Currency : ComponentLike {
     fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
         format(amount.toBigDecimal(), color)
 
+    /**
+     * Returns the display name of this currency as a [Component].
+     * This is primarily used for UI purposes, such as displaying the currency
+     * name in menus or transaction summaries.
+     *
+     * @return the display name of this currency as a [Component]
+     */
     override fun asComponent(): Component = displayName
 
     companion object {
