@@ -38,7 +38,7 @@ class AccountPacketListener(
                 accountService.createAccount(
                     packet.owner,
                     packet.name,
-                    true
+                    false
                 )
             )
         )

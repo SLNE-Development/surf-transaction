@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import dev.slne.surf.surfapi.gradle.util.registerRequired
 
 plugins {
@@ -15,11 +16,15 @@ surfPaperPluginApi {
     generateLibraryLoader(false)
 
     withCloudClientPaper()
-    
+
     bootstrapDependencies {
         registerRequired("surf-cloud-bukkit")
     }
     serverDependencies {
         registerRequired("surf-cloud-bukkit")
     }
+}
+
+tasks.withType<ShadowJar> {
+    destinationDirectory.set(rootProject.file("output"))
 }
