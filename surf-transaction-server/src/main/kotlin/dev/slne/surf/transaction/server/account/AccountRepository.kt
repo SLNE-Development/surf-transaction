@@ -69,7 +69,7 @@ class AccountRepository {
     ) = fetchDefaultAccount(player)?.toApi() ?: run {
         val cloudPlayer = player.player ?: return@run null
 
-        createByPlayer(cloudPlayer).toApi()
+        createByPlayer(cloudPlayer, true).toApi()
     }
 
     /**
@@ -106,12 +106,17 @@ class AccountRepository {
      * Creates a new account for the given [CloudPlayer].
      *
      * @param player The [CloudPlayer] for whom the account is being created.
+     * @param defaultAccount Whether this account should be marked as the default account for the player.
      * @return The newly created [AccountEntity].
      */
-    suspend fun createByPlayer(player: CloudPlayer) = AccountEntity.new {
+    suspend fun createByPlayer(
+        player: CloudPlayer,
+        defaultAccount: Boolean
+    ) = AccountEntity.new {
         owner = player.uuid
         accountId = UUID.randomUUID()
         name = player.uuid.toString()
+        this.defaultAccount = defaultAccount
     }
 
     /**
