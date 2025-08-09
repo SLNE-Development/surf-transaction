@@ -1,6 +1,5 @@
 package dev.slne.surf.transaction.server.account
 
-import dev.slne.surf.cloud.api.common.player.CloudPlayer
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.cloud.api.common.util.mutableObjectSetOf
 import dev.slne.surf.cloud.api.common.util.toObjectSet
@@ -49,6 +48,16 @@ class AccountRepository {
             currentDefaultAccount.defaultAccount = false
         }
 
+        val accountByName = fetchByAccountName(name)
+
+        if (accountByName != null) {
+            if (defaultAccount) {
+                accountByName.defaultAccount = true
+            }
+
+            return accountByName.toApi()
+        }
+
         return AccountEntity.new {
             this.owner = owner.uuid
             this.accountId = UUID.randomUUID()
@@ -67,9 +76,7 @@ class AccountRepository {
     suspend fun getDefaultAccount(
         player: OfflineCloudPlayer
     ) = fetchDefaultAccount(player)?.toApi() ?: run {
-        val cloudPlayer = player.player ?: return@run null
-
-        createByPlayer(cloudPlayer, true).toApi()
+        createAccount(player, player.uuid.toString(), true)
     }
 
     /**
@@ -101,23 +108,6 @@ class AccountRepository {
      */
     suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
         fetchByPlayer(owner).mapTo(mutableObjectSetOf()) { it.toApi() }
-
-    /**
-     * Creates a new account for the given [CloudPlayer].
-     *
-     * @param player The [CloudPlayer] for whom the account is being created.
-     * @param defaultAccount Whether this account should be marked as the default account for the player.
-     * @return The newly created [AccountEntity].
-     */
-    suspend fun createByPlayer(
-        player: CloudPlayer,
-        defaultAccount: Boolean
-    ) = AccountEntity.new {
-        owner = player.uuid
-        accountId = UUID.randomUUID()
-        name = player.uuid.toString()
-        this.defaultAccount = defaultAccount
-    }
 
     /**
      * Fetches an [AccountEntity] by its account ID.
