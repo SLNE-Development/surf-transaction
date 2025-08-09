@@ -17,6 +17,8 @@ package dev.slne.surf.transaction.api.user
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.transaction.api.account.Account
+import dev.slne.surf.transaction.api.account.AccountDeleteResult
+import dev.slne.surf.transaction.api.account.InternalAccountBridge
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
@@ -24,7 +26,7 @@ import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import java.math.BigDecimal
 
-// region Utils
+// region Accounts
 /**
  * Retrieves the default account for this player.
  *
@@ -32,7 +34,48 @@ import java.math.BigDecimal
  * @return the default [Account] associated with this player
  */
 suspend fun OfflineCloudPlayer.defaultAccount() =
-    InternalTransactionUserBridge.instance.getDefaultAccount(this)
+    InternalAccountBridge.instance.getDefaultAccount(this)
+
+/**
+ * Retrieves all accounts associated with this player.
+ *
+ * @receiver the player whose accounts are requested
+ * @return a set of [Account]s owned by this player
+ */
+suspend fun OfflineCloudPlayer.accounts() =
+    InternalAccountBridge.instance.getAccounts(this)
+
+/**
+ * Creates a new account for this player with the specified [name].
+ *
+ * @receiver the player for whom the account will be created
+ * @param name the name of the new account; must be non-empty
+ * @return the newly created [Account]
+ */
+suspend fun OfflineCloudPlayer.createAccount(
+    name: String
+) = InternalAccountBridge.instance.createAccount(this, name)
+
+/**
+ * Retrieves the account with the specified [accountName] for this player.
+ *
+ * @receiver the player whose account is requested
+ * @param accountName the name of the account to retrieve; must be non-empty
+ * @return the [Account] matching [accountName], or `null` if not found
+ */
+suspend fun OfflineCloudPlayer.accountByName(accountName: String) =
+    InternalAccountBridge.instance.getAccountByName(accountName)
+
+/**
+ * Deletes the specified [account] from this player's accounts.
+ *
+ * @receiver the player whose account will be deleted
+ * @param account the account to delete; must be non-null
+ * @return an [AccountDeleteResult] indicating success or failure
+ */
+suspend fun OfflineCloudPlayer.deleteAccount(
+    account: Account
+) = InternalAccountBridge.instance.deleteAccount(account)
 // endregion
 
 // region Deposit

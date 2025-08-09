@@ -12,14 +12,12 @@ class AccountEntity(id: EntityID<Long>) : LongEntity(id) {
     var accountId by AccountTable.accountId
     var owner by AccountTable.owner
     var name by AccountTable.name
+    var defaultAccount by AccountTable.defaultAccount
 
     fun toApi() = AccountImpl(
         accountId = accountId,
         ownerUuid = owner,
-        name = name
+        name = name,
+        defaultAccount = defaultAccount
     )
-
-    override fun toString(): String {
-        return "AccountEntity(id=$id, owner=$owner)"
-    }
 }

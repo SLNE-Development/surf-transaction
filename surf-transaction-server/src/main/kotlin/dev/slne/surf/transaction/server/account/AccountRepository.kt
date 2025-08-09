@@ -2,10 +2,16 @@ package dev.slne.surf.transaction.server.account
 
 import dev.slne.surf.cloud.api.common.player.CloudPlayer
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.cloud.api.common.util.mutableObjectSetOf
+import dev.slne.surf.cloud.api.common.util.toObjectSet
 import dev.slne.surf.cloud.api.server.plugin.CoroutineTransactional
 import dev.slne.surf.transaction.api.account.Account
+import dev.slne.surf.transaction.api.account.AccountDeleteResult
+import dev.slne.surf.transaction.core.account.AccountImpl
 import dev.slne.surf.transaction.server.account.db.AccountEntity
 import dev.slne.surf.transaction.server.account.db.AccountTable
+import it.unimi.dsi.fastutil.objects.ObjectSet
+import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Repository
 import java.util.*
 
@@ -13,22 +19,43 @@ import java.util.*
 @Repository
 class AccountRepository {
 
+    suspend fun deleteAccount(accountId: UUID): AccountDeleteResult {
+        val accountEntity = fetchByAccountId(accountId)
+            ?: return AccountDeleteResult.Failure(AccountDeleteResult.FailureReason.ACCOUNT_NOT_FOUND)
+
+        accountEntity.delete()
+
+        return AccountDeleteResult.Success(accountEntity.toApi())
+    }
+
     /**
      * Create a new account for the given [OfflineCloudPlayer] with the specified name.
+     * Also marks the current default account as non-default if it exists.
      *
      * @param owner The [OfflineCloudPlayer] who will own the account.
      * @param name The name of the account to be created.
+     * @param defaultAccount Whether this account should be marked as the default account for the owner.
      *
      * @return The newly created [Account].
      */
     suspend fun createAccount(
         owner: OfflineCloudPlayer,
-        name: String
-    ) = AccountEntity.new {
-        this.owner = owner.uuid
-        this.accountId = UUID.randomUUID()
-        this.name = name
-    }.toApi()
+        name: String,
+        defaultAccount: Boolean
+    ): AccountImpl {
+        val currentDefaultAccount = fetchDefaultAccount(owner)
+
+        if (currentDefaultAccount != null) {
+            currentDefaultAccount.defaultAccount = false
+        }
+
+        return AccountEntity.new {
+            this.owner = owner.uuid
+            this.accountId = UUID.randomUUID()
+            this.name = name
+            this.defaultAccount = defaultAccount
+        }.toApi()
+    }
 
     /**
      * Get the default account for a player
@@ -39,20 +66,41 @@ class AccountRepository {
      */
     suspend fun getDefaultAccount(
         player: OfflineCloudPlayer
-    ) = fetchByPlayer(player)?.toApi() ?: run {
+    ) = fetchDefaultAccount(player)?.toApi() ?: run {
         val cloudPlayer = player.player ?: return@run null
 
         createByPlayer(cloudPlayer).toApi()
     }
 
     /**
-     * Fetches an [AccountEntity] by the owner [OfflineCloudPlayer].
+     * Fetches the default account for the given [OfflineCloudPlayer].
      *
-     * @param player The [OfflineCloudPlayer] whose account is being fetched.
-     * @return The [AccountEntity] if found, or null if not found.
+     * @param player The [OfflineCloudPlayer] whose default account is to be fetched.
+     * @return The [AccountEntity] representing the default account, or null if no default account exists.
      */
-    suspend fun fetchByPlayer(player: OfflineCloudPlayer): AccountEntity? =
-        AccountEntity.find { AccountTable.owner eq player.uuid }.singleOrNull()
+    suspend fun fetchDefaultAccount(
+        player: OfflineCloudPlayer
+    ): AccountEntity? = AccountEntity.find {
+        (AccountTable.owner eq player.uuid) and (AccountTable.defaultAccount eq true)
+    }.singleOrNull()
+
+    /**
+     * Fetches all accounts owned by the given [OfflineCloudPlayer].
+     *
+     * @param player The [OfflineCloudPlayer] whose accounts are to be fetched.
+     * @return A set of [AccountEntity] objects representing the accounts owned by the player.
+     */
+    suspend fun fetchByPlayer(player: OfflineCloudPlayer): ObjectSet<AccountEntity> =
+        AccountEntity.find { AccountTable.owner eq player.uuid }.toObjectSet()
+
+    /**
+     * Fetches all accounts owned by the given [OfflineCloudPlayer] and converts them to API representation.
+     *
+     * @param owner The [OfflineCloudPlayer] whose accounts are to be fetched.
+     * @return A set of [Account] objects representing the accounts owned by the player.
+     */
+    suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
+        fetchByPlayer(owner).mapTo(mutableObjectSetOf()) { it.toApi() }
 
     /**
      * Creates a new account for the given [CloudPlayer].

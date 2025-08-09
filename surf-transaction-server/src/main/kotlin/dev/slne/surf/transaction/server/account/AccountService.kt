@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.server.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundCreateAccountResponsePacket.AccountCreationResult
+import dev.slne.surf.transaction.api.account.AccountCreationResult
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -10,7 +10,8 @@ class AccountService(private val accountRepository: AccountRepository) {
 
     suspend fun createAccount(
         owner: OfflineCloudPlayer,
-        name: String
+        name: String,
+        defaultAccount: Boolean
     ): AccountCreationResult {
         val account = accountRepository.getByAccountName(name)
 
@@ -20,8 +21,22 @@ class AccountService(private val accountRepository: AccountRepository) {
             )
         }
 
-        return AccountCreationResult.Success(accountRepository.createAccount(owner, name))
+        return AccountCreationResult.Success(
+            accountRepository.createAccount(
+                owner,
+                name,
+                defaultAccount
+            )
+        )
     }
+
+    suspend fun deleteAccount(accountId: UUID) = accountRepository.deleteAccount(accountId)
+
+    suspend fun getAccountByName(name: String) =
+        accountRepository.getByAccountName(name)
+
+    suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
+        accountRepository.getAllAccountsByOwner(owner)
 
     suspend fun getDefaultAccount(player: OfflineCloudPlayer) =
         accountRepository.getDefaultAccount(player)

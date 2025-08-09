@@ -15,12 +15,6 @@ import java.math.BigDecimal
 @InternalTransactionApi
 interface InternalTransactionUserBridge {
 
-    suspend fun getDefaultAccount(player: OfflineCloudPlayer): Account =
-        getDefaultAccountOrNull(player)
-            ?: error("Default account not found for player: ${player.uuid}")
-
-    suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer): Account?
-
     suspend fun deposit(
         account: Account,
         initiator: OfflineCloudPlayer?,

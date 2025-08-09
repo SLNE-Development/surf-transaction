@@ -7,4 +7,5 @@ object AccountTable : LongIdTable("transaction_accounts") {
     val accountId = nativeUuid("account_id")
     val owner = nativeUuid("owner_id")
     val name = varchar("name", 64).uniqueIndex()
+    val defaultAccount = bool("default_account").default(false)
 }

@@ -10,7 +10,6 @@ import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.InternalTransactionUserBridge
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundBalancePacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundExecuteSingleTransactionPacket
-import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundGetDefaultAccountPacket
 import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundTransferTransactionPacket
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.springframework.stereotype.Component
@@ -79,7 +78,4 @@ class ClientTransactionUserBridge : InternalTransactionUserBridge {
         account: Account,
         currency: Currency
     ): BigDecimal = ServerboundBalancePacket(account.accountId, currency).awaitOrThrow()
-
-    override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer): Account? =
-        ServerboundGetDefaultAccountPacket(player).fireAndAwaitOrThrow().account
 }

@@ -6,7 +6,6 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.InternalTransactionUserBridge
-import dev.slne.surf.transaction.server.account.AccountService
 import dev.slne.surf.transaction.server.transaction.TransactionService
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.springframework.stereotype.Component
@@ -15,11 +14,7 @@ import java.math.BigDecimal
 @Component
 class ServerTransactionUserBridge(
     private val transactionService: TransactionService,
-    private val accountService: AccountService,
 ) : InternalTransactionUserBridge {
-
-    override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer) =
-        accountService.getDefaultAccount(player)
 
     override suspend fun deposit(
         account: Account,
