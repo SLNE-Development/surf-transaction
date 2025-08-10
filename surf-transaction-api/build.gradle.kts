@@ -1,6 +1,15 @@
+import dev.slne.surf.surfapi.gradle.util.slneReleases
+
 plugins {
     id("dev.slne.surf.surfapi.gradle.core")
 }
 
-dependencies {
+surfCoreApi {
+    withCloudCommon()
+}
+
+publishing {
+    repositories {
+        slneReleases()
+    }
 }

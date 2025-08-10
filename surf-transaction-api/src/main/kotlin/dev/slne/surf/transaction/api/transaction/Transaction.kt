@@ -1,50 +1,86 @@
 package dev.slne.surf.transaction.api.transaction
 
+import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.TransactionUser
-import it.unimi.dsi.fastutil.objects.ObjectSet
+import dev.slne.surf.transaction.api.util.InternalTransactionApi
+import kotlinx.serialization.Serializable
+import org.jetbrains.annotations.Unmodifiable
 import java.math.BigDecimal
 import java.util.*
 
+/**
+ * Immutable description of a single monetary operation.
+ *
+ * A transaction moves an [amount] of a specified [currency] from an optional [sender]
+ * to an optional [receiver]. When either participant is `null`, the transfer is treated
+ * as a **system transaction**—originating from or destined to the platform itself
+ * rather than an [Account].
+ *
+ * All properties are read-only; implementations are expected to be thread-safe.
+ */
+@OptIn(InternalTransactionApi::class)
+@Serializable(with = TransactionSerializer::class)
 interface Transaction {
 
-    /**
-     * A unique identifier for the transaction
-     */
+    /** Globally unique identifier of this transaction instance. */
     val identifier: UUID
 
     /**
-     * The sender of the transaction
-     * If the sender is null, the transaction is a system transaction
-     * System transactions are transactions that are not initiated by a user
+     * The [OfflineCloudPlayer] who initiated this transaction.
      */
-    val sender: TransactionUser?
+    val initiator: OfflineCloudPlayer?
 
     /**
-     * The receiver of the transaction
-     * If the receiver is null, the transaction is a system transaction
-     * System transactions are transactions that are not initiated by a user
+     * The uuid of the [Account] initiating the transfer, or `null` for system credits.
+     *
+     * When `null`, the funds originate from the platform (e.g. daily rewards).
      */
-    val receiver: TransactionUser?
+    val senderAccountId: UUID?
 
     /**
-     * The currency of the transaction
+     * The uuid of the [Account] receiving the funds, or `null` for system debits.
+     *
+     * When `null`, the funds are removed from circulation by the platform
+     * (e.g., taxes, sinks).
      */
+    val receiverAccountId: UUID?
+
+    /**
+     * Asynchronously retrieves the [Account] initiating the transfer, or `null` for system credits.
+     *
+     * When `null`, the funds originate from the platform (e.g. daily rewards).
+     */
+    suspend fun sender(): Account?
+
+    /**
+     * Asynchronously retrieves the [Account] receiving the funds, or `null` for system debits.
+     *
+     * When `null`, the funds are removed from circulation by the platform
+     * (e.g., taxes, sinks).
+     */
+    suspend fun receiver(): Account?
+
+    /**
+     * Currency in which the [amount] is denominated.
+     * */
     val currency: Currency
 
     /**
-     * The amount of the transaction
+     * Absolute value transferred, expressed with high-precision decimal arithmetic.
      */
     val amount: BigDecimal
 
     /**
-     * The data of the transaction
+     * Arbitrary, immutable set of metadata entries associated with this transaction.
      */
-    val data: ObjectSet<TransactionData>
+    val data: @Unmodifiable Set<TransactionData>
 
     /**
-     * If the transaction should ignore the minimum amount of the currency
+     * `true` if minimum-balance validation should be bypassed for this transaction.
+     *
+     * Typically used for administrative or system-level operations.
      */
     val ignoreMinimumAmount: Boolean
 
