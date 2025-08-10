@@ -1,7 +1,6 @@
 package dev.slne.surf.transaction.paper.commands.transaction.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.jorel.commandapi.CommandTree
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.doubleArgument
@@ -16,7 +15,7 @@ import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.deposit
+import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import dev.slne.surf.transaction.paper.plugin
@@ -54,12 +53,14 @@ private fun add(
     amount: Double
 ) = plugin.launch {
     val user = player.await() ?: return@launch
-    val result = user.deposit(
-        amount,
-        currency,
-        TransactionData(
-            "admin.transaction.add",
-            (sender as? Player)?.uniqueId?.toString() ?: sender.name
+    val result = user.transactionUser().deposit(
+        amount = amount.toBigDecimal(),
+        currency = currency,
+        additionalData = arrayOf(
+            TransactionData(
+                "admin.transaction.add",
+                (sender as? Player)?.uniqueId?.toString() ?: sender.name
+            )
         )
     )
 

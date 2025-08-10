@@ -4,17 +4,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-val projects: List<Pair<String, String>> = listOf(
-    "surf-transaction-api" to "SurfTransactionApi",
-    "surf-transaction-paper" to "SurfTransactionBukkit",
-    "surf-transaction-velocity" to "SurfTransactionVelocity",
-//    "surf-transaction-fallback" to "SurfTransactionFallback"
-)
-
-projects.forEach { (path, _) ->
-    include(path)
-}
-
+include("surf-transaction-api")
+include("surf-transaction-paper")
+include("surf-transaction-velocity")
 include("surf-transaction-core:surf-transaction-core-common")
 include("surf-transaction-core:surf-transaction-core-client")
 include("surf-transaction-server")

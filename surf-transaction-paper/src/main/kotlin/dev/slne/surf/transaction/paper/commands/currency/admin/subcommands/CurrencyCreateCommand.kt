@@ -14,7 +14,7 @@ import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.core.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.netty.packets.ServerboundCreateCurrencyPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundCreateCurrencyPacket
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyScaleArgument
 import dev.slne.surf.transaction.paper.commands.arguments.getCurrencyScale

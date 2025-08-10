@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.paper
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
+import dev.slne.surf.transaction.paper.commands.account.accountCommand
 import dev.slne.surf.transaction.paper.commands.balance.balanceCommand
 import dev.slne.surf.transaction.paper.commands.currency.currencyCommand
 import dev.slne.surf.transaction.paper.commands.pay.payCommand
@@ -13,6 +14,7 @@ class PaperMain : SuspendingJavaPlugin() {
         currencyCommand()
         balanceCommand()
         payCommand()
+        accountCommand()
     }
 }
 

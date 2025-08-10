@@ -6,7 +6,7 @@ import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.core.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.netty.packets.ClientboundRefreshCurrencies
+import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundRefreshCurrencies
 import org.springframework.stereotype.Service
 
 @Service

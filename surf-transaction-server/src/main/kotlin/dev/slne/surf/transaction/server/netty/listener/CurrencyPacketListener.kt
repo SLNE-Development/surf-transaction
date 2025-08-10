@@ -2,9 +2,9 @@ package dev.slne.surf.transaction.server.netty.listener
 
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacketHandler
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.netty.packets.CurrencyCreateResultResponsePacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundCreateCurrencyPacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundMakeDefaultCurrencyPacket
+import dev.slne.surf.transaction.core.netty.packets.bidirectional.CurrencyCreateResultResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundCreateCurrencyPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundMakeDefaultCurrencyPacket
 import dev.slne.surf.transaction.server.currency.CurrencyService
 import org.springframework.stereotype.Component
 

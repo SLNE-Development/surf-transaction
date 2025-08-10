@@ -3,10 +3,10 @@ package dev.slne.surf.transaction.server.netty.listener
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacketHandler
 import dev.slne.surf.cloud.api.common.netty.network.protocol.respond
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
-import dev.slne.surf.transaction.core.netty.packets.ServerboundBalancePacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundExecuteSingleTransactionPacket
-import dev.slne.surf.transaction.core.netty.packets.ServerboundTransferTransactionPacket
-import dev.slne.surf.transaction.core.netty.packets.TransactionResultResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.bidirectional.TransactionResultResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundBalancePacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundExecuteSingleTransactionPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundTransferTransactionPacket
 import dev.slne.surf.transaction.server.transaction.TransactionService
 import org.springframework.stereotype.Component
 
@@ -15,14 +15,20 @@ class TransactionPacketLister(private val transactionService: TransactionService
 
     @SurfNettyPacketHandler
     suspend fun handleBalance(packet: ServerboundBalancePacket) {
-        packet.respond(transactionService.balanceDecimal(packet.player, packet.currency))
+        packet.respond(
+            transactionService.balanceDecimal(
+                packet.accountId,
+                packet.currency
+            )
+        )
     }
 
     @SurfNettyPacketHandler
     suspend fun handleExecuteSingleTransaction(packet: ServerboundExecuteSingleTransactionPacket) {
         val result = when (packet.type) {
             ServerboundExecuteSingleTransactionPacket.Type.DEPOSIT -> transactionService.deposit(
-                packet.player,
+                packet.initiator,
+                packet.accountId,
                 packet.amount,
                 packet.currency,
                 packet.ignoreMinimum,
@@ -30,7 +36,8 @@ class TransactionPacketLister(private val transactionService: TransactionService
             )
 
             ServerboundExecuteSingleTransactionPacket.Type.WITHDRAW -> transactionService.withdraw(
-                packet.player,
+                packet.initiator,
+                packet.accountId,
                 packet.amount,
                 packet.currency,
                 packet.ignoreMinimum,
@@ -44,10 +51,11 @@ class TransactionPacketLister(private val transactionService: TransactionService
     @SurfNettyPacketHandler
     suspend fun handleTransferTransaction(packet: ServerboundTransferTransactionPacket) {
         val result = transactionService.transfer(
-            packet.sender,
+            packet.initiator,
+            packet.senderAccountId,
             packet.amount,
             packet.currency,
-            packet.receiver,
+            packet.receiverAccountId,
             packet.ignoreSenderMinimum,
             packet.ignoreReceiverMinimum,
             packet.additionalSenderData.toMutableObjectSet(),

@@ -11,7 +11,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
 import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
 import dev.slne.surf.transaction.core.currency.CurrencyCreateResult
-import dev.slne.surf.transaction.core.netty.packets.ServerboundMakeDefaultCurrencyPacket
+import dev.slne.surf.transaction.core.netty.packets.serverbound.ServerboundMakeDefaultCurrencyPacket
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import dev.slne.surf.transaction.paper.plugin
