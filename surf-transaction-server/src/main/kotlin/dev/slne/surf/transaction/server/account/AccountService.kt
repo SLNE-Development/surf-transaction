@@ -1,18 +1,39 @@
 package dev.slne.surf.transaction.server.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.transaction.api.account.AccountCreationResult
+import dev.slne.surf.transaction.api.account.result.AccountCreationResult
+import dev.slne.surf.transaction.api.util.ComponentResult
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class AccountService(private val accountRepository: AccountRepository) {
 
+    suspend fun addMemberToAccount(
+        accountId: UUID,
+        executorId: UUID,
+        targetId: UUID
+    ) = accountRepository.addMemberToAccount(
+        accountId = accountId,
+        executor = executorId,
+        target = targetId
+    )
+
+    suspend fun removeMemberFromAccount(
+        accountId: UUID,
+        executorId: UUID,
+        targetId: UUID
+    ) = accountRepository.removeMemberFromAccount(
+        accountId = accountId,
+        executor = executorId,
+        target = targetId
+    )
+
     suspend fun createAccount(
         owner: OfflineCloudPlayer,
         name: String,
         defaultAccount: Boolean
-    ): AccountCreationResult {
+    ): ComponentResult {
         val name = name.trim().replace(" ", "_")
 
         if (name.length < 3) {
@@ -26,7 +47,7 @@ class AccountService(private val accountRepository: AccountRepository) {
                 AccountCreationResult.FailureReason.NAME_TOO_LONG
             )
         }
-        
+
         if (runCatching { UUID.fromString(name) }.getOrNull() != null) {
             return AccountCreationResult.Failure(
                 AccountCreationResult.FailureReason.NAME_IS_UUID

@@ -25,5 +25,9 @@ object CommandPermission : PermissionRegistry() {
     val ACCOUNT_LIST = create("$ACCOUNT.list")
     val ACCOUNT_CREATE = create("$ACCOUNT.create")
     val ACCOUNT_DELETE = create("$ACCOUNT.delete")
+    val ACCOUNT_MEMBER = create("$ACCOUNT.member")
+    val ACCOUNT_MEMBER_ADD = create("$ACCOUNT_MEMBER.add")
+    val ACCOUNT_MEMBER_REMOVE = create("$ACCOUNT_MEMBER.remove")
+    val ACCOUNT_MEMBER_LIST = create("$ACCOUNT_MEMBER.list")
 
 }

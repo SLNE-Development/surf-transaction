@@ -5,10 +5,15 @@ import dev.slne.surf.cloud.api.common.util.mutableObjectSetOf
 import dev.slne.surf.cloud.api.common.util.toObjectSet
 import dev.slne.surf.cloud.api.server.plugin.CoroutineTransactional
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.api.account.AccountDeleteResult
+import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
+import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
+import dev.slne.surf.transaction.api.account.result.AccountResult
+import dev.slne.surf.transaction.api.util.ComponentResult
 import dev.slne.surf.transaction.core.account.AccountImpl
 import dev.slne.surf.transaction.server.account.db.AccountEntity
 import dev.slne.surf.transaction.server.account.db.AccountTable
+import dev.slne.surf.transaction.server.account.db.member.AccountMemberEntity
+import dev.slne.surf.transaction.server.account.db.member.AccountMemberTable
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Repository
@@ -18,9 +23,15 @@ import java.util.*
 @Repository
 class AccountRepository {
 
-    suspend fun deleteAccount(accountId: UUID): AccountDeleteResult {
+    /**
+     * Deletes the account with the specified [accountId].
+     *
+     * @param accountId The UUID of the account to be deleted.
+     * @return An [AccountDeleteResult] indicating the success or failure of the operation.
+     */
+    suspend fun deleteAccount(accountId: UUID): ComponentResult {
         val accountEntity = fetchByAccountId(accountId)
-            ?: return AccountDeleteResult.Failure(AccountDeleteResult.FailureReason.ACCOUNT_NOT_FOUND)
+            ?: return AccountResult.NotFound(accountId)
 
         accountEntity.delete()
 
@@ -59,7 +70,7 @@ class AccountRepository {
         }
 
         return AccountEntity.new {
-            this.owner = owner.uuid
+            this.ownerId = owner.uuid
             this.accountId = UUID.randomUUID()
             this.name = name
             this.defaultAccount = defaultAccount
@@ -88,7 +99,7 @@ class AccountRepository {
     suspend fun fetchDefaultAccount(
         player: OfflineCloudPlayer
     ): AccountEntity? = AccountEntity.find {
-        (AccountTable.owner eq player.uuid) and (AccountTable.defaultAccount eq true)
+        (AccountTable.ownerId eq player.uuid) and (AccountTable.defaultAccount eq true)
     }.singleOrNull()
 
     /**
@@ -98,7 +109,7 @@ class AccountRepository {
      * @return A set of [AccountEntity] objects representing the accounts owned by the player.
      */
     suspend fun fetchByPlayer(player: OfflineCloudPlayer): ObjectSet<AccountEntity> =
-        AccountEntity.find { AccountTable.owner eq player.uuid }.toObjectSet()
+        AccountEntity.find { AccountTable.ownerId eq player.uuid }.toObjectSet()
 
     /**
      * Fetches all accounts owned by the given [OfflineCloudPlayer] and converts them to API representation.
@@ -143,5 +154,65 @@ class AccountRepository {
      */
     suspend fun getByAccountName(name: String) =
         fetchByAccountName(name)?.toApi()
+
+    suspend fun fetchAccountMember(
+        accountId: UUID,
+        memberId: UUID
+    ): AccountMemberEntity? {
+        val accountEntity = fetchByAccountId(accountId) ?: return null
+
+        return AccountMemberEntity.find {
+            (AccountMemberTable.accountId eq accountEntity.id) and (AccountMemberTable.memberId eq memberId)
+        }.singleOrNull()
+    }
+
+    suspend fun addMemberToAccount(
+        accountId: UUID,
+        executor: UUID,
+        target: UUID
+    ): ComponentResult {
+        val accountEntity = fetchByAccountId(accountId) ?: return AccountResult.NotFound(accountId)
+        val targetMember = fetchAccountMember(accountId, target)
+
+        if (targetMember != null) {
+            return AccountMemberResult.AlreadyMember(
+                accountId = accountId,
+                executorUuid = executor,
+                targetUuid = target
+            )
+        }
+
+        AccountMemberEntity.new {
+            this.accountId = accountEntity
+            this.memberId = target
+        }
+
+        return AccountMemberResult.AddSuccess(
+            accountId = accountId,
+            executorUuid = executor,
+            targetUuid = target
+        )
+    }
+
+    suspend fun removeMemberFromAccount(
+        accountId: UUID,
+        executor: UUID,
+        target: UUID
+    ): ComponentResult {
+        val targetMember = fetchAccountMember(accountId, target)
+            ?: return AccountMemberResult.NotMember(
+                accountId = accountId,
+                executorUuid = executor,
+                targetUuid = target
+            )
+
+        targetMember.delete()
+
+        return AccountMemberResult.RemoveSuccess(
+            accountId = accountId,
+            executorUuid = executor,
+            targetUuid = target
+        )
+    }
 
 }

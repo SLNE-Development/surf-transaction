@@ -14,15 +14,9 @@ surfPaperPluginApi {
     bootstrapper("dev.slne.surf.transaction.paper.PaperBootstrap")
     authors.addAll("Ammo", "twisti")
     generateLibraryLoader(false)
+    foliaSupported(true)
 
     withCloudClientPaper()
-
-    bootstrapDependencies {
-        registerRequired("surf-cloud-bukkit")
-    }
-    serverDependencies {
-        registerRequired("surf-cloud-bukkit")
-    }
 }
 
 tasks.withType<ShadowJar> {

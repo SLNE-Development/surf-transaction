@@ -1,12 +1,12 @@
 package dev.slne.surf.transaction.server.currency.db
 
+import dev.slne.surf.cloud.api.server.exposed.table.AuditableLongEntity
+import dev.slne.surf.cloud.api.server.exposed.table.AuditableLongEntityClass
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import org.jetbrains.exposed.dao.LongEntity
-import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 
-class CurrencyEntity(id: EntityID<Long>) : LongEntity(id) {
-    companion object : LongEntityClass<CurrencyEntity>(CurrencyTable)
+class CurrencyEntity(id: EntityID<Long>) : AuditableLongEntity(id, CurrencyTable) {
+    companion object : AuditableLongEntityClass<CurrencyEntity>(CurrencyTable)
 
     var name by CurrencyTable.name
     var displayName by CurrencyTable.displayName

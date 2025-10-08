@@ -16,7 +16,7 @@ class ClientAccountBridge : CommonAccountBridge() {
 
     override suspend fun getAllAccountsByOwner(owner: OfflineCloudPlayer) =
         ServerboundGetAllAccountsPacket(owner).fireAndAwaitOrThrow().accounts.toObjectSet()
-    
+
     override suspend fun getDefaultAccountOrNull(player: OfflineCloudPlayer): Account? =
         ServerboundGetDefaultAccountPacket(player).fireAndAwaitOrThrow().account
 
@@ -40,4 +40,24 @@ class ClientAccountBridge : CommonAccountBridge() {
     override suspend fun deleteAccount(
         account: Account
     ) = ServerboundDeleteAccountPacket(account.accountId).fireAndAwaitOrThrow().result
+
+    override suspend fun addMemberToAccount(
+        account: Account,
+        executor: OfflineCloudPlayer,
+        target: OfflineCloudPlayer
+    ) = ServerboundAddMemberToAccountPacket(
+        accountId = account.accountId,
+        executorId = executor.uuid,
+        targetId = target.uuid
+    ).fireAndAwaitOrThrow().result
+
+    override suspend fun removeMemberFromAccount(
+        account: Account,
+        executor: OfflineCloudPlayer,
+        target: OfflineCloudPlayer
+    ) = ServerboundRemoveMemberFromAccountPacket(
+        accountId = account.accountId,
+        executorId = executor.uuid,
+        targetId = target.uuid
+    ).fireAndAwaitOrThrow().result
 }

@@ -2,6 +2,7 @@ package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.InternalTransactionApiBridge
+import dev.slne.surf.transaction.api.util.ComponentResult
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -27,7 +28,7 @@ interface InternalAccountBridge {
      * @param name The name of the new account.
      * @return A result indicating the success or failure of the account creation.
      */
-    suspend fun createAccount(owner: OfflineCloudPlayer, name: String): AccountCreationResult
+    suspend fun createAccount(owner: OfflineCloudPlayer, name: String): ComponentResult
 
     /**
      * Retrieves all accounts owned by a specific player.
@@ -78,7 +79,35 @@ interface InternalAccountBridge {
      * @param account The account to be deleted.
      * @return A result indicating the success or failure of the account deletion.
      */
-    suspend fun deleteAccount(account: Account): AccountDeleteResult
+    suspend fun deleteAccount(account: Account): ComponentResult
+
+    /**
+     * Adds a member to the specified account.
+     *
+     * @param account The account to which the member will be added.
+     * @param executor The player executing the addition of the member.
+     * @param target The player to be added as a member.
+     * @return A result indicating the success or failure of the member addition.
+     */
+    suspend fun addMemberToAccount(
+        account: Account,
+        executor: OfflineCloudPlayer,
+        target: OfflineCloudPlayer
+    ): ComponentResult
+
+    /**
+     * Removes a member from the specified account.
+     *
+     * @param account The account from which the member will be removed.
+     * @param executor The player executing the removal of the member.
+     * @param target The player to be removed as a member.
+     * @return A result indicating the success or failure of the member removal.
+     */
+    suspend fun removeMemberFromAccount(
+        account: Account,
+        executor: OfflineCloudPlayer,
+        target: OfflineCloudPlayer
+    ): ComponentResult
 
     val descriptor: SerialDescriptor
     fun serialize(encoder: Encoder, value: Account)

@@ -10,9 +10,6 @@ surfVelocityApi {
 
 velocityPluginFile {
     main = "dev.slne.surf.transaction.velocity.VelocityMain"
-    pluginDependencies {
-        register("surf-cloud-velocity")
-    }
 }
 
 dependencies {

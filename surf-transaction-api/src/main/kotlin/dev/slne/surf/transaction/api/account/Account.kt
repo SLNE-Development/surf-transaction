@@ -1,6 +1,8 @@
 package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.transaction.api.account.member.HasMembers
+import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.user.HasTransactions
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import kotlinx.serialization.Serializable
@@ -9,7 +11,7 @@ import java.util.*
 
 @OptIn(InternalTransactionApi::class)
 @Serializable(with = AccountSerializer::class)
-interface Account : HasTransactions {
+interface Account : HasTransactions, HasMembers {
 
     /**
      * Unique identifier for the account.
@@ -40,6 +42,16 @@ interface Account : HasTransactions {
 
     companion object {
         /**
+         * Minimum length for account names.
+         */
+        val MIN_NAME_LENGTH = 3
+
+        /**
+         * Maximum length for account names.
+         */
+        val MAX_NAME_LENGTH = 32
+
+        /**
          * Retrieves an account by its unique identifier.
          *
          * @param accountId The unique identifier of the account to retrieve.
@@ -53,7 +65,7 @@ interface Account : HasTransactions {
          *
          * @param owner The owner of the account.
          * @param name The name of the account.
-         * @return An [AccountCreationResult] indicating the success or failure of the account creation.
+         * @return An [dev.slne.surf.transaction.api.account.result.AccountCreationResult] indicating the success or failure of the account creation.
          */
         suspend fun create(
             owner: OfflineCloudPlayer,

@@ -1,10 +1,7 @@
 package dev.slne.surf.transaction.server.netty.listener
 
 import dev.slne.surf.cloud.api.common.meta.SurfNettyPacketHandler
-import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundAccountResponsePacket
-import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundAllAccountsResponsePacket
-import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundCreateAccountResponsePacket
-import dev.slne.surf.transaction.core.netty.packets.clientbound.ClientboundDeleteAccountResponsePacket
+import dev.slne.surf.transaction.core.netty.packets.clientbound.*
 import dev.slne.surf.transaction.core.netty.packets.serverbound.*
 import dev.slne.surf.transaction.server.account.AccountService
 import org.springframework.stereotype.Component
@@ -18,6 +15,38 @@ class AccountPacketListener(
         packet.respond(
             ClientboundAccountResponsePacket(
                 accountService.findAccountByAccountId(packet.accountId)
+            )
+        )
+    }
+
+    @SurfNettyPacketHandler
+    suspend fun handleAddMemberToAccountPacket(packet: ServerboundAddMemberToAccountPacket) {
+        packet.respond(
+            ClientboundAddMemberToAccountResultPacket(
+                accountId = packet.accountId,
+                executorId = packet.executorId,
+                targetId = packet.targetId,
+                result = accountService.addMemberToAccount(
+                    packet.accountId,
+                    packet.executorId,
+                    packet.targetId
+                )
+            )
+        )
+    }
+
+    @SurfNettyPacketHandler
+    suspend fun handleRemoveMemberFromAccountPacket(packet: ServerboundRemoveMemberFromAccountPacket) {
+        packet.respond(
+            ClientboundRemoveMemberFromAccountResultPacket(
+                accountId = packet.accountId,
+                executorId = packet.executorId,
+                targetId = packet.targetId,
+                result = accountService.removeMemberFromAccount(
+                    packet.accountId,
+                    packet.executorId,
+                    packet.targetId
+                )
             )
         )
     }

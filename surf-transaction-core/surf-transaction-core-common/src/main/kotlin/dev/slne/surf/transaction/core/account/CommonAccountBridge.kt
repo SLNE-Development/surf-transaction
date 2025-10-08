@@ -14,7 +14,7 @@ abstract class CommonAccountBridge : InternalAccountBridge {
         require(value is AccountImpl) { "Value must be of type AccountImpl" }
         AccountImpl.serializer().serialize(encoder, value)
     }
-    
+
     override fun deserialize(decoder: Decoder): Account {
         return AccountImpl.serializer().deserialize(decoder)
     }

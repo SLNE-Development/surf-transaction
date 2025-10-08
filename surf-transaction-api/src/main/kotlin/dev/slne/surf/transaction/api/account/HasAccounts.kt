@@ -49,7 +49,7 @@ interface HasAccounts {
      * Deletes the specified [account] from this player's accounts.
      *
      * @param account the account to delete; must be non-null
-     * @return an [AccountDeleteResult] indicating success or failure
+     * @return an [dev.slne.surf.transaction.api.account.result.AccountDeleteResult] indicating success or failure
      */
     suspend fun deleteAccount(account: Account) =
         InternalAccountBridge.instance.deleteAccount(account)
