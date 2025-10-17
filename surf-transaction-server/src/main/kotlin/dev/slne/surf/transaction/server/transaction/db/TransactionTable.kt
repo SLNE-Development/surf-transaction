@@ -6,7 +6,7 @@ import dev.slne.surf.transaction.server.account.db.AccountTable
 import dev.slne.surf.transaction.server.currency.db.CurrencyTable
 import org.jetbrains.exposed.sql.ReferenceOption
 
-object TransactionTable : AuditableLongIdTable("transaction_transactions") {
+object TransactionTable : AuditableLongIdTable("transactions") {
     val identifier = nativeUuid("identifier").uniqueIndex()
     val initiator = nativeUuid("initiator_id").nullable()
     val sender = optReference(

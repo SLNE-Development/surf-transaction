@@ -5,7 +5,7 @@ import dev.slne.surf.cloud.api.server.exposed.table.AuditableLongIdTable
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 
-object CurrencyTable : AuditableLongIdTable("transaction_currencies") {
+object CurrencyTable : AuditableLongIdTable("currencies") {
     val name = char("name", Currency.CURRENCY_NAME_MAX_LENGTH).uniqueIndex()
     val displayName = component("display_name")
     val symbol = char("symbol", Currency.CURRENCY_SYMBOL_MAX_LENGTH)
