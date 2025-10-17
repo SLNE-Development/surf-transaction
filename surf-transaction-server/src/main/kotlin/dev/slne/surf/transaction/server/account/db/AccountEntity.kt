@@ -21,7 +21,7 @@ class AccountEntity(id: EntityID<Long>) : LongEntity(id) {
     fun toApi() = AccountImpl(
         accountId = accountId,
         ownerUuid = ownerId,
-        memberUuidList = members.map { it.memberId }.toSet(),
+        memberUuidList = members.map { it.memberId }.toList(),
         name = name,
         defaultAccount = defaultAccount,
     )

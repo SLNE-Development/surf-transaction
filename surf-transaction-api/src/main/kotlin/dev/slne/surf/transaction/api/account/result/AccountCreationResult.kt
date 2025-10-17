@@ -5,12 +5,6 @@ import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.util.ComponentResult
 import kotlinx.serialization.Serializable
 
-/**
- * Represents the result of an account creation operation.
- * This sealed class encapsulates both successful and failed account creation attempts.
- *
- * @property message A message describing the result of the account creation attempt.
- */
 @Serializable
 sealed class AccountCreationResult : ComponentResult {
 

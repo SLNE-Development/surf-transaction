@@ -2,6 +2,7 @@ package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.account.member.HasMembers
+import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.user.HasTransactions
 import dev.slne.surf.transaction.api.util.ComponentResult
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
@@ -70,7 +71,7 @@ interface Account : HasTransactions, HasMembers {
         suspend fun create(
             owner: OfflineCloudPlayer,
             name: String
-        ): ComponentResult = InternalAccountBridge.instance.createAccount(owner, name)
+        ): AccountCreationResult = InternalAccountBridge.instance.createAccount(owner, name)
     }
 
 }

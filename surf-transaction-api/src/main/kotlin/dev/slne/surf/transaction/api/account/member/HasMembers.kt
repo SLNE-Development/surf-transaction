@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.api.account.member
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.transaction.api.util.ComponentResult
+import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import it.unimi.dsi.fastutil.objects.ObjectSet
 
 interface HasMembers {
@@ -19,7 +19,7 @@ interface HasMembers {
     suspend fun addMember(
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult
+    ): AccountMemberResult
 
     /**
      * Removes a member from the account.
@@ -30,7 +30,7 @@ interface HasMembers {
     suspend fun removeMember(
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult
+    ): AccountMemberResult
 
     /**
      * Checks if a player is a member of the account.

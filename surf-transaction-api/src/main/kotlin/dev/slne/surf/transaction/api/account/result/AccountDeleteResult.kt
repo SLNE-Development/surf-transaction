@@ -1,16 +1,11 @@
 package dev.slne.surf.transaction.api.account.result
 
+import dev.slne.surf.cloud.api.common.netty.network.codec.kotlinx.java.SerializableUUID
 import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.util.ComponentResult
 import kotlinx.serialization.Serializable
 
-/**
- * Represents the result of an account deletion operation.
- * This sealed class encapsulates both successful and failed account deletion attempts.
- *
- * @property message A message describing the result of the account deletion attempt.
- */
 @Serializable
 sealed class AccountDeleteResult : ComponentResult {
 
@@ -27,6 +22,19 @@ sealed class AccountDeleteResult : ComponentResult {
             success("Das Konto ")
             variableValue(account.name)
             success(" wurde erfolgreich gelöscht.")
+        }
+    }
+
+    @Serializable
+    data class NotFound(
+        val accountId: SerializableUUID
+    ) : AccountDeleteResult() {
+        override val isSuccess = false
+
+        override suspend fun SurfComponentBuilder.buildMessage() {
+            error("Das Konto mit der Id ")
+            variableValue(accountId.toString())
+            error(" wurde nicht gefunden.")
         }
     }
 

@@ -30,6 +30,20 @@ sealed class AccountMemberResult : ComponentResult {
         }
     }
 
+
+    @Serializable
+    data class AccountNotFound(
+        val accountId: SerializableUUID
+    ) : AccountMemberResult() {
+        override val isSuccess = false
+
+        override suspend fun SurfComponentBuilder.buildMessage() {
+            error("Das Konto mit der Id ")
+            variableValue(accountId.toString())
+            error(" wurde nicht gefunden.")
+        }
+    }
+
     @Serializable
     data class AlreadyMember(
         val accountId: SerializableUUID,

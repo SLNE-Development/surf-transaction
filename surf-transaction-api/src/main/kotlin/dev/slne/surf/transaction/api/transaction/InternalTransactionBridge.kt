@@ -41,7 +41,6 @@ interface InternalTransactionBridge {
         vararg additionalData: TransactionData
     ): TransactionResult
 
-
     /**
      * Processes a withdrawal transaction for the specified account.
      *
@@ -61,7 +60,6 @@ interface InternalTransactionBridge {
         ignoreMinimum: Boolean = false,
         vararg additionalData: TransactionData
     ): TransactionResult
-
 
     /**
      * Transfers an amount from one account to another.
@@ -88,7 +86,6 @@ interface InternalTransactionBridge {
         additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
         additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
     ): TransactionResult
-
 
     /**
      * Retrieves the balance of the specified account in the given currency.

@@ -9,16 +9,16 @@ import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.account.InternalAccountBridge
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
-import dev.slne.surf.transaction.api.util.ComponentResult
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import java.util.*
 
 @Serializable
 data class AccountImpl(
     override val accountId: @Contextual UUID,
     val ownerUuid: @Contextual UUID,
-    private val memberUuidList: Set<@Contextual UUID>,
+    private val memberUuidList: List<@Contextual UUID>,
     override val name: String,
     override val defaultAccount: Boolean = false
 ) : Account {
@@ -26,13 +26,14 @@ data class AccountImpl(
     override val owner: OfflineCloudPlayer
         get() = ownerUuid.toOfflineCloudPlayer()
 
+    @Transient
     private val _members = memberUuidList.map { it.toOfflineCloudPlayer() }.toObjectSet()
     override val members get() = _members.freeze()
 
     override suspend fun addMember(
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult {
+    ): AccountMemberResult {
         if (isMember(target)) {
             return AccountMemberResult.AlreadyMember(
                 accountId = accountId,
@@ -51,7 +52,7 @@ data class AccountImpl(
     override suspend fun removeMember(
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult {
+    ): AccountMemberResult {
         if (!isMember(target)) {
             return AccountMemberResult.NotMember(
                 accountId = accountId,

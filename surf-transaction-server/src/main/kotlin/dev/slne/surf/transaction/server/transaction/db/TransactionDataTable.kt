@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 object TransactionDataTable : LongIdTable("transaction_data") {
 
     val transaction = reference(
-        "transaction", TransactionTable,
+        "transaction_id", TransactionTable,
         onUpdate = ReferenceOption.CASCADE,
         onDelete = ReferenceOption.CASCADE
     )

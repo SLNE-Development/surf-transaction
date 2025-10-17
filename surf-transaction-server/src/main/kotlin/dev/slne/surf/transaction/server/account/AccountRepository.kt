@@ -7,8 +7,6 @@ import dev.slne.surf.cloud.api.server.plugin.CoroutineTransactional
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
-import dev.slne.surf.transaction.api.account.result.AccountResult
-import dev.slne.surf.transaction.api.util.ComponentResult
 import dev.slne.surf.transaction.core.account.AccountImpl
 import dev.slne.surf.transaction.server.account.db.AccountEntity
 import dev.slne.surf.transaction.server.account.db.AccountTable
@@ -29,9 +27,9 @@ class AccountRepository {
      * @param accountId The UUID of the account to be deleted.
      * @return An [AccountDeleteResult] indicating the success or failure of the operation.
      */
-    suspend fun deleteAccount(accountId: UUID): ComponentResult {
+    suspend fun deleteAccount(accountId: UUID): AccountDeleteResult {
         val accountEntity = fetchByAccountId(accountId)
-            ?: return AccountResult.NotFound(accountId)
+            ?: return AccountDeleteResult.NotFound(accountId)
 
         accountEntity.delete()
 
@@ -170,8 +168,9 @@ class AccountRepository {
         accountId: UUID,
         executor: UUID,
         target: UUID
-    ): ComponentResult {
-        val accountEntity = fetchByAccountId(accountId) ?: return AccountResult.NotFound(accountId)
+    ): AccountMemberResult {
+        val accountEntity =
+            fetchByAccountId(accountId) ?: return AccountMemberResult.AccountNotFound(accountId)
         val targetMember = fetchAccountMember(accountId, target)
 
         if (targetMember != null) {
@@ -198,7 +197,7 @@ class AccountRepository {
         accountId: UUID,
         executor: UUID,
         target: UUID
-    ): ComponentResult {
+    ): AccountMemberResult {
         val targetMember = fetchAccountMember(accountId, target)
             ?: return AccountMemberResult.NotMember(
                 accountId = accountId,

@@ -2,7 +2,9 @@ package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.InternalTransactionApiBridge
-import dev.slne.surf.transaction.api.util.ComponentResult
+import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
+import dev.slne.surf.transaction.api.account.result.AccountCreationResult
+import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import it.unimi.dsi.fastutil.objects.ObjectSet
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -28,7 +30,7 @@ interface InternalAccountBridge {
      * @param name The name of the new account.
      * @return A result indicating the success or failure of the account creation.
      */
-    suspend fun createAccount(owner: OfflineCloudPlayer, name: String): ComponentResult
+    suspend fun createAccount(owner: OfflineCloudPlayer, name: String): AccountCreationResult
 
     /**
      * Retrieves all accounts owned by a specific player.
@@ -79,7 +81,7 @@ interface InternalAccountBridge {
      * @param account The account to be deleted.
      * @return A result indicating the success or failure of the account deletion.
      */
-    suspend fun deleteAccount(account: Account): ComponentResult
+    suspend fun deleteAccount(account: Account): AccountDeleteResult
 
     /**
      * Adds a member to the specified account.
@@ -93,7 +95,7 @@ interface InternalAccountBridge {
         account: Account,
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult
+    ): AccountMemberResult
 
     /**
      * Removes a member from the specified account.
@@ -107,7 +109,7 @@ interface InternalAccountBridge {
         account: Account,
         executor: OfflineCloudPlayer,
         target: OfflineCloudPlayer
-    ): ComponentResult
+    ): AccountMemberResult
 
     val descriptor: SerialDescriptor
     fun serialize(encoder: Encoder, value: Account)

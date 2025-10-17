@@ -2,7 +2,6 @@ package dev.slne.surf.transaction.server.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
-import dev.slne.surf.transaction.api.util.ComponentResult
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -33,7 +32,7 @@ class AccountService(private val accountRepository: AccountRepository) {
         owner: OfflineCloudPlayer,
         name: String,
         defaultAccount: Boolean
-    ): ComponentResult {
+    ): AccountCreationResult {
         val name = name.trim().replace(" ", "_")
 
         if (name.length < 3) {

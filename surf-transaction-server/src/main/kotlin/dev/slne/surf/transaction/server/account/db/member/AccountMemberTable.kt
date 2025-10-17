@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.ReferenceOption
 
 object AccountMemberTable : AuditableLongIdTable("account_members") {
     val accountId = reference(
-        "account",
+        "account_id",
         AccountTable,
         onDelete = ReferenceOption.CASCADE,
         onUpdate = ReferenceOption.CASCADE
