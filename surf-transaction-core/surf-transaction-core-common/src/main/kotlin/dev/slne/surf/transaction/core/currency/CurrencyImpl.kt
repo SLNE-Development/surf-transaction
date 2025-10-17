@@ -30,11 +30,11 @@ data class CurrencyImpl(
 
     companion object {
         val DEFAULT = CurrencyImpl(
-            name = "default",
-            displayName = buildText { text("Default Currency") },
-            symbol = "$",
-            symbolDisplay = buildText { text("$") },
-            scale = CurrencyScale.DECIMAL_2,
+            name = "castcoin",
+            displayName = buildText { primary("CastCoin") },
+            symbol = "CC",
+            symbolDisplay = buildText { primary("CC") },
+            scale = CurrencyScale.INTEGER,
             defaultCurrency = true,
             minimumAmount = BigDecimal.ZERO
         )
