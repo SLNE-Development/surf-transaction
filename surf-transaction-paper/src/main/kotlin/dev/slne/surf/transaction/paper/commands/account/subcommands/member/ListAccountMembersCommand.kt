@@ -6,6 +6,7 @@ import dev.jorel.commandapi.kotlindsl.getValue
 import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.messages.pagination.Pagination
 import dev.slne.surf.transaction.api.account.Account
@@ -18,6 +19,9 @@ import net.kyori.adventure.text.Component
 private typealias MemberDisplayName = Pair<OfflineCloudPlayer, Component>
 
 private val pagination = Pagination<MemberDisplayName> {
+    title {
+        info("Account Mitglieder".toSmallCaps())
+    }
     rowRenderer { (player, displayName), index ->
         listOf(displayName)
     }
