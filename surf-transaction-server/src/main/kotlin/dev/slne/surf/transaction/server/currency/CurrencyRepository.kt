@@ -19,14 +19,12 @@ class CurrencyRepository {
     private val log = logger()
 
     suspend fun fetchAll(): FetchAllResult {
-        val currencies = CurrencyEntity.all().toMutableList()
+        val currencies = CurrencyEntity.all().mapTo(mutableObjectListOf()) { it.toApi() }
         val defaultCurrency = currencies.find { it.defaultCurrency }
         val finalDefaultCurrency: CurrencyImpl
-        val apiCurrencies: ObjectList<CurrencyImpl>
 
         if (defaultCurrency != null) {
-            finalDefaultCurrency = defaultCurrency.toApi()
-            apiCurrencies = currencies.mapTo(mutableObjectListOf()) { it.toApi() }
+            finalDefaultCurrency = defaultCurrency
         } else {
             log.atWarning()
                 .log("No default currency found in the database. Creating a fallback default currency...")
@@ -40,11 +38,11 @@ class CurrencyRepository {
                 this.defaultCurrency = CurrencyImpl.DEFAULT.defaultCurrency
                 minimumAmount = CurrencyImpl.DEFAULT.minimumAmount
             }.toApi()
-            apiCurrencies = currencies.mapTo(mutableObjectListOf()) { it.toApi() }
-                .also { it.add(finalDefaultCurrency) }
+
+            currencies.add(finalDefaultCurrency)
         }
 
-        return FetchAllResult(currencies = apiCurrencies, defaultCurrency = finalDefaultCurrency)
+        return FetchAllResult(currencies = currencies, defaultCurrency = finalDefaultCurrency)
     }
 
     suspend fun createCurrency(

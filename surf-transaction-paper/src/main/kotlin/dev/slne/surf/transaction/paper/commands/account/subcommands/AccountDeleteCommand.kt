@@ -27,11 +27,11 @@ fun CommandAPICommand.accountDeleteCommand() = subcommand("delete") {
             val cloudPlayer = player.toCloudPlayer() ?: return@launch
 
             val result = cloudPlayer.transactionUser().deleteAccount(account)
-            val message = result.message
+            val message = result.asComponent()
 
             cloudPlayer.sendText {
                 appendPrefix()
-                info(message)
+                append(message)
             }
         }
     }

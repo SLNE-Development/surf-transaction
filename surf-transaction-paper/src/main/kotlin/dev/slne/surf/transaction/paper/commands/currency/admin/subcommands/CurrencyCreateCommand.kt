@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.paper.commands.currency.admin.subcommands
 
 import com.github.shynixn.mccoroutine.folia.launch
-import dev.jorel.commandapi.CommandAPIBukkit
+import dev.jorel.commandapi.CommandAPIPaper
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.*
 import dev.slne.surf.cloud.api.client.netty.packet.fireAndAwaitOrThrow
@@ -62,7 +62,7 @@ private fun create(
 ) {
     val existingCurrency = Currency.byName(name)
     if (existingCurrency != null) {
-        throw CommandAPIBukkit.failWithAdventureComponent(buildText {
+        throw CommandAPIPaper.failWithAdventureComponent(buildText {
             error("Currency ")
             append(existingCurrency.displayName)
             error(" already exists!")

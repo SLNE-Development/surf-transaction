@@ -2,8 +2,8 @@ package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
 import dev.slne.surf.transaction.api.account.member.HasMembers
-import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.user.HasTransactions
+import dev.slne.surf.transaction.api.util.ComponentResult
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
@@ -65,12 +65,12 @@ interface Account : HasTransactions, HasMembers {
          *
          * @param owner The owner of the account.
          * @param name The name of the account.
-         * @return An [dev.slne.surf.transaction.api.account.result.AccountCreationResult] indicating the success or failure of the account creation.
+         * @return An [ComponentResult] indicating the success or failure of the account creation.
          */
         suspend fun create(
             owner: OfflineCloudPlayer,
             name: String
-        ): AccountCreationResult = InternalAccountBridge.instance.createAccount(owner, name)
+        ): ComponentResult = InternalAccountBridge.instance.createAccount(owner, name)
     }
 
 }

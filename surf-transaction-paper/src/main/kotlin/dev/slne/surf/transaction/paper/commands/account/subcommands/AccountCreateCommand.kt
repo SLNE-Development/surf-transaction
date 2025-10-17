@@ -23,11 +23,11 @@ fun CommandAPICommand.accountCreateCommand() = subcommand("create") {
         plugin.launch {
             val cloudPlayer = player.toCloudPlayer() ?: return@launch
             val result = cloudPlayer.transactionUser().createAccount(name)
-            val message = result.message
+            val message = result.asComponent()
 
             cloudPlayer.sendText {
                 appendPrefix()
-                info(message)
+                append(message)
             }
         }
     }
