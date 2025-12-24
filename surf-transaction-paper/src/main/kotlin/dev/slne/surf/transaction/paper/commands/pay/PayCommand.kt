@@ -1,24 +1,25 @@
 package dev.slne.surf.transaction.paper.commands.pay
 
-import com.github.shynixn.mccoroutine.folia.launch
+import dev.jorel.commandapi.CommandAPI
+import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
+import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
 import dev.jorel.commandapi.kotlindsl.doubleArgument
-import dev.jorel.commandapi.kotlindsl.playerExecutor
-import dev.slne.surf.cloud.api.client.paper.command.args.offlineCloudPlayerArgument
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.cloud.api.common.player.toOfflineCloudPlayer
-import dev.slne.surf.surfapi.core.api.generated.SoundKeys
-import dev.slne.surf.surfapi.core.api.messages.adventure.playSound
+import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
+import dev.slne.surf.surfapi.bukkit.api.command.util.awaitAsyncPlayerProfile
+import dev.slne.surf.surfapi.bukkit.api.command.util.idOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.redis.RedisService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
-import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.Deferred
-import net.kyori.adventure.sound.Sound
+import dev.slne.surf.transaction.paper.redis.events.pay.PaymentReceivedEvent
 import org.bukkit.entity.Player
+import java.util.*
 
 private val log = logger()
 
@@ -26,66 +27,62 @@ fun payCommand() = commandTree("pay") {
     withPermission(CommandPermission.PAY)
     withAliases("bezahlen", "überweisen")
 
-    offlineCloudPlayerArgument("receiver") {
+    argument(AsyncPlayerProfileArgument("receiver")) {
         doubleArgument("amount", min = 1.0) {
-            playerExecutor { sender, args ->
-                pay(sender, args.getUnchecked("receiver")!!, args.getUnchecked("amount")!!)
+            playerExecutorSuspend { sender, args ->
+                pay(
+                    sender,
+                    args.awaitAsyncPlayerProfile("receiver").idOrThrow(),
+                    args.getUnchecked("amount")!!
+                )
             }
         }
     }
 }
 
 
-private fun pay(
+private suspend fun pay(
     sender: Player,
-    receiver: Deferred<OfflineCloudPlayer?>,
+    receiverUuid: UUID,
     amount: Double
-) = plugin.launch {
-    val senderUser =
-        sender.toOfflineCloudPlayer() ?: error("Sender is not a valid OfflineCloudPlayer")
-    val receiverUser = receiver.await() ?: return@launch
-
-    if (senderUser.uuid == receiverUser.uuid) {
-        sender.sendText {
-            appendPrefix()
-            error("Du kannst dir kein Geld selbst überweisen!")
-        }
-        return@launch
+) {
+    if (sender.uniqueId == receiverUuid) {
+        throw CommandAPI.failWithString("Du kannst dir kein Geld selbst überweisen!")
     }
 
     val currency = Currency.default()
-    val result = senderUser.transactionUser().transfer(
+    val result = sender.transactionUser().transfer(
         amount = amount.toBigDecimal(),
         currency = currency,
-        receiver = receiverUser.transactionUser().getDefaultAccount()
+        receiver = TransactionUser.byUuid(receiverUuid).getDefaultAccount()
     )
 
     when (result) {
-        is TransactionResult.SUCCESS, is TransactionResult.TRANSFER_SUCCESS -> handleSuccess(
+        is TransactionResult.Success, is TransactionResult.TransferSuccess -> handleSuccess(
             sender,
-            receiverUser,
+            receiverUuid,
             amount,
             currency
         )
 
-        TransactionResult.RECEIVER_INSUFFICIENT_FUNDS -> handleReceiverInsufficientFunds(
+        TransactionResult.ReceiverInsufficientFunds -> handleReceiverInsufficientFunds(
             sender,
-            receiverUser,
+            receiverUuid,
             currency
         )
 
-        TransactionResult.SENDER_INSUFFICIENT_FUNDS -> handleSenderInsufficientFunds(
+        TransactionResult.SenderInsufficientFunds -> handleSenderInsufficientFunds(
             sender,
             currency
         )
 
-        is TransactionResult.DATABASE_ERROR -> handleError(sender, result)
+        is TransactionResult.DatabaseError -> handleError(sender, result)
     }
 }
 
 private suspend fun handleSuccess(
     sender: Player,
-    receiver: OfflineCloudPlayer,
+    receiver: UUID,
     amount: Double,
     currency: Currency
 ) {
@@ -95,30 +92,14 @@ private suspend fun handleSuccess(
         info("Du hast ")
         append(currency.format(amount))
         info(" an ")
-        append(receiver.displayName())
+        append(Components.usernameOrUuidComponent(receiver))
         info(" überwiesen.")
     }
 
-    val onlineReceiver = receiver.player ?: return
-
-    onlineReceiver.sendText {
-        appendPrefix()
-
-        info("Du hast ")
-        append(currency.format(amount))
-        info(" von ")
-        variableValue(sender.name)
-        info(" erhalten.")
-    }
-
-    onlineReceiver.playSound {
-        type(SoundKeys.ENTITY_CHICKEN_EGG)
-        volume(.5f)
-        source(Sound.Source.PLAYER)
-    }
+    RedisService.publish(PaymentReceivedEvent(receiver, sender.name, currency, amount)).await()
 }
 
-private fun handleError(sender: Player, error: TransactionResult.DATABASE_ERROR) {
+private fun handleError(sender: Player, error: TransactionResult.DatabaseError) {
     sender.sendText {
         appendPrefix()
         error("Es ist ein Fehler aufgetreten!")
@@ -126,7 +107,7 @@ private fun handleError(sender: Player, error: TransactionResult.DATABASE_ERROR)
 
     log.atSevere()
         .withCause(error.cause)
-        .log("Database error during transaction for player ${sender.name} (UUID: ${sender.uniqueId}): ${error.message}")
+        .log("Database error during transaction for player ${sender.name} (UUID: ${sender.uniqueId})")
 }
 
 private fun handleSenderInsufficientFunds(sender: Player, currency: Currency) {
@@ -141,14 +122,13 @@ private fun handleSenderInsufficientFunds(sender: Player, currency: Currency) {
 
 private suspend fun handleReceiverInsufficientFunds(
     sender: Player,
-    receiver: OfflineCloudPlayer,
+    receiver: UUID,
     currency: Currency
 ) {
     sender.sendText {
         appendPrefix()
 
-        error("Der Benutzer ")
-        append(receiver.displayName())
+        append(Components.usernameOrUuidComponent(receiver))
         error(" hat nicht genügend ")
         append(currency.displayName)
         error(" um diese Transaktion durchzuführen!")

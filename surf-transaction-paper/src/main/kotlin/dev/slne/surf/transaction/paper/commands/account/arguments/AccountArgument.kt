@@ -1,66 +1,55 @@
 package dev.slne.surf.transaction.paper.commands.account.arguments
 
-import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.scope
-import dev.jorel.commandapi.CommandAPI
+import com.mojang.brigadier.suggestion.Suggestions
+import com.mojang.brigadier.suggestion.SuggestionsBuilder
 import dev.jorel.commandapi.CommandAPICommand
+import dev.jorel.commandapi.SuggestionInfo
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
-import dev.jorel.commandapi.arguments.CustomArgument
 import dev.jorel.commandapi.arguments.StringArgument
-import dev.slne.surf.cloud.api.common.player.toCloudPlayer
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.surfapi.bukkit.api.command.args.SuspendCustomArgument
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.core.account.AccountServiceImpl
 import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
+import org.bukkit.command.CommandSender
 import java.util.concurrent.CompletableFuture
 
-class AccountArgument(nodeName: String) : CustomArgument<Deferred<Account?>, String>(
-    StringArgument(nodeName),
-    { info ->
-        val sender = info.sender
-        val cloudPlayer = sender.toCloudPlayer()
-            ?: throw CommandAPI.failWithString("You must be a player to use this command.")
-
-        val input = info.input
-        val deferred = CompletableDeferred<Account?>()
-
-        plugin.launch {
-            val account = cloudPlayer.transactionUser().getAccountByName(input)
-
-            if (account == null) {
-                sender.sendText {
-                    appendPrefix()
-
-                    error("Du besitzt kein Konto mit dem Namen ")
-                    variableValue(input)
-                    error(".")
-                }
-
-                deferred.complete(null)
-            } else {
-                deferred.complete(account)
-            }
-        }
-
-        deferred
-    }
-) {
+class AccountArgument(nodeName: String) :
+    SuspendCustomArgument<Account, String>(StringArgument(nodeName)) {
     init {
-        replaceSuggestions(ArgumentSuggestions.stringCollectionAsync { info ->
-            val sender = info.sender
-            val cloudPlayer = sender.toCloudPlayer()
-                ?: return@stringCollectionAsync CompletableFuture.completedFuture(emptyList<String>())
+        replaceSuggestions(AccountSuggestions)
+    }
 
-            plugin.scope.future {
-                cloudPlayer.transactionUser().getAllAccounts()
-                    .sortedBy { it.name }
-                    .map { it.name }
+    override suspend fun CoroutineScope.parse(info: CustomArgumentInfo<String>): Account {
+        val input = info.input
+        val account = Account.byName(input) ?: throw CustomArgumentException.fromMessageBuilder(
+            MessageBuilder()
+                .append("Das Konto ")
+                .appendArgInput()
+                .append(" existiert nicht.")
+        )
+
+        return account
+    }
+
+    object AccountSuggestions : ArgumentSuggestions<CommandSender> {
+        override fun suggest(
+            info: SuggestionInfo<CommandSender>,
+            builder: SuggestionsBuilder
+        ): CompletableFuture<Suggestions> = plugin.scope.future {
+            val currentInput = info.currentInput
+            val suggestions =
+                AccountServiceImpl.get().completeAccountNameSuggestions(currentInput, 100)
+
+            for (suggestion in suggestions) {
+                builder.suggest(suggestion)
             }
-        })
+
+            builder.build()
+        }
     }
 }
 

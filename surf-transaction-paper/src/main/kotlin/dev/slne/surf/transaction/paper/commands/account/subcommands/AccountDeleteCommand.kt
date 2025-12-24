@@ -1,38 +1,28 @@
 package dev.slne.surf.transaction.paper.commands.account.subcommands
 
-import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.kotlindsl.getValue
-import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.cloud.api.common.player.toCloudPlayer
+import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
+import dev.slne.surf.surfapi.core.api.command.args.awaiting
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountArgument
-import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.Deferred
 
 fun CommandAPICommand.accountDeleteCommand() = subcommand("delete") {
     withPermission(CommandPermission.ACCOUNT_DELETE)
 
     accountArgument("account")
 
-    playerExecutor { player, args ->
-        val account: Deferred<Account?> by args
+    playerExecutorSuspend { player, args ->
+        val account = args.awaiting<Account>("account")
+        val result = player.transactionUser().deleteAccount(account)
 
-        plugin.launch {
-            val account = account.await() ?: return@launch
-            val cloudPlayer = player.toCloudPlayer() ?: return@launch
-
-            val result = cloudPlayer.transactionUser().deleteAccount(account)
-            val message = result.asComponent()
-
-            cloudPlayer.sendText {
-                appendPrefix()
-                append(message)
-            }
+        player.sendText {
+            appendPrefix()
+            append(Components.Account.formatDeletionResult(result))
         }
     }
 }

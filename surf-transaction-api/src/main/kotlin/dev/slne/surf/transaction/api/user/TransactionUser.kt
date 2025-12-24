@@ -1,23 +1,23 @@
 package dev.slne.surf.transaction.api.user
 
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.cloud.api.common.util.objectSetOf
+import dev.slne.surf.surfapi.core.api.messages.adventure.getPointer
+import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.api.account.HasAccounts
+import dev.slne.surf.transaction.api.account.AccountAccess
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
+import dev.slne.surf.transaction.api.transactional.Transactional
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
-import it.unimi.dsi.fastutil.objects.ObjectSet
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.identity.Identity
 import java.math.BigDecimal
+import java.util.*
 
-interface TransactionUser : HasTransactions, HasAccounts {
-
-    override val cloudPlayer: OfflineCloudPlayer
-
+interface TransactionUser : Transactional, AccountAccess {
     override suspend fun deposit(
         account: Account,
-        initiator: OfflineCloudPlayer,
+        initiator: UUID,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -47,7 +47,7 @@ interface TransactionUser : HasTransactions, HasAccounts {
         vararg additionalData: TransactionData
     ) = deposit(
         getDefaultAccount(),
-        cloudPlayer,
+        userUuid,
         amount,
         currency,
         ignoreMinimum,
@@ -56,7 +56,7 @@ interface TransactionUser : HasTransactions, HasAccounts {
 
     override suspend fun withdraw(
         account: Account,
-        initiator: OfflineCloudPlayer,
+        initiator: UUID,
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
@@ -86,7 +86,7 @@ interface TransactionUser : HasTransactions, HasAccounts {
         vararg additionalData: TransactionData
     ) = withdraw(
         getDefaultAccount(),
-        cloudPlayer,
+        userUuid,
         amount,
         currency,
         ignoreMinimum,
@@ -94,15 +94,15 @@ interface TransactionUser : HasTransactions, HasAccounts {
     )
 
     override suspend fun transfer(
-        initiator: OfflineCloudPlayer,
+        initiator: UUID,
         sender: Account,
         amount: BigDecimal,
         currency: Currency,
         receiver: Account,
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
-        additionalSenderData: ObjectSet<TransactionData>,
-        additionalReceiverData: ObjectSet<TransactionData>
+        additionalSenderData: Set<TransactionData>,
+        additionalReceiverData: Set<TransactionData>
     ) = getDefaultAccount().transfer(
         initiator,
         sender,
@@ -133,20 +133,19 @@ interface TransactionUser : HasTransactions, HasAccounts {
         receiver: Account,
         ignoreSenderMinimum: Boolean = false,
         ignoreReceiverMinimum: Boolean = false,
-        additionalSenderData: ObjectSet<TransactionData> = objectSetOf(),
-        additionalReceiverData: ObjectSet<TransactionData> = objectSetOf()
-    ) =
-        transfer(
-            cloudPlayer,
-            getDefaultAccount(),
-            amount,
-            currency,
-            receiver,
-            ignoreSenderMinimum,
-            ignoreReceiverMinimum,
-            additionalSenderData,
-            additionalReceiverData
-        )
+        additionalSenderData: Set<TransactionData> = objectSetOf(),
+        additionalReceiverData: Set<TransactionData> = objectSetOf()
+    ) = transfer(
+        userUuid,
+        getDefaultAccount(),
+        amount,
+        currency,
+        receiver,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData
+    )
 
     override suspend fun balance(
         account: Account,
@@ -165,32 +164,11 @@ interface TransactionUser : HasTransactions, HasAccounts {
 
     @OptIn(InternalTransactionApi::class)
     companion object {
-        /**
-         * Creates a [TransactionUser] instance for the given [OfflineCloudPlayer].
-         *
-         * @param cloudPlayer The offline cloud player for whom the transaction user is created.
-         * @return A [TransactionUser] instance representing the specified cloud player.
-         */
-        operator fun invoke(cloudPlayer: OfflineCloudPlayer): TransactionUser =
-            TransactionUserImpl(cloudPlayer)
-
-        /**
-         * Internal implementation of [TransactionUser].
-         * This class is not intended for public use and should only be accessed through the [TransactionUser] interface.
-         *
-         * @property cloudPlayer The offline cloud player for this transaction user.
-         */
-        internal class TransactionUserImpl(
-            override val cloudPlayer: OfflineCloudPlayer
-        ) : TransactionUser
+        fun byUuid(uuid: UUID): TransactionUser = TransactionUserService.instance.byUuid(uuid)
+        operator fun get(uuid: UUID) = byUuid(uuid)
     }
-
 }
 
-/**
- * Extension function to create a [TransactionUser] from an [OfflineCloudPlayer].
- *
- * @receiver The offline cloud player for whom the transaction user is created.
- * @return A [TransactionUser] instance representing the specified cloud player.
- */
-fun OfflineCloudPlayer.transactionUser() = TransactionUser(this)
+fun Audience.transactionUserOrNull() = getPointer(Identity.UUID)?.let { TransactionUser.byUuid(it) }
+fun Audience.transactionUser() =
+    transactionUserOrNull() ?: error("Audience does not provide a uuid pointer!")

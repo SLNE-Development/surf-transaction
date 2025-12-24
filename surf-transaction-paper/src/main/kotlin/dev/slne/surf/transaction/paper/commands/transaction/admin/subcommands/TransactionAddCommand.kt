@@ -1,26 +1,24 @@
 package dev.slne.surf.transaction.paper.commands.transaction.admin.subcommands
 
-import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.arguments.Argument
-import dev.jorel.commandapi.kotlindsl.anyExecutor
+import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
+import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
-import dev.slne.surf.cloud.api.client.paper.command.args.offlineCloudPlayerArgument
-import dev.slne.surf.cloud.api.common.player.CloudPlayer
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
-import dev.slne.surf.surfapi.core.api.generated.SoundKeys
-import dev.slne.surf.surfapi.core.api.messages.adventure.playSound
+import dev.slne.surf.surfapi.bukkit.api.command.executors.anyExecutorSuspend
+import dev.slne.surf.surfapi.bukkit.api.command.util.awaitAsyncPlayerProfile
+import dev.slne.surf.surfapi.bukkit.api.command.util.idOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.api.user.TransactionUser
+import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.redis.RedisService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
-import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.Deferred
-import net.kyori.adventure.sound.Sound
+import dev.slne.surf.transaction.paper.redis.events.transaction.AdminTransactionEvent
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
@@ -30,13 +28,13 @@ private val log = logger()
 fun Argument<*>.transactionAddCommand() = literalArgument("add") {
     withPermission(CommandPermission.TRANSACTION_ADMIN_ADD)
 
-    offlineCloudPlayerArgument("player") {
+    argument(AsyncPlayerProfileArgument("player")) {
         currencyArgument("currency") {
             doubleArgument("amount", min = 1.0) {
-                anyExecutor { sender, args ->
+                anyExecutorSuspend { sender, args ->
                     add(
                         sender,
-                        args.getUnchecked("player")!!,
+                        args.awaitAsyncPlayerProfile("player").idOrThrow(),
                         args.getUnchecked("currency")!!,
                         args.getUnchecked("amount")!!
                     )
@@ -46,14 +44,13 @@ fun Argument<*>.transactionAddCommand() = literalArgument("add") {
     }
 }
 
-private fun add(
+private suspend fun add(
     sender: CommandSender,
-    player: Deferred<OfflineCloudPlayer?>,
+    playerUuid: UUID,
     currency: Currency,
     amount: Double
-) = plugin.launch {
-    val user = player.await() ?: return@launch
-    val result = user.transactionUser().deposit(
+) {
+    val result = TransactionUser.byUuid(playerUuid).deposit(
         amount = amount.toBigDecimal(),
         currency = currency,
         additionalData = arrayOf(
@@ -65,9 +62,9 @@ private fun add(
     )
 
     if (result.success) {
-        handleSuccess(sender, user.player, user.name() ?: "#UNKOWN", amount, currency)
+        handleSuccess(sender, playerUuid, amount, currency)
     } else {
-        handleError(sender, result, user.uuid)
+        handleError(sender, result, playerUuid)
 
     }
 }
@@ -79,39 +76,16 @@ private fun handleError(sender: CommandSender, result: TransactionResult, receiv
     }
 
     log.atSevere()
-        .withCause((result as? TransactionResult.DATABASE_ERROR)?.cause)
-        .log("An error occurred when trying to add money to player with UUID $receiverUuid: ${result.message}")
+        .withCause((result as? TransactionResult.DatabaseError)?.cause)
+        .log("An error occurred when trying to add money to player with UUID $receiverUuid")
 }
 
-private fun handleSuccess(
+private suspend fun handleSuccess(
     sender: CommandSender,
-    receiver: CloudPlayer?,
-    playerName: String,
+    receiverUuid: UUID,
     amount: Double,
     currency: Currency
 ) {
-    if (receiver != null) {
-        receiver.sendText {
-            appendPrefix()
-
-            darkSpacer("[")
-            variableKey("Admin")
-            darkSpacer("] ")
-
-            info("Du hast ")
-            append(currency.format(amount))
-            info(" von ")
-            variableValue(sender.name)
-            info(" erhalten!")
-        }
-
-        receiver.playSound {
-            type(SoundKeys.ENTITY_CHICKEN_EGG)
-            volume(0.5f)
-            source(Sound.Source.PLAYER)
-        }
-    }
-
     sender.sendText {
         appendPrefix()
 
@@ -122,7 +96,16 @@ private fun handleSuccess(
         success("Du hast ")
         append(currency.format(amount))
         success(" an ")
-        variableValue(playerName)
+        variableValue(Components.usernameOrUuid(receiverUuid))
         success(" gesendet!")
     }
+
+    val event = AdminTransactionEvent(
+        receiverUuid,
+        currency,
+        amount,
+        sender.name,
+        added = true
+    )
+    RedisService.publish(event).await()
 }

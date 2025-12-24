@@ -5,8 +5,6 @@ plugins {
 }
 
 include("surf-transaction-api")
+include("surf-transaction-core")
 include("surf-transaction-paper")
 include("surf-transaction-velocity")
-include("surf-transaction-core:surf-transaction-core-common")
-include("surf-transaction-core:surf-transaction-core-client")
-include("surf-transaction-server")

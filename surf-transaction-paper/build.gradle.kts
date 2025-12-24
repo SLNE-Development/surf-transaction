@@ -3,15 +3,12 @@ plugins {
 }
 
 dependencies {
-    api(project(":surf-transaction-core:surf-transaction-core-client"))
+    api(project(":surf-transaction-core"))
 }
 
 surfPaperPluginApi {
     mainClass("dev.slne.surf.transaction.paper.PaperMain")
-    bootstrapper("dev.slne.surf.transaction.paper.PaperBootstrap")
     authors.addAll("Ammo", "twisti")
     generateLibraryLoader(false)
     foliaSupported(true)
-
-    withCloudClientPaper()
 }

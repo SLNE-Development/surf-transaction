@@ -1,43 +1,43 @@
 package dev.slne.surf.transaction.paper.commands.account.subcommands.member
 
-import com.github.shynixn.mccoroutine.folia.launch
+import com.destroystokyo.paper.profile.PlayerProfile
+import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPICommand
-import dev.jorel.commandapi.kotlindsl.entitySelectorArgumentOnePlayer
-import dev.jorel.commandapi.kotlindsl.getValue
-import dev.jorel.commandapi.kotlindsl.playerExecutor
+import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
+import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
+import dev.slne.surf.surfapi.core.api.command.args.awaiting
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.account.Account
+import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountArgument
-import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.Deferred
-import org.bukkit.entity.Player
+import kotlinx.coroutines.future.await
+import java.util.concurrent.CompletableFuture
 
 fun CommandAPICommand.addAccountMemberCommand() = subcommand("add") {
     withPermission(CommandPermission.ACCOUNT_MEMBER_ADD)
 
     accountArgument("account")
-    entitySelectorArgumentOnePlayer("target")
+    argument(AsyncPlayerProfileArgument("target"))
 
-    playerExecutor { sender, args ->
-        val account: Deferred<Account?> by args
-        val target: Player by args
+    playerExecutorSuspend { sender, args ->
+        val account = args.awaiting<Account>("account")
+        val target =
+            args.getUnchecked<CompletableFuture<List<PlayerProfile>>>("target")!!.await().first()
 
-        plugin.launch {
-            val acc = account.await() ?: return@launch
-            val executorPlayer = OfflineCloudPlayer[sender.uniqueId]
-            val targetPlayer = OfflineCloudPlayer[target.uniqueId]
+        val targetUuid =
+            target.id ?: throw CommandAPI.failWithString("Es wurde keine UUID gefunden.")
 
-            val result = acc.addMember(
-                executorPlayer,
-                targetPlayer
-            )
+        val result = account.addMember(
+            sender.uniqueId,
+            targetUuid
+        )
 
-            sender.sendText {
-                append(result.asComponent())
-            }
+        sender.sendText {
+            appendPrefix()
+            append(Components.Account.Member.formatResult(result, targetUuid, added = true))
         }
     }
 }

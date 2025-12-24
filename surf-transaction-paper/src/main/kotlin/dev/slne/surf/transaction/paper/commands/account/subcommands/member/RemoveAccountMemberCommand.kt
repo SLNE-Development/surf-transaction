@@ -1,43 +1,33 @@
 package dev.slne.surf.transaction.paper.commands.account.subcommands.member
 
-import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
-import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.cloud.api.common.player.OfflineCloudPlayer
+import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
+import dev.slne.surf.surfapi.core.api.command.args.awaiting
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.account.Account
+import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountArgument
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountMemberArgument
-import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.Deferred
 import java.util.*
 
 fun CommandAPICommand.removeAccountMemberCommand() = subcommand("remove") {
     withPermission(CommandPermission.ACCOUNT_MEMBER_REMOVE)
 
     accountArgument("account")
-    accountMemberArgument("targetUuid")
+    accountMemberArgument("targetUuid", accountNodeName = "account")
 
-    playerExecutor { sender, args ->
-        val account: Deferred<Account?> by args
-        val target: UUID? by args
+    playerExecutorSuspend { sender, args ->
+        val account = args.awaiting<Account>("account")
+        val targetUuid: UUID by args
 
-        plugin.launch {
-            val acc = account.await() ?: return@launch
-            val targetPlayer = target?.let { OfflineCloudPlayer[it] } ?: return@launch
-            val executorPlayer = OfflineCloudPlayer[sender.uniqueId]
+        val result = account.removeMember(sender.uniqueId, targetUuid)
 
-            val result = acc.removeMember(
-                executorPlayer,
-                targetPlayer
-            )
-
-            sender.sendText {
-                append(result.asComponent())
-            }
+        sender.sendText {
+            appendPrefix()
+            append(Components.Account.Member.formatResult(result, targetUuid, added = false))
         }
     }
 }

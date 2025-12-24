@@ -1,29 +1,33 @@
 package dev.slne.surf.transaction.velocity
 
-import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
-import com.velocitypowered.api.plugin.PluginContainer
+import com.velocitypowered.api.event.Subscribe
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
-import com.velocitypowered.api.proxy.ProxyServer
-import dev.slne.surf.cloud.api.common.CloudInstance
-import dev.slne.surf.cloud.api.common.startSpringApplication
-import dev.slne.surf.transaction.SurfTransactionSpringApplication
-import dev.slne.surf.transaction.core.transactionApiBridgeImpl
+import dev.slne.surf.transaction.core.TransactionInstance
+import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
 
 lateinit var plugin: VelocityMain
 
 class VelocityMain @Inject constructor(
-    @DataDirectory private val dataPath: Path,
-    val proxy: ProxyServer,
-    val container: PluginContainer,
-    suspendingPluginContainer: SuspendingPluginContainer
+    @param:DataDirectory val dataPath: Path,
 ) {
-
     init {
         plugin = this
-        suspendingPluginContainer.initialize(this)
-        transactionApiBridgeImpl.context =
-            CloudInstance.startSpringApplication(SurfTransactionSpringApplication::class)
+        runBlocking {
+            TransactionInstance.get().load()
+        }
+    }
+
+    @Subscribe
+    suspend fun onProxyInitialize(event: ProxyInitializeEvent) {
+        TransactionInstance.get().enable()
+    }
+
+    @Subscribe
+    suspend fun onProxyShutdown(event: ProxyShutdownEvent) {
+        TransactionInstance.get().disable()
     }
 }

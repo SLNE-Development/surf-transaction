@@ -1,19 +1,20 @@
 package dev.slne.surf.transaction.paper
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
-import dev.slne.surf.transaction.paper.commands.balance.balanceCommand
-import dev.slne.surf.transaction.paper.commands.currency.currencyCommand
-import dev.slne.surf.transaction.paper.commands.pay.payCommand
-import dev.slne.surf.transaction.paper.commands.transaction.transactionCommand
+import dev.slne.surf.transaction.core.TransactionInstance
 import org.bukkit.plugin.java.JavaPlugin
 
 class PaperMain : SuspendingJavaPlugin() {
     override suspend fun onLoadAsync() {
-        transactionCommand()
-        currencyCommand()
-        balanceCommand()
-        payCommand()
-//        accountCommand()
+        TransactionInstance.get().load()
+    }
+
+    override suspend fun onEnableAsync() {
+        TransactionInstance.get().enable()
+    }
+
+    override suspend fun onDisableAsync() {
+        TransactionInstance.get().disable()
     }
 }
 

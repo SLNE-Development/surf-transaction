@@ -1,34 +1,27 @@
 package dev.slne.surf.transaction.paper.commands.account.subcommands
 
-import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.getValue
-import dev.jorel.commandapi.kotlindsl.playerExecutor
 import dev.jorel.commandapi.kotlindsl.stringArgument
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.cloud.api.common.player.toCloudPlayer
+import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
-import dev.slne.surf.transaction.paper.plugin
 
 fun CommandAPICommand.accountCreateCommand() = subcommand("create") {
     withPermission(CommandPermission.ACCOUNT_CREATE)
 
     stringArgument("name")
 
-    playerExecutor { player, args ->
+    playerExecutorSuspend { player, args ->
         val name: String by args
+        val result = player.transactionUser().createAccount(name)
 
-        plugin.launch {
-            val cloudPlayer = player.toCloudPlayer() ?: return@launch
-            val result = cloudPlayer.transactionUser().createAccount(name)
-            val message = result.asComponent()
-
-            cloudPlayer.sendText {
-                appendPrefix()
-                append(message)
-            }
+        player.sendText {
+            appendPrefix()
+            append(Components.Account.formatCreationResult(result))
         }
     }
 }

@@ -3,12 +3,9 @@ package dev.slne.surf.transaction.api.currency
 import dev.slne.surf.surfapi.core.api.messages.Colors
 import dev.slne.surf.transaction.api.currency.Currency.Companion.byName
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
-import it.unimi.dsi.fastutil.objects.ObjectSet
-import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.TextColor
-import org.jetbrains.annotations.UnmodifiableView
 import java.math.BigDecimal
 
 /**
@@ -23,7 +20,6 @@ import java.math.BigDecimal
  * to enable polymorphic (de)serialization of concrete currency implementations.
  */
 @OptIn(InternalTransactionApi::class)
-@Serializable(with = CurrencySerializer::class)
 interface Currency : ComponentLike {
 
     /** Unique identifier (≤ [ CURRENCY_NAME_MAX_LENGTH ] characters), e.g. `"castcoin"`. */
@@ -83,19 +79,23 @@ interface Currency : ComponentLike {
         const val CURRENCY_SYMBOL_MAX_LENGTH = 16
 
         /** Returns the platform-wide default currency. */
-        fun default(): Currency = InternalCurrencyBridge.instance.defaultCurrency
+        fun default(): Currency = CurrencyService.instance.defaultCurrency
+
 
         /**
-         * Immutable view of all registered currencies.
+         * Retrieves the complete set of available currencies.
          *
-         * The returned view **must not** be mutated by the caller.
+         * This method provides access to all the currencies managed by the
+         * underlying `CurrencyService` instance. The returned set includes
+         * every defined currency that can be used in transactions or
+         * other currency-related operations.
+         *
+         * @return a set of all available currencies
          */
-        fun all(): @UnmodifiableView ObjectSet<out Currency> =
-            InternalCurrencyBridge.instance.currencies
+        fun all(): Set<Currency> = CurrencyService.instance.currencies
 
         /** Retrieves a currency by its [name] or `null` if none matches. */
-        fun byName(name: String): Currency? =
-            InternalCurrencyBridge.instance.getCurrencyByName(name)
+        fun byName(name: String): Currency? = CurrencyService.instance.getCurrencyByName(name)
 
         /** Alias for [byName]. */
         operator fun get(name: String): Currency? = byName(name)

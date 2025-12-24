@@ -1,0 +1,51 @@
+package dev.slne.surf.transaction.api.account
+
+import dev.slne.surf.transaction.api.account.result.AccountCreationResult
+import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
+import dev.slne.surf.transaction.api.util.InternalTransactionApi
+import java.util.*
+
+@OptIn(InternalTransactionApi::class)
+interface AccountAccess {
+
+    val userUuid: UUID
+
+    /**
+     * Retrieves the default account for this player.
+     *
+     * @return the default [Account] associated with this player
+     */
+    suspend fun getDefaultAccount(): Account
+
+    /**
+     * Retrieves all accounts associated with this player.
+     *
+     * @return a set of [Account]s owned by this player
+     */
+    suspend fun getAllAccounts(): Set<Account>
+
+    /**
+     * Creates a new account for this player with the specified [name].
+     *
+     * @param name the name of the new account; must be non-empty
+     * @return the newly created [Account]
+     */
+    suspend fun createAccount(name: String): AccountCreationResult
+
+    /**
+     * Retrieves the account with the specified [accountName] for this player.
+     *
+     * @param accountName the name of the account to retrieve; must be non-empty
+     * @return the [Account] matching [accountName], or `null` if not found
+     */
+    suspend fun getAccountByName(accountName: String): Account?
+
+    /**
+     * Deletes the specified [account] from this player's accounts.
+     *
+     * @param account the account to delete; must be non-null
+     * @return an [dev.slne.surf.transaction.api.account.result.AccountDeleteResult] indicating success or failure
+     */
+    suspend fun deleteAccount(account: Account): AccountDeleteResult
+
+}

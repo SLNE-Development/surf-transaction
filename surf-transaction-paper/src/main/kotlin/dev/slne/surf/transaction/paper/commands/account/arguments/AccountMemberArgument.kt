@@ -1,59 +1,69 @@
 package dev.slne.surf.transaction.paper.commands.account.arguments
 
-import com.github.shynixn.mccoroutine.folia.launch
 import com.github.shynixn.mccoroutine.folia.scope
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
-import dev.jorel.commandapi.arguments.CustomArgument
 import dev.jorel.commandapi.arguments.StringArgument
-import dev.jorel.commandapi.kotlindsl.getValue
-import dev.slne.surf.cloud.api.client.paper.command.args.OfflineCloudPlayerArgument
-import dev.slne.surf.cloud.api.common.player.CloudPlayerManager
+import dev.slne.surf.surfapi.bukkit.api.command.args.SuspendCustomArgument
+import dev.slne.surf.surfapi.core.api.command.args.awaitingOrNull
+import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
+import dev.slne.surf.surfapi.core.api.util.mapAsync
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.paper.plugin
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import java.util.*
 
-class AccountMemberArgument(nodeName: String) : CustomArgument<Deferred<UUID?>, String>(
-    StringArgument(nodeName),
-    { info ->
-        val input = info.input
-        val deferred = CompletableDeferred<UUID?>()
-
-        plugin.launch {
-            // FIXME: This should use the offline cloud player method which yet doesnt exist
-            val uuid = CloudPlayerManager.getPlayer(input)?.uuid
-
-            deferred.complete(uuid)
-        }
-
-        deferred
-    }
-) {
+class AccountMemberArgument(nodeName: String, private val accountNodeName: String) :
+    SuspendCustomArgument<UUID, String>(StringArgument(nodeName)) {
     init {
         replaceSuggestions(ArgumentSuggestions.stringCollectionAsync { info ->
             val args = info.previousArgs
-            val account: Deferred<Account?> by args
-
             plugin.scope.future {
-                val acc = account.await() ?: return@future listOf<String>()
+                val account =
+                    runCatching { args.awaitingOrNull<Account>(accountNodeName) }.getOrNull()
 
-                // FIXME: Also fix this, see above
-                acc.members.map { it.uuid.toString() }
+                if (account == null) {
+                    return@future emptyList()
+                }
+
+                account.members.mapAsync { PlayerLookupService.getUsername(it) }
             }
         })
+    }
+
+    override suspend fun CoroutineScope.parse(info: CustomArgumentInfo<String>): UUID {
+        val playerName = info.input
+        val uuid = PlayerLookupService.getUuid(playerName)
+            ?: throw CustomArgumentException.fromMessageBuilder(
+                MessageBuilder()
+                    .append("Das Mitglied ")
+                    .appendArgInput()
+                    .append(" existiert nicht.")
+            )
+
+        val account = info.previousArgs.awaitingOrNull<Account>(accountNodeName)
+            ?: throw CustomArgumentException.fromString("Das Konto wurde nicht gefunden.")
+
+        if (!account.isMember(uuid)) {
+            throw CustomArgumentException.fromMessageBuilder(
+                MessageBuilder()
+                    .appendArgInput()
+                    .append(" ist kein Mitglied dieses Kontos.")
+            )
+        }
+
+        return uuid
     }
 }
 
 inline fun CommandAPICommand.accountMemberArgument(
     nodeName: String,
+    accountNodeName: String,
     optional: Boolean = false,
     block: Argument<*>.() -> Unit = {}
-): CommandAPICommand = withArguments(OfflineCloudPlayerArgument(nodeName).apply {
+): CommandAPICommand = withArguments(AccountMemberArgument(nodeName, accountNodeName).apply {
     this.isOptional = optional
-
     block()
 })
