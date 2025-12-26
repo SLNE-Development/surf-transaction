@@ -47,7 +47,7 @@ class TransactionRepositoryImpl : TransactionRepository {
         }
 
         if (receiverID != null && !transaction.ignoreMinimumAmount) {
-            val balanceAfterTransaction = balanceDecimal0(receiverID, currencyID, forUpdate = true)
+            val balanceAfterTransaction = balanceDecimal0(receiverID, currencyID)
             if (balanceAfterTransaction < transaction.currency.minimumAmount) {
                 return TransactionResult.ReceiverInsufficientFunds
             }
@@ -68,8 +68,7 @@ class TransactionRepositoryImpl : TransactionRepository {
 
     suspend fun balanceDecimal0(
         accountID: Long,
-        currencyID: Long,
-        forUpdate: Boolean = false
+        currencyID: Long
     ): BigDecimal {
         return TransactionTable
             .innerJoin(CurrencyTable)
@@ -78,7 +77,6 @@ class TransactionRepositoryImpl : TransactionRepository {
                 (CurrencyTable.id eq currencyID) and
                         (TransactionTable.receiver eq accountID)
             }
-            .let { if (forUpdate) it.forUpdate() else it }
             .map { it[TransactionTable.amount.sum()] }
             .singleOrNull() ?: BigDecimal.ZERO
     }
