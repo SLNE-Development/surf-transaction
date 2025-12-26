@@ -12,17 +12,6 @@ import java.util.UUID
 @OptIn(InternalTransactionApi::class)
 interface Transactional {
 
-    /**
-     * Deposits [amount] into this player's account in the given [currency].
-     *
-     * @param account the account to deposit into; must be non-null
-     * @param initiator the player initiating the deposit; defaults to `this`
-     * @param amount the amount to deposit; must be non-negative
-     * @param currency the monetary unit of [amount]
-     * @param ignoreMinimum `true` to bypass minimum-balance validation
-     * @param additionalData optional metadata attached to the transaction
-     * @return a [dev.slne.surf.transaction.api.transaction.TransactionResult] describing the outcome
-     */
     suspend fun deposit(
         account: Account,
         initiator: UUID,

@@ -10,42 +10,15 @@ import java.util.*
 @OptIn(InternalTransactionApi::class)
 interface Account : Transactional, AccountMemberOperations {
 
-    /**
-     * Unique identifier for the account.
-     */
     val accountId: UUID
-
-    /**
-     * The name of the account.
-     */
     val name: String
-
-    /**
-     * The owner of the account.
-     */
     val ownerUuid: UUID
-
-    /**
-     * Indicates whether this account is the default account for the owner.
-     */
     val defaultAccount: Boolean
 
-    /**
-     * Converts the account information into a [Component] for display purposes.
-     *
-     * @return A [Component] representing the account information, suitable for use in user interfaces.
-     */
     suspend fun asComponent(): Component
 
     companion object {
-        /**
-         * Minimum length for account names.
-         */
         const val MIN_NAME_LENGTH = 3
-
-        /**
-         * Maximum length for account names.
-         */
         const val MAX_NAME_LENGTH = 32
 
         suspend fun byId(accountId: UUID): Account? =

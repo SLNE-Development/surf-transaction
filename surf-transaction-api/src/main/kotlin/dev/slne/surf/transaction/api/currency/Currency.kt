@@ -1,103 +1,36 @@
 package dev.slne.surf.transaction.api.currency
 
 import dev.slne.surf.surfapi.core.api.messages.Colors
-import dev.slne.surf.transaction.api.currency.Currency.Companion.byName
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.format.TextColor
 import java.math.BigDecimal
 
-/**
- * Describes a monetary unit that can be used in the transaction system.
- *
- * A **currency** is identified by its unique [name] and may provide rich‐text
- * variants for UI presentation via [displayName] and [symbolDisplay].
- * Implementations must be immutable and thread-safe.
- *
- * ### Serialization
- * This interface is annotated with `@Serializable(with = CurrencySerializer::class)`
- * to enable polymorphic (de)serialization of concrete currency implementations.
- */
 @OptIn(InternalTransactionApi::class)
 interface Currency : ComponentLike {
-
-    /** Unique identifier (≤ [ CURRENCY_NAME_MAX_LENGTH ] characters), e.g. `"castcoin"`. */
     val name: String
-
-    /** Rich-text display name, e.g. `<red>CastCoin</red>`. */
     val displayName: Component
-
-    /** `true` if this is the platform-wide default currency. */
     val defaultCurrency: Boolean
-
-    /** Plain text symbol, e.g. `"$"`. */
     val symbol: String
-
-    /** Rich-text variant of [symbol], e.g. `<red>$</red>`. */
     val symbolDisplay: Component
-
-    /** Decimal precision and formatting rules for this currency. */
     val scale: CurrencyScale
-
-    /** Minimum amount that must be present after validation unless bypassed. */
     val minimumAmount: BigDecimal
 
-    /**
-     * Converts [amount] into a formatted, colorized [Component].
-     *
-     * @param amount value to format
-     * @param color  text color for the numeric part; defaults to [Colors.VARIABLE_VALUE]
-     * @return formatted text like `"§7$§c1.50"`
-     */
     fun format(amount: BigDecimal, color: TextColor = Colors.VARIABLE_VALUE): Component
 
-    /**
-     * Convenience overload delegating to the `BigDecimal` version.
-     *
-     * @param amount value to format (will be converted with `toBigDecimal()`)
-     * @param color  text color for the numeric part; defaults to [Colors.VARIABLE_VALUE]
-     * @return formatted text component
-     */
     fun format(amount: Double, color: TextColor = Colors.VARIABLE_VALUE) =
         format(amount.toBigDecimal(), color)
 
-    /**
-     * Returns the display name of this currency as a [Component].
-     * This is primarily used for UI purposes, such as displaying the currency
-     * name in menus or transaction summaries.
-     *
-     * @return the display name of this currency as a [Component]
-     */
     override fun asComponent(): Component = displayName
 
     companion object {
-        /** Maximum allowed length for [name]. */
         const val CURRENCY_NAME_MAX_LENGTH = 16
-
-        /** Maximum allowed length for [symbol] and its display variant. */
         const val CURRENCY_SYMBOL_MAX_LENGTH = 16
 
-        /** Returns the platform-wide default currency. */
         fun default(): Currency = CurrencyService.instance.defaultCurrency
-
-
-        /**
-         * Retrieves the complete set of available currencies.
-         *
-         * This method provides access to all the currencies managed by the
-         * underlying `CurrencyService` instance. The returned set includes
-         * every defined currency that can be used in transactions or
-         * other currency-related operations.
-         *
-         * @return a set of all available currencies
-         */
         fun all(): Set<Currency> = CurrencyService.instance.currencies
-
-        /** Retrieves a currency by its [name] or `null` if none matches. */
         fun byName(name: String): Currency? = CurrencyService.instance.getCurrencyByName(name)
-
-        /** Alias for [byName]. */
         operator fun get(name: String): Currency? = byName(name)
     }
 }
