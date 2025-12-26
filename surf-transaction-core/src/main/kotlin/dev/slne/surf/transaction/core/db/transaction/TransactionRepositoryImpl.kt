@@ -42,7 +42,7 @@ class TransactionRepositoryImpl : TransactionRepository {
             insertTransaction(transaction, senderID, receiverID, currencyID, it)
         }.value
 
-        TransactionTable.batchInsert(transaction.data, shouldReturnGeneratedValues = false) {
+        TransactionDataTable.batchInsert(transaction.data, shouldReturnGeneratedValues = false) {
             insertTransactionData(createdTransactionID, it)
         }
 
