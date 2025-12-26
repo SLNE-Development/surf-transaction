@@ -55,7 +55,7 @@ private suspend fun remove(
         currency = currency,
         ignoreMinimum = true,
         additionalData = arrayOf(
-            TransactionData(
+            TransactionData.of(
                 "admin.transaction.remove",
                 (sender as? Player)?.uniqueId?.toString() ?: sender.name
             )

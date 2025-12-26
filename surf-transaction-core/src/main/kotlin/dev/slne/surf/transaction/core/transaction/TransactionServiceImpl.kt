@@ -97,7 +97,7 @@ class TransactionServiceImpl: TransactionService {
         return TransactionRepository.transfer(senderTransaction, receiverTransaction)
     }
 
-    override suspend fun balance(
+    suspend fun balance(
         account: Account,
         currency: Currency
     ): BigDecimal {

@@ -54,7 +54,7 @@ private suspend fun add(
         amount = amount.toBigDecimal(),
         currency = currency,
         additionalData = arrayOf(
-            TransactionData(
+            TransactionData.of(
                 "admin.transaction.add",
                 (sender as? Player)?.uniqueId?.toString() ?: sender.name
             )
