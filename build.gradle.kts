@@ -9,6 +9,6 @@ buildscript {
 }
 
 allprojects {
-    group = "dev.slne.surf"
+    group = "dev.slne.surf.transaction"
     version = findProperty("version") as String
 }
