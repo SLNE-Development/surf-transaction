@@ -6,12 +6,33 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
+import org.jetbrains.annotations.ApiStatus
 import java.math.BigDecimal
 import java.util.UUID
 
+/**
+ * Defines transactional operations that can be performed on accounts.
+ *
+ * A [Transactional] implementation provides suspendable methods for modifying
+ * account balances, including deposits, withdrawals, and transfers. All
+ * operations return a [TransactionResult] describing the outcome.
+ */
 @OptIn(InternalTransactionApi::class)
+@ApiStatus.NonExtendable
 interface Transactional {
 
+    /**
+     * Deposits an amount into the given [account].
+     *
+     * @param account the target account receiving the funds
+     * @param initiator the unique identifier of the entity initiating the transaction
+     * @param amount the amount to deposit
+     * @param currency the currency of the amount
+     * @param ignoreMinimum whether the currency minimum amount should be ignored
+     * @param additionalData optional additional transaction metadata
+     *
+     * @return the result of the transaction
+     */
     suspend fun deposit(
         account: Account,
         initiator: UUID,
@@ -22,15 +43,16 @@ interface Transactional {
     ): TransactionResult
 
     /**
-     * Withdraws [amount] from this player's account in the given [currency].
+     * Withdraws an amount from the given [account].
      *
-     * @param account the account to withdraw from; must be non-null
-     * @param initiator the player initiating the withdrawal; defaults to `this`
-     * @param amount the amount to withdraw; must be non-negative
-     * @param currency the monetary unit of [amount]
-     * @param ignoreMinimum `true` to bypass minimum-balance validation
-     * @param additionalData optional metadata attached to the transaction
-     * @return a [TransactionResult] describing the outcome
+     * @param account the source account from which funds are withdrawn
+     * @param initiator the unique identifier of the entity initiating the transaction
+     * @param amount the amount to withdraw
+     * @param currency the currency of the amount
+     * @param ignoreMinimum whether the currency minimum amount should be ignored
+     * @param additionalData optional additional transaction metadata
+     *
+     * @return the result of the transaction
      */
     suspend fun withdraw(
         account: Account,
@@ -42,18 +64,22 @@ interface Transactional {
     ): TransactionResult
 
     /**
-     * Transfers [amount] from this player's account to [receiver].
+     * Transfers an amount from one account to another.
      *
-     * @param initiator the player initiating the transfer; defaults to `this`
-     * @param sender the account sending the funds; must be non-null
-     * @param amount the amount to transfer; must be non-negative
-     * @param currency the monetary unit of [amount]
+     * This operation withdraws the amount from the [sender] account and deposits
+     * it into the [receiver] account as a single transactional operation.
+     *
+     * @param initiator the unique identifier of the entity initiating the transaction
+     * @param sender the account sending the funds
+     * @param amount the amount to transfer
+     * @param currency the currency of the amount
      * @param receiver the account receiving the funds
-     * @param ignoreSenderMinimum `true` to bypass sender's minimum-balance validation
-     * @param ignoreReceiverMinimum `true` to bypass receiver's minimum-balance validation
-     * @param additionalSenderData optional metadata attached to the sender's leg
-     * @param additionalReceiverData optional metadata attached to the receiver's leg
-     * @return a [TransactionResult] describing the outcome
+     * @param ignoreSenderMinimum whether the sender's currency minimum should be ignored
+     * @param ignoreReceiverMinimum whether the receiver's currency minimum should be ignored
+     * @param additionalSenderData additional transaction metadata for the sender side
+     * @param additionalReceiverData additional transaction metadata for the receiver side
+     *
+     * @return the result of the transaction
      */
     suspend fun transfer(
         initiator: UUID,
@@ -68,10 +94,11 @@ interface Transactional {
     ): TransactionResult
 
     /**
-     * Retrieves this player's balance in [currency] as a [BigDecimal].
+     * Returns the current balance of the given [account] for the specified [currency].
      *
-     * @param account the account to check; must be non-null
-     * @param currency the monetary unit of the returned balance
+     * @param account the account whose balance should be queried
+     * @param currency the currency of the balance
+     *
      * @return the current balance
      */
     suspend fun balance(account: Account, currency: Currency): BigDecimal
