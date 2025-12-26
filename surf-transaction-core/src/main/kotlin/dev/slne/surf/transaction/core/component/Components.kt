@@ -60,6 +60,7 @@ object Components {
         fun formatDeletionResult(result: AccountDeleteResult) = buildText {
             when (result) {
                 AccountDeleteResult.SUCCESS -> success("Das Konto wurde erfolgreich gelöscht")
+                AccountDeleteResult.DEFAULT_ACCOUNT_CANNOT_BE_DELETED -> error("Das Standardkonto kann nicht gelöscht werden")
                 AccountDeleteResult.ACCOUNT_NOT_FOUND -> error("Das Konto konnte nicht gefunden werden")
             }
         }

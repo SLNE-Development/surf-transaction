@@ -7,6 +7,7 @@ import dev.slne.surf.transaction.core.TransactionInstance
 import dev.slne.surf.transaction.core.currency.CurrencyEventsListener
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.MustBeInvokedByOverriders
+import kotlin.time.Duration
 
 abstract class RedisService {
     val redisApi = RedisApi.create(TransactionInstance.get().dataPath)
@@ -32,5 +33,15 @@ abstract class RedisService {
         fun get() = instance
 
         fun publish(event: RedisEvent) = get().redisApi.publishEvent(event)
+
+        inline fun <K : Any, reified V : Any> cache(
+            namespace: String,
+            ttl: Duration,
+            noinline keyToString: (K) -> String = { it.toString() }
+        ) = get().redisApi.createSimpleCache<K, V>(
+            "surf-transaction:$namespace",
+            ttl,
+            keyToString
+        )
     }
 }

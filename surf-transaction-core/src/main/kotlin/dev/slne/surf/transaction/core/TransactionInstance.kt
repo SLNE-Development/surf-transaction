@@ -10,7 +10,6 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 abstract class TransactionInstance {
-
     val databaseApi = DatabaseApi.create(dataPath)
 
     abstract val dataPath: Path

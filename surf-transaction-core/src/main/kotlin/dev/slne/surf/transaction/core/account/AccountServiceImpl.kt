@@ -7,10 +7,15 @@ import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
 import dev.slne.surf.transaction.core.db.account.AccountRepository
+import dev.slne.surf.transaction.core.redis.RedisService
 import java.util.*
+import kotlin.time.Duration.Companion.minutes
 
 @AutoService(AccountService::class)
 class AccountServiceImpl : AccountService {
+    private val defaultAccountCache =
+        RedisService.cache<UUID, AccountImpl>("default_account", 10.minutes)
+
     override suspend fun getAccountByAccountId(accountId: UUID): Account? {
         return AccountRepository.findAccountByAccountId(accountId)
     }
@@ -25,13 +30,13 @@ class AccountServiceImpl : AccountService {
     ): AccountCreationResult {
         val name = name.trim().replace(" ", "_").lowercase()
 
-        if (name.length < 3) {
+        if (name.length < Account.MIN_NAME_LENGTH) {
             return AccountCreationResult.Failed(
                 AccountCreationResult.FailureReason.NAME_TOO_SHORT
             )
         }
 
-        if (name.length > 32) {
+        if (name.length > Account.MAX_NAME_LENGTH) {
             return AccountCreationResult.Failed(
                 AccountCreationResult.FailureReason.NAME_TOO_LONG
             )
@@ -64,10 +69,16 @@ class AccountServiceImpl : AccountService {
     }
 
     suspend fun getDefaultAccount(playerUuid: UUID): Account {
-        return AccountRepository.findOrCreateDefaultAccount(playerUuid)
+        return defaultAccountCache.cachedOrLoad(playerUuid) {
+            AccountRepository.findOrCreateDefaultAccount(playerUuid)
+        }
     }
 
     suspend fun deleteAccount(account: Account): AccountDeleteResult {
+        if (account.defaultAccount) {
+            return AccountDeleteResult.DEFAULT_ACCOUNT_CANNOT_BE_DELETED
+        }
+
         val count = AccountRepository.deleteAccount(account.accountId)
         if (count == 0) {
             return AccountDeleteResult.ACCOUNT_NOT_FOUND
@@ -81,7 +92,17 @@ class AccountServiceImpl : AccountService {
         executor: UUID,
         target: UUID
     ): AccountMemberResult {
-        return AccountRepository.addMemberToAccount(accountId, executor, target)
+        val (result, accountOwnerUuid) = AccountRepository.addMemberToAccount(
+            accountId,
+            executor,
+            target
+        )
+
+        if (result == AccountMemberResult.SUCCESS && accountOwnerUuid != null) {
+            defaultAccountCache.invalidate(accountOwnerUuid)
+        }
+
+        return result
     }
 
     suspend fun removeMemberFromAccount(
@@ -89,7 +110,17 @@ class AccountServiceImpl : AccountService {
         executor: UUID,
         target: UUID
     ): AccountMemberResult {
-        return AccountRepository.removeMemberFromAccount(accountId, executor, target)
+        val (result, accountOwnerUuid) = AccountRepository.removeMemberFromAccount(
+            accountId,
+            executor,
+            target
+        )
+
+        if (result == AccountMemberResult.SUCCESS && accountOwnerUuid != null) {
+            defaultAccountCache.invalidate(accountOwnerUuid)
+        }
+
+        return result
     }
 
     suspend fun completeAccountNameSuggestions(input: String, maxSuggestions: Int): List<String> {

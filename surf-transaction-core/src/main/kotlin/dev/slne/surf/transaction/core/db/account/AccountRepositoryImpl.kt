@@ -9,15 +9,21 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.account.AccountImpl
+import dev.slne.surf.transaction.core.redis.RedisService
 import kotlinx.coroutines.flow.*
 import java.util.*
+import kotlin.time.Duration.Companion.minutes
 
 class AccountRepositoryImpl : AccountRepository {
-    override suspend fun findAccountIDByAccountId(accountId: UUID): EntityID<Long>? {
-        return AccountTable.select(AccountTable.id)
-            .where { AccountTable.accountId eq accountId }
-            .singleOrNull()
-            ?.get(AccountTable.id)
+    private val accountIdCache = RedisService.cache<UUID, Long>("account_id", 10.minutes)
+
+    override suspend fun findAccountIDByAccountId(accountId: UUID): Long? {
+        return accountIdCache.cachedOrLoadNullable(accountId) {
+            AccountTable.select(AccountTable.id)
+                .where { AccountTable.accountId eq accountId }
+                .singleOrNull()
+                ?.get(AccountTable.id)?.value
+        }
     }
 
     override suspend fun findAccountByAccountId(
@@ -119,11 +125,11 @@ class AccountRepositoryImpl : AccountRepository {
         accountId: UUID,
         executor: UUID,
         target: UUID
-    ): AccountMemberResult = suspendTransaction {
+    ): Pair<AccountMemberResult, UUID?> = suspendTransaction {
         val accountID = findAccountIDByAccountId(accountId)
 
         if (accountID == null) {
-            return@suspendTransaction AccountMemberResult.ACCOUNT_NOT_FOUND
+            return@suspendTransaction AccountMemberResult.ACCOUNT_NOT_FOUND to null
         }
 
         val alreadyMember = AccountMemberTable.select(AccountMemberTable.id)
@@ -133,7 +139,7 @@ class AccountRepositoryImpl : AccountRepository {
             }.count() > 0
 
         if (alreadyMember) {
-            return@suspendTransaction AccountMemberResult.NOTHING_CHANGED
+            return@suspendTransaction AccountMemberResult.NOTHING_CHANGED to null
         }
 
         AccountMemberTable.insert {
@@ -141,18 +147,22 @@ class AccountRepositoryImpl : AccountRepository {
             it[this.memberId] = target
         }
 
-        AccountMemberResult.SUCCESS
+        val accountOwnerUuid = AccountTable.select(AccountTable.ownerId)
+            .where { AccountTable.id eq accountID }
+            .single()[AccountTable.ownerId]
+
+        AccountMemberResult.SUCCESS to accountOwnerUuid
     }
 
     override suspend fun removeMemberFromAccount(
         accountId: UUID,
         executor: UUID,
         target: UUID
-    ): AccountMemberResult = suspendTransaction {
+    ): Pair<AccountMemberResult, UUID?> = suspendTransaction {
         val accountID = findAccountIDByAccountId(accountId)
 
         if (accountID == null) {
-            return@suspendTransaction AccountMemberResult.ACCOUNT_NOT_FOUND
+            return@suspendTransaction AccountMemberResult.ACCOUNT_NOT_FOUND to null
         }
 
         val count = AccountMemberTable.deleteWhere {
@@ -160,15 +170,19 @@ class AccountRepositoryImpl : AccountRepository {
         }
 
         if (count == 0) {
-            return@suspendTransaction AccountMemberResult.NOTHING_CHANGED
+            return@suspendTransaction AccountMemberResult.NOTHING_CHANGED to null
         }
 
-        AccountMemberResult.SUCCESS
+        val accountOwnerUuid = AccountTable.select(AccountTable.ownerId)
+            .where { AccountTable.id eq accountID }
+            .single()[AccountTable.ownerId]
+
+        AccountMemberResult.SUCCESS to accountOwnerUuid
     }
 
     override suspend fun deleteAccount(accountId: UUID): Int = suspendTransaction {
         AccountTable.deleteWhere { AccountTable.accountId eq accountId }
-    }
+    }.also { accountIdCache.invalidate(accountId) }
 
     override suspend fun completeAccountNameSuggestions(
         input: String,

@@ -1,7 +1,6 @@
 package dev.slne.surf.transaction.core.db.transaction
 
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.and
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.EntityID
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.eq
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.statements.BatchInsertStatement
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.statements.InsertStatement
@@ -41,7 +40,7 @@ class TransactionRepositoryImpl : TransactionRepository {
 
         val createdTransactionID = TransactionTable.insertAndGetId {
             insertTransaction(transaction, senderID, receiverID, currencyID, it)
-        }
+        }.value
 
         TransactionTable.batchInsert(transaction.data, shouldReturnGeneratedValues = false) {
             insertTransactionData(createdTransactionID, it)
@@ -68,8 +67,8 @@ class TransactionRepositoryImpl : TransactionRepository {
 
 
     suspend fun balanceDecimal0(
-        accountID: EntityID<Long>,
-        currencyID: EntityID<Long>,
+        accountID: Long,
+        currencyID: Long,
         forUpdate: Boolean = false
     ): BigDecimal {
         return TransactionTable
@@ -108,9 +107,9 @@ class TransactionRepositoryImpl : TransactionRepository {
 
     private fun TransactionTable.insertTransaction(
         transaction: TransactionImpl,
-        senderID: EntityID<Long>?,
-        receiverID: EntityID<Long>?,
-        currencyID: EntityID<Long>,
+        senderID: Long?,
+        receiverID: Long?,
+        currencyID: Long,
         smt: InsertStatement<*>
     ) {
         smt[identifier] = transaction.identifier
@@ -122,7 +121,7 @@ class TransactionRepositoryImpl : TransactionRepository {
     }
 
     private fun BatchInsertStatement.insertTransactionData(
-        transactionID: EntityID<Long>,
+        transactionID: Long,
         data: TransactionData
     ) {
         this[TransactionDataTable.transaction] = transactionID
