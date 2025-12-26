@@ -20,8 +20,10 @@ import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.redis.events.pay.PaymentReceivedEvent
 import org.bukkit.entity.Player
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 private val log = logger()
+private val payLock = ConcurrentHashMap.newKeySet<UUID>()
 
 fun payCommand() = commandTree("pay") {
     withPermission(CommandPermission.PAY)
@@ -40,7 +42,6 @@ fun payCommand() = commandTree("pay") {
     }
 }
 
-
 private suspend fun pay(
     sender: Player,
     receiverUuid: UUID,
@@ -50,33 +51,46 @@ private suspend fun pay(
         throw CommandAPI.failWithString("Du kannst dir kein Geld selbst überweisen!")
     }
 
-    val currency = Currency.default()
-    val result = sender.transactionUser().transfer(
-        amount = amount.toBigDecimal(),
-        currency = currency,
-        receiver = TransactionUser.byUuid(receiverUuid).getDefaultAccount()
-    )
+    if (!payLock.add(sender.uniqueId)) {
+        throw CommandAPI.failWithString("Du führst bereits eine Überweisung durch. Bitte warte einen Moment...")
+    }
 
-    when (result) {
-        is TransactionResult.Success, is TransactionResult.TransferSuccess -> handleSuccess(
-            sender,
-            receiverUuid,
-            amount,
-            currency
+    sender.sendText {
+        appendPrefix()
+        info("Überweisung wird ausgeführt...")
+    }
+
+    try {
+        val currency = Currency.default()
+        val result = sender.transactionUser().transfer(
+            amount = amount.toBigDecimal(),
+            currency = currency,
+            receiver = TransactionUser.byUuid(receiverUuid).getDefaultAccount()
         )
 
-        TransactionResult.ReceiverInsufficientFunds -> handleReceiverInsufficientFunds(
-            sender,
-            receiverUuid,
-            currency
-        )
+        when (result) {
+            is TransactionResult.Success, is TransactionResult.TransferSuccess -> handleSuccess(
+                sender,
+                receiverUuid,
+                amount,
+                currency
+            )
 
-        TransactionResult.SenderInsufficientFunds -> handleSenderInsufficientFunds(
-            sender,
-            currency
-        )
+            TransactionResult.ReceiverInsufficientFunds -> handleReceiverInsufficientFunds(
+                sender,
+                receiverUuid,
+                currency
+            )
 
-        is TransactionResult.DatabaseError -> handleError(sender, result)
+            TransactionResult.SenderInsufficientFunds -> handleSenderInsufficientFunds(
+                sender,
+                currency
+            )
+
+            is TransactionResult.DatabaseError -> handleError(sender, result)
+        }
+    } finally {
+        payLock.remove(sender.uniqueId)
     }
 }
 
