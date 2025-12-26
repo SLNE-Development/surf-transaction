@@ -12,7 +12,7 @@ import java.util.UUID
 
 @AutoService(TransactionService::class)
 class TransactionServiceImpl: TransactionService {
-    override suspend fun deposit(
+    suspend fun deposit(
         account: Account,
         initiator: UUID,
         amount: BigDecimal,
@@ -34,7 +34,7 @@ class TransactionServiceImpl: TransactionService {
         return TransactionRepository.persistTransaction(transaction)
     }
 
-    override suspend fun withdraw(
+    suspend fun withdraw(
         account: Account,
         initiator: UUID,
         amount: BigDecimal,
@@ -58,7 +58,7 @@ class TransactionServiceImpl: TransactionService {
         return TransactionRepository.persistTransaction(transaction)
     }
 
-    override suspend fun transfer(
+    suspend fun transfer(
         initiator: UUID,
         sender: Account,
         amount: BigDecimal,
