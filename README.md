@@ -19,7 +19,7 @@ asynchronous use in plugins and modules.
 
 ```kotlin
 dependencies {
-    implementation("dev.slne.surf.transaction:surf-transaction-api:<version>")
+    compileOnly("dev.slne.surf.transaction:surf-transaction-api:<version>")
 }
 ```
 
