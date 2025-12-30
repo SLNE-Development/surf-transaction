@@ -1,9 +1,9 @@
 package dev.slne.surf.transaction.core.db.transaction
 
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.ReferenceOption
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.LongIdTable
+import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.ULongIdTable
 
-object TransactionDataTable : LongIdTable("transaction_data") {
+object TransactionDataTable : ULongIdTable("transaction_data") {
     val transaction = reference(
         "transaction_id", TransactionTable,
         onUpdate = ReferenceOption.CASCADE,

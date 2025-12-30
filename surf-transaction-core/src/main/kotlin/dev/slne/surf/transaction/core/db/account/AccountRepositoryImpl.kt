@@ -15,9 +15,9 @@ import java.util.*
 import kotlin.time.Duration.Companion.minutes
 
 class AccountRepositoryImpl : AccountRepository {
-    private val accountIdCache = RedisService.cache<UUID, Long>("account_id", 10.minutes)
+    private val accountIdCache = RedisService.cache<UUID, ULong>("account_id", 10.minutes)
 
-    override suspend fun findAccountIDByAccountId(accountId: UUID): Long? {
+    override suspend fun findAccountIDByAccountId(accountId: UUID): ULong? {
         return accountIdCache.cachedOrLoadNullable(accountId) {
             AccountTable.select(AccountTable.id)
                 .where { AccountTable.accountId eq accountId }
@@ -67,7 +67,7 @@ class AccountRepositoryImpl : AccountRepository {
             .toList()
     }
 
-    private suspend fun findAccountMembers(accountID: EntityID<Long>) =
+    private suspend fun findAccountMembers(accountID: EntityID<ULong>) =
         AccountMemberTable.selectAll()
             .where { AccountMemberTable.accountId eq accountID }
             .map(::memberFromResultRow)

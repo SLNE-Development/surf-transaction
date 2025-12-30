@@ -20,7 +20,7 @@ interface AccountRepository {
      *
      * @return the entity id or `null` if no account exists.
      */
-    suspend fun findAccountIDByAccountId(accountId: UUID): Long?
+    suspend fun findAccountIDByAccountId(accountId: UUID): ULong?
 
     /**
      * Loads an account by its public [accountId] including member UUIDs.

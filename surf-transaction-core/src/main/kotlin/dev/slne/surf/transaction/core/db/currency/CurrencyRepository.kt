@@ -7,7 +7,7 @@ import dev.slne.surf.transaction.core.currency.CurrencyImpl
 interface CurrencyRepository {
 
     suspend fun findAllAndCreateDefaultCurrencyIfMissing(): List<CurrencyImpl>
-    suspend fun findCurrencyIDByName(name: String): Long?
+    suspend fun findCurrencyIDByName(name: String): ULong?
 
     suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult
     suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyDefaultResult

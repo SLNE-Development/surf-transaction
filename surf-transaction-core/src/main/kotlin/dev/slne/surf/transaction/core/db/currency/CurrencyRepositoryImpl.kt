@@ -19,7 +19,7 @@ import kotlin.time.Duration.Companion.hours
 
 class CurrencyRepositoryImpl : CurrencyRepository {
     private val currencyIDByNameCache =
-        RedisService.cache<String, Long>("currency_id_by_name", 5.hours)
+        RedisService.cache<String, ULong>("currency_id_by_name", 5.hours)
 
     override suspend fun findAllAndCreateDefaultCurrencyIfMissing() = suspendTransaction {
         val currencies = CurrencyTable.selectAll().map(::fromResultRow).toList()
@@ -35,7 +35,7 @@ class CurrencyRepositoryImpl : CurrencyRepository {
         }
     }
 
-    override suspend fun findCurrencyIDByName(name: String): Long? {
+    override suspend fun findCurrencyIDByName(name: String): ULong? {
         return currencyIDByNameCache.cachedOrLoadNullable(name) {
             CurrencyTable.select(CurrencyTable.id)
                 .where { CurrencyTable.name eq name }

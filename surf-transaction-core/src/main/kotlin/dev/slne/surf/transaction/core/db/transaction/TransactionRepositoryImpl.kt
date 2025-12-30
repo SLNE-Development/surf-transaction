@@ -67,8 +67,8 @@ class TransactionRepositoryImpl : TransactionRepository {
 
 
     suspend fun balanceDecimal0(
-        accountID: Long,
-        currencyID: Long
+        accountID: ULong,
+        currencyID: ULong
     ): BigDecimal {
         return TransactionTable
             .innerJoin(CurrencyTable)
@@ -105,9 +105,9 @@ class TransactionRepositoryImpl : TransactionRepository {
 
     private fun TransactionTable.insertTransaction(
         transaction: TransactionImpl,
-        senderID: Long?,
-        receiverID: Long?,
-        currencyID: Long,
+        senderID: ULong?,
+        receiverID: ULong?,
+        currencyID: ULong,
         smt: InsertStatement<*>
     ) {
         smt[identifier] = transaction.identifier
@@ -119,7 +119,7 @@ class TransactionRepositoryImpl : TransactionRepository {
     }
 
     private fun BatchInsertStatement.insertTransactionData(
-        transactionID: Long,
+        transactionID: ULong,
         data: TransactionData
     ) {
         this[TransactionDataTable.transaction] = transactionID
