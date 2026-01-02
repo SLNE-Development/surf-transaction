@@ -11,4 +11,5 @@ surfPaperPluginApi {
     authors.addAll("Ammo", "twisti")
     generateLibraryLoader(false)
     foliaSupported(true)
+    withSurfRedis()
 }

@@ -4,7 +4,7 @@ plugins {
 
 surfCoreApi {
     withSurfDatabaseR2dbc("1.0.0-SNAPSHOT", "dev.slne.surf.transaction.libs.db")
-    withSurfRedis("1.0.0-SNAPSHOT-redisson", "dev.slne.surf.transaction.libs.redis")
+    withSurfRedis()
 }
 
 dependencies {
