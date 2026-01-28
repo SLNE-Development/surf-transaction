@@ -7,5 +7,4 @@ import kotlinx.serialization.Serializable
 @Serializable
 class CurrencyCreatedEvent(
     val currency: CurrencyImpl
-) : RedisEvent() {
-}
+) : RedisEvent()
