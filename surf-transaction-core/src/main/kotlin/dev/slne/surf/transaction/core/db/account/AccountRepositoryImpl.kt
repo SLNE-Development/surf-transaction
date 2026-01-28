@@ -1,10 +1,7 @@
 package dev.slne.surf.transaction.core.db.account
 
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.ResultRow
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.and
+import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.EntityID
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.eq
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.like
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
@@ -29,29 +26,24 @@ class AccountRepositoryImpl : AccountRepository {
     override suspend fun findAccountByAccountId(
         accountId: UUID
     ): AccountImpl? = suspendTransaction {
-        val accountResult = AccountTable.selectAll()
-            .where { AccountTable.accountId eq accountId }
-            .singleOrNull()
-
-        if (accountResult == null) return@suspendTransaction null
-
-        val accountID = accountResult[AccountTable.id]
-        val members = findAccountMembers(accountID)
-
-        fromResultRow(accountResult, members)
+        findAccountBy { AccountTable.accountId eq accountId }
     }
 
     override suspend fun findAccountByName(name: String): AccountImpl? = suspendTransaction {
+        findAccountBy { AccountTable.name eq name }
+    }
+
+    private suspend fun findAccountBy(predicate: () -> Op<Boolean>): AccountImpl? {
         val accountResult = AccountTable.selectAll()
-            .where { AccountTable.name eq name }
+            .where(predicate)
             .singleOrNull()
 
-        if (accountResult == null) return@suspendTransaction null
+        if (accountResult == null) return null
 
         val accountID = accountResult[AccountTable.id]
         val members = findAccountMembers(accountID)
 
-        fromResultRow(accountResult, members)
+        return fromResultRow(accountResult, members)
     }
 
     override suspend fun findAccountsByOwner(
