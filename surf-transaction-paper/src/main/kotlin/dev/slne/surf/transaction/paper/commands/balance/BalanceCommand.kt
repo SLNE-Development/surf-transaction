@@ -50,7 +50,7 @@ private suspend fun balance(
     val balance = TransactionUser.byUuid(queryTarget).balance(currency)
 
     sender.sendText {
-        appendPrefix()
+        appendInfoPrefix()
 
         if (sender is Player && queryTarget == sender.uniqueId) {
             info("Dein Kontostand beträgt ")
