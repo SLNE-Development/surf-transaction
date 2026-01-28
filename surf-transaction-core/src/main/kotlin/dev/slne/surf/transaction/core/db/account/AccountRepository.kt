@@ -1,6 +1,5 @@
 package dev.slne.surf.transaction.core.db.account
 
-import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.EntityID
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.account.AccountImpl
 import java.util.*
