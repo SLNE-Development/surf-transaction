@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.flow.toList
-import java.time.Instant
 import kotlin.time.Duration.Companion.hours
 
 
@@ -68,12 +67,10 @@ class CurrencyRepositoryImpl : CurrencyRepository {
 
         CurrencyTable.update({ CurrencyTable.defaultCurrency eq true }) {
             it[defaultCurrency] = false
-            it[updatedAt] = Instant.now()
         }
 
         CurrencyTable.update({ CurrencyTable.id eq newDefaultCurrencyID }) {
             it[defaultCurrency] = true
-            it[updatedAt] = Instant.now()
         }
 
         CurrencyDefaultResult.SUCCESS

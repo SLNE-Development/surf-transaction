@@ -7,6 +7,7 @@ import dev.slne.surf.transaction.api.account.AccountAccess
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.transactional.Transactional
+import dev.slne.surf.transaction.api.user.TransactionUser.Companion.byUuid
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.identity.Identity

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
+
 buildscript {
     repositories {
         gradlePluginPortal()
@@ -11,4 +13,14 @@ buildscript {
 allprojects {
     group = "dev.slne.surf.transaction"
     version = findProperty("version") as String
+}
+
+subprojects {
+    afterEvaluate {
+        configure<KotlinJvmExtension> {
+            compilerOptions {
+                optIn.add("dev.slne.surf.transaction.api.util.InternalTransactionApi")
+            }
+        }
+    }
 }

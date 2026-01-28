@@ -1,0 +1,297 @@
+public abstract interface class dev/slne/surf/transaction/api/account/Account : dev/slne/surf/transaction/api/account/member/AccountMemberOperations, dev/slne/surf/transaction/api/transactional/Transactional {
+	public static final field Companion Ldev/slne/surf/transaction/api/account/Account$Companion;
+	public static final field MAX_NAME_LENGTH I
+	public static final field MIN_NAME_LENGTH I
+	public abstract fun asComponent (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getAccountId ()Ljava/util/UUID;
+	public abstract fun getDefaultAccount ()Z
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getOwnerUuid ()Ljava/util/UUID;
+}
+
+public final class dev/slne/surf/transaction/api/account/Account$Companion {
+	public static final field MAX_NAME_LENGTH I
+	public static final field MIN_NAME_LENGTH I
+	public final fun byId (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun byName (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun create (Ljava/util/UUID;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/account/AccountAccess {
+	public abstract fun createAccount (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deleteAccount (Ldev/slne/surf/transaction/api/account/Account;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getAccountByName (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getAllAccounts (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getDefaultAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getUserUuid ()Ljava/util/UUID;
+}
+
+public final class dev/slne/surf/transaction/api/account/AccountService$Companion {
+	public final fun getInstance ()Ldev/slne/surf/transaction/api/account/AccountService;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/account/member/AccountMemberOperations {
+	public abstract fun addMember (Ljava/util/UUID;Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getMembers ()Ljava/util/Set;
+	public abstract fun isMember (Ljava/util/UUID;)Z
+	public abstract fun removeMember (Ljava/util/UUID;Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/account/member/results/AccountMemberResult : java/lang/Enum {
+	public static final field ACCOUNT_NOT_FOUND Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+	public static final field NOTHING_CHANGED Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+	public static final field SUCCESS Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+	public static fun values ()[Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/account/result/AccountCreationResult {
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountCreationResult$Failed : dev/slne/surf/transaction/api/account/result/AccountCreationResult {
+	public fun <init> (Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public final fun copy (Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Failed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Failed;Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Failed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason : java/lang/Enum {
+	public static final field NAME_ALREADY_EXISTS Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static final field NAME_IS_UUID Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static final field NAME_TOO_LONG Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static final field NAME_TOO_SHORT Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static fun values ()[Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountCreationResult$Success : dev/slne/surf/transaction/api/account/result/AccountCreationResult {
+	public fun <init> (Ldev/slne/surf/transaction/api/account/Account;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/account/Account;
+	public final fun copy (Ldev/slne/surf/transaction/api/account/Account;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Success;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Success;Ldev/slne/surf/transaction/api/account/Account;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAccount ()Ldev/slne/surf/transaction/api/account/Account;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountDeleteResult : java/lang/Enum {
+	public static final field ACCOUNT_NOT_FOUND Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+	public static final field DEFAULT_ACCOUNT_CANNOT_BE_DELETED Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+	public static final field SUCCESS Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+	public static fun values ()[Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/currency/Currency : net/kyori/adventure/text/ComponentLike {
+	public static final field CURRENCY_NAME_MAX_LENGTH I
+	public static final field CURRENCY_SYMBOL_MAX_LENGTH I
+	public static final field Companion Ldev/slne/surf/transaction/api/currency/Currency$Companion;
+	public fun asComponent ()Lnet/kyori/adventure/text/Component;
+	public fun format (DLnet/kyori/adventure/text/format/TextColor;)Lnet/kyori/adventure/text/Component;
+	public abstract fun format (Ljava/math/BigDecimal;Lnet/kyori/adventure/text/format/TextColor;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;DLnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;Ljava/math/BigDecimal;Lnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+	public abstract fun getDefaultCurrency ()Z
+	public abstract fun getDisplayName ()Lnet/kyori/adventure/text/Component;
+	public abstract fun getMinimumAmount ()Ljava/math/BigDecimal;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getScale ()Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+	public abstract fun getSymbol ()Ljava/lang/String;
+	public abstract fun getSymbolDisplay ()Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/slne/surf/transaction/api/currency/Currency$Companion {
+	public static final field CURRENCY_NAME_MAX_LENGTH I
+	public static final field CURRENCY_SYMBOL_MAX_LENGTH I
+	public final fun all ()Ljava/util/Set;
+	public final fun byName (Ljava/lang/String;)Ldev/slne/surf/transaction/api/currency/Currency;
+	public final fun default ()Ldev/slne/surf/transaction/api/currency/Currency;
+	public final fun get (Ljava/lang/String;)Ldev/slne/surf/transaction/api/currency/Currency;
+}
+
+public final class dev/slne/surf/transaction/api/currency/Currency$DefaultImpls {
+	public static fun asComponent (Ldev/slne/surf/transaction/api/currency/Currency;)Lnet/kyori/adventure/text/Component;
+	public static fun format (Ldev/slne/surf/transaction/api/currency/Currency;DLnet/kyori/adventure/text/format/TextColor;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;DLnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;Ljava/math/BigDecimal;Lnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+}
+
+public abstract class dev/slne/surf/transaction/api/currency/CurrencyScale : java/lang/Enum {
+	public static final field DECIMAL_2 Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+	public static final field INTEGER Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun format (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public final fun formatString (Ljava/math/BigDecimal;Ljava/util/Locale;)Ljava/lang/String;
+	public static synthetic fun formatString$default (Ldev/slne/surf/transaction/api/currency/CurrencyScale;Ljava/math/BigDecimal;Ljava/util/Locale;ILjava/lang/Object;)Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+	public static fun values ()[Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+}
+
+public final class dev/slne/surf/transaction/api/currency/CurrencyService$Companion {
+	public final fun getInstance ()Ldev/slne/surf/transaction/api/currency/CurrencyService;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/transaction/Transaction {
+	public abstract fun getAmount ()Ljava/math/BigDecimal;
+	public abstract fun getCurrency ()Ldev/slne/surf/transaction/api/currency/Currency;
+	public abstract fun getData ()Ljava/util/Set;
+	public abstract fun getIdentifier ()Ljava/util/UUID;
+	public abstract fun getIgnoreMinimumAmount ()Z
+	public abstract fun getInitiator ()Ljava/util/UUID;
+	public abstract fun getReceiverAccountId ()Ljava/util/UUID;
+	public abstract fun getSenderAccountId ()Ljava/util/UUID;
+	public abstract fun receiverAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun senderAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getSuccess ()Z
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public fun <init> (Ljava/lang/Throwable;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun copy (Ljava/lang/Throwable;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;Ljava/lang/Throwable;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$ReceiverInsufficientFunds : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$ReceiverInsufficientFunds;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$SenderInsufficientFunds : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$SenderInsufficientFunds;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$Success : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReceiverTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getSenderTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionService$Companion {
+	public final fun getInstance ()Ldev/slne/surf/transaction/api/transaction/TransactionService;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/data/TransactionData {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/data/TransactionData$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/data/TransactionData$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/data/TransactionData$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/data/TransactionData;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/data/TransactionData;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/data/TransactionData$Companion {
+	public final fun byPair (Lkotlin/Pair;)Ldev/slne/surf/transaction/api/transaction/data/TransactionData;
+	public final fun of (Ljava/lang/String;Ljava/lang/String;)Ldev/slne/surf/transaction/api/transaction/data/TransactionData;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/transactional/Transactional {
+	public abstract fun balance (Ldev/slne/surf/transaction/api/account/Account;Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun deposit (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun transfer (Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withdraw (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/Transactional$DefaultImpls {
+	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/user/TransactionUser : dev/slne/surf/transaction/api/account/AccountAccess, dev/slne/surf/transaction/api/transactional/Transactional {
+	public static final field Companion Ldev/slne/surf/transaction/api/user/TransactionUser$Companion;
+	public fun balance (Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun deposit (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun transfer (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withdraw (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/user/TransactionUser$Companion {
+	public final fun byUuid (Ljava/util/UUID;)Ldev/slne/surf/transaction/api/user/TransactionUser;
+	public final fun get (Ljava/util/UUID;)Ldev/slne/surf/transaction/api/user/TransactionUser;
+}
+
+public final class dev/slne/surf/transaction/api/user/TransactionUser$DefaultImpls {
+	public static fun balance (Ldev/slne/surf/transaction/api/user/TransactionUser;Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun deposit (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun transfer (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withdraw (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/user/TransactionUserKt {
+	public static final fun transactionUser (Lnet/kyori/adventure/audience/Audience;)Ldev/slne/surf/transaction/api/user/TransactionUser;
+	public static final fun transactionUserOrNull (Lnet/kyori/adventure/audience/Audience;)Ldev/slne/surf/transaction/api/user/TransactionUser;
+}
+
+public final class dev/slne/surf/transaction/api/user/TransactionUserService$Companion {
+	public final fun getInstance ()Ldev/slne/surf/transaction/api/user/TransactionUserService;
+}
+
+public abstract interface annotation class dev/slne/surf/transaction/api/util/InternalTransactionApi : java/lang/annotation/Annotation {
+}
+
