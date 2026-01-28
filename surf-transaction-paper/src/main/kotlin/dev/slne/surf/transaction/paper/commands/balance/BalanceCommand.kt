@@ -1,6 +1,5 @@
 package dev.slne.surf.transaction.paper.commands.balance
 
-import com.github.shynixn.mccoroutine.folia.launch
 import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
@@ -14,7 +13,6 @@ import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
-import dev.slne.surf.transaction.paper.plugin
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
@@ -48,7 +46,7 @@ private suspend fun balance(
     sender: CommandSender,
     currency: Currency,
     queryTarget: UUID
-) = plugin.launch {
+) {
     val balance = TransactionUser.byUuid(queryTarget).balance(currency)
 
     sender.sendText {
