@@ -11,4 +11,4 @@ class PaymentReceivedEvent(
     val senderName: String,
     val currency: NetworkCurrency,
     val amount: Double
-): RedisEvent() 
+): RedisEvent()
