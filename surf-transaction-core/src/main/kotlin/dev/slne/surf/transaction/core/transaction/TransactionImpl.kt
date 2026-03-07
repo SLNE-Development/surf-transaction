@@ -24,4 +24,8 @@ class TransactionImpl(
 
     override suspend fun senderAccount() = senderAccountId?.let { Account.byId(it) }
     override suspend fun receiverAccount() = receiverAccountId?.let { Account.byId(it) }
+
+    override fun toString(): String {
+        return "TransactionImpl(identifier=$identifier, initiator=$initiator, senderAccountId=$senderAccountId, receiverAccountId=$receiverAccountId, currencyName='$currencyName', amount=$amount, data=$data, ignoreMinimumAmount=$ignoreMinimumAmount)"
+    }
 }

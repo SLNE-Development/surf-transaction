@@ -46,5 +46,6 @@ interface AccountService {
 
     companion object {
         val instance = requiredService<AccountService>()
+        fun init() = Unit
     }
 }

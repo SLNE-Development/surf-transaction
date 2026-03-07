@@ -12,5 +12,7 @@ interface CurrencyRepository {
     suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult
     suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyDefaultResult
 
-    companion object : CurrencyRepository by CurrencyRepositoryImpl()
+    companion object : CurrencyRepository by CurrencyRepositoryImpl() {
+        fun init() = Unit
+    }
 }

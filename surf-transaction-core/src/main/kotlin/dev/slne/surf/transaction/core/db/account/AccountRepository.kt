@@ -93,5 +93,7 @@ interface AccountRepository {
      */
     suspend fun completeAccountNameSuggestions(input: String, maxSuggestions: Int): List<String>
 
-    companion object : AccountRepository by AccountRepositoryImpl()
+    companion object : AccountRepository by AccountRepositoryImpl() {
+        fun init() = Unit
+    }
 }

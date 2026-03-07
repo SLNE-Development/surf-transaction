@@ -3,7 +3,11 @@ package dev.slne.surf.transaction.core.redis
 import dev.slne.surf.redis.RedisApi
 import dev.slne.surf.redis.event.RedisEvent
 import dev.slne.surf.surfapi.core.api.util.requiredService
+import dev.slne.surf.transaction.api.account.AccountService
 import dev.slne.surf.transaction.core.currency.CurrencyEventsListener
+import dev.slne.surf.transaction.core.db.account.AccountRepository
+import dev.slne.surf.transaction.core.db.currency.CurrencyRepository
+import dev.slne.surf.transaction.core.db.transaction.TransactionRepository
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.MustBeInvokedByOverriders
 import kotlin.time.Duration
@@ -14,6 +18,12 @@ abstract class RedisService {
     @Blocking
     fun connect() {
         register()
+
+        CurrencyRepository.init()
+        AccountRepository.init()
+        TransactionRepository.init()
+        AccountService.init()
+
         redisApi.freezeAndConnect()
     }
 

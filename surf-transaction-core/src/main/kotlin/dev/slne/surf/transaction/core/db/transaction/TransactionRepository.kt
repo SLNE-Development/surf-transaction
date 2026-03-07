@@ -16,5 +16,7 @@ interface TransactionRepository {
 
     suspend fun balanceDecimal(accountId: UUID, currency: Currency): BigDecimal
 
-    companion object : TransactionRepository by TransactionRepositoryImpl()
+    companion object : TransactionRepository by TransactionRepositoryImpl() {
+        fun init() = Unit
+    }
 }
