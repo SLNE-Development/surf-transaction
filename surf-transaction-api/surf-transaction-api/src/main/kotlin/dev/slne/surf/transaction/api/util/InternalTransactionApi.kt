@@ -1,5 +1,7 @@
 package dev.slne.surf.transaction.api.util
 
+import dev.slne.surf.surfapi.shared.api.annotation.InternalAPIMarker
+
 /**
  * Marks declarations that are strictly internal to the Surf Transaction module.
  *
@@ -21,4 +23,5 @@ package dev.slne.surf.transaction.api.util
     AnnotationTarget.TYPEALIAS,
     AnnotationTarget.VALUE_PARAMETER
 )
+@InternalAPIMarker
 annotation class InternalTransactionApi
