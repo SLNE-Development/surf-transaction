@@ -1,20 +1,18 @@
 package dev.slne.surf.transaction.api.transaction
 
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Unmodifiable
-import java.math.BigDecimal
 import java.util.*
 
 /**
  * Represents a single transaction within the transaction system.
  *
- * A [Transaction] describes the transfer of a monetary [amount] in a specific
- * [currency], including optional sender and receiver accounts, metadata, and
- * configuration flags.
+ * A [Transaction] is a base type for all transactional records.
+ * Concrete subtypes include [BalanceTransaction] for currency operations
+ * and [ItemTransaction] for item operations.
  */
 @OptIn(InternalTransactionApi::class)
 @ApiStatus.NonExtendable
@@ -47,21 +45,6 @@ interface Transaction {
      * (e.g. withdrawals).
      */
     val receiverAccountId: UUID?
-
-    /**
-     * The currency used in this transaction.
-     */
-    val currency: Currency
-
-    /**
-     * The monetary amount of this transaction.
-     */
-    val amount: BigDecimal
-
-    /**
-     * Whether the minimum currency amount check was ignored for this transaction.
-     */
-    val ignoreMinimumAmount: Boolean
 
     /**
      * Additional immutable metadata associated with this transaction.

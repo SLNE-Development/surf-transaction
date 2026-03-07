@@ -1,15 +1,11 @@
-package dev.slne.surf.transaction.api.transaction
+package dev.slne.surf.transaction.api.transaction.result
+
+import dev.slne.surf.transaction.api.transaction.Transaction
 
 /**
- * Represents the result of a transactional operation.
- *
- * A [TransactionResult] indicates whether a transaction was successful and,
- * if applicable, provides access to the created [Transaction] instances or
- * detailed failure information.
- *
- * @property success whether the transaction completed successfully
+ * Result types specific to balance/currency transactions.
  */
-sealed class TransactionResult(val success: Boolean = false) {
+sealed class BalanceTransactionResult(val success: Boolean = false) {
 
     /**
      * Indicates that a single transaction completed successfully.

@@ -10,7 +10,7 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.insertAndGetId
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.select
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.db.account.AccountRepository
 import dev.slne.surf.transaction.core.db.currency.CurrencyRepository

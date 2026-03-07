@@ -3,7 +3,7 @@ package dev.slne.surf.transaction.core.transaction
 import com.google.auto.service.AutoService
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.db.transaction.TransactionRepository

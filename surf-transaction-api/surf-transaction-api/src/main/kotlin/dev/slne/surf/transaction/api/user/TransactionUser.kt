@@ -6,7 +6,7 @@ import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.account.AccountAccess
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.transactional.Transactional
+import dev.slne.surf.transaction.api.transactional.CurrencyTransactional
 import dev.slne.surf.transaction.api.user.TransactionUser.Companion.byUuid
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.audience.Audience
@@ -18,7 +18,7 @@ import java.util.*
 /**
  * Represents a transactional user within the transaction system.
  *
- * A [TransactionUser] combines [Transactional] and [AccountAccess] functionality
+ * A [TransactionUser] combines [CurrencyTransactional] and [AccountAccess] functionality
  * and provides convenience methods that automatically operate on the user's
  * default account.
  *
@@ -26,7 +26,7 @@ import java.util.*
  * such as depositing to or withdrawing from the default account.
  */
 @ApiStatus.NonExtendable
-interface TransactionUser : Transactional, AccountAccess {
+interface TransactionUser : CurrencyTransactional, AccountAccess {
 
     /**
      * Deposits an amount into the user's default account.

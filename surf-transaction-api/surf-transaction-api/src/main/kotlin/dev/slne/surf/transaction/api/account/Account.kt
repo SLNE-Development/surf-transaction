@@ -2,7 +2,8 @@ package dev.slne.surf.transaction.api.account
 
 import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
-import dev.slne.surf.transaction.api.transactional.Transactional
+import dev.slne.surf.transaction.api.transactional.CurrencyTransactional
+import dev.slne.surf.transaction.api.transactional.ItemTransactional
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.text.Component
 import org.jetbrains.annotations.ApiStatus
@@ -20,7 +21,7 @@ import java.util.*
  */
 @OptIn(InternalTransactionApi::class)
 @ApiStatus.NonExtendable
-interface Account : Transactional, AccountMemberOperations {
+interface Account : CurrencyTransactional, ItemTransactional, AccountMemberOperations {
 
     /**
      * The unique identifier of this account.

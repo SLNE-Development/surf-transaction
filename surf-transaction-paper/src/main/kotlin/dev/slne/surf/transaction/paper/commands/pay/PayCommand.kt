@@ -11,7 +11,7 @@ import dev.slne.surf.surfapi.bukkit.api.command.util.idOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.surfapi.core.api.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
 import dev.slne.surf.transaction.core.component.Components

@@ -2,14 +2,14 @@ package dev.slne.surf.transaction.core.transactional
 
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
-import dev.slne.surf.transaction.api.transactional.Transactional
+import dev.slne.surf.transaction.api.transactional.CurrencyTransactional
 import dev.slne.surf.transaction.core.transaction.TransactionServiceImpl
 import java.math.BigDecimal
 import java.util.*
 
-class TransactionalImpl : Transactional {
+class CurrencyTransactionalImpl : CurrencyTransactional {
 
     override suspend fun deposit(
         account: Account,

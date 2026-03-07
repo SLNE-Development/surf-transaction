@@ -3,7 +3,7 @@ package dev.slne.surf.transaction.api.transactional
 import dev.slne.surf.surfapi.core.api.util.objectSetOf
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import org.jetbrains.annotations.ApiStatus
@@ -13,13 +13,13 @@ import java.util.UUID
 /**
  * Defines transactional operations that can be performed on accounts.
  *
- * A [Transactional] implementation provides suspendable methods for modifying
+ * A [CurrencyTransactional] implementation provides suspendable methods for modifying
  * account balances, including deposits, withdrawals, and transfers. All
  * operations return a [TransactionResult] describing the outcome.
  */
 @OptIn(InternalTransactionApi::class)
 @ApiStatus.NonExtendable
-interface Transactional {
+interface CurrencyTransactional {
 
     /**
      * Deposits an amount into the given [account].

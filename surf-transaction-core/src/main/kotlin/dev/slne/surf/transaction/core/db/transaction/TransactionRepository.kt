@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.core.db.transaction
 
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.transaction.TransactionResult
+import dev.slne.surf.transaction.api.transaction.result.TransactionResult
 import dev.slne.surf.transaction.core.transaction.TransactionImpl
 import java.math.BigDecimal
 import java.util.UUID
