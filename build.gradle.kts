@@ -17,7 +17,7 @@ allprojects {
 
 subprojects {
     afterEvaluate {
-        extensions.findByType<KotlinJvmExtension>()?.apply {
+        configure<KotlinJvmExtension> {
             compilerOptions {
                 optIn.add("dev.slne.surf.transaction.api.util.InternalTransactionApi")
             }
