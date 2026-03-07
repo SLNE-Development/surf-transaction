@@ -3,7 +3,8 @@ plugins {
 }
 
 dependencies {
-    api(project(":surf-transaction-paper:surf-transaction-paper-api"))
+    api(projects.surfTransactionApi.surfTransactionApiPaper)
+    api(projects.surfTransactionCore)
 }
 
 surfPaperPluginApi {

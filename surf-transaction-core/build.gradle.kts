@@ -8,5 +8,5 @@ surfCoreApi {
 }
 
 dependencies {
-    api(project(":surf-transaction-api"))
+    api(projects.surfTransactionApi.surfTransactionApi)
 }

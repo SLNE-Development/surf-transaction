@@ -11,5 +11,5 @@ velocityPluginFile {
 }
 
 dependencies {
-    api(project(":surf-transaction-api"))
+    api(projects.surfTransactionCore)
 }
