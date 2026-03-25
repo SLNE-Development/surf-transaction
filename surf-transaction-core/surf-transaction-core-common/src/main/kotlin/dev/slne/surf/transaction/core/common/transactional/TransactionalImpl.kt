@@ -5,7 +5,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.transactional.Transactional
-import dev.slne.surf.transaction.core.common.transaction.TransactionServiceImpl
+import dev.slne.surf.transaction.core.common.transaction.CoreTransactionService
 import java.math.BigDecimal
 import java.util.*
 
@@ -19,7 +19,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResult {
-        return TransactionServiceImpl.Companion.get().deposit(
+        return CoreTransactionService.deposit(
             account,
             initiator,
             amount,
@@ -37,7 +37,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         vararg additionalData: TransactionData
     ): TransactionResult {
-        return TransactionServiceImpl.Companion.get().withdraw(
+        return CoreTransactionService.withdraw(
             account,
             initiator,
             amount,
@@ -58,7 +58,7 @@ class TransactionalImpl : Transactional {
         additionalSenderData: Set<TransactionData>,
         additionalReceiverData: Set<TransactionData>
     ): TransactionResult {
-        return TransactionServiceImpl.Companion.get().transfer(
+        return CoreTransactionService.transfer(
             initiator,
             sender,
             amount,
@@ -75,6 +75,6 @@ class TransactionalImpl : Transactional {
         account: Account,
         currency: Currency
     ): BigDecimal {
-        return TransactionServiceImpl.Companion.get().balance(account, currency)
+        return CoreTransactionService.balance(account, currency)
     }
 }

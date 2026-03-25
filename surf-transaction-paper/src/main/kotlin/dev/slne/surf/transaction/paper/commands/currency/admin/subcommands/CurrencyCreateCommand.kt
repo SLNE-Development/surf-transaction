@@ -14,7 +14,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.common.currency.CurrencyServiceImpl
+import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyScaleArgument
 import dev.slne.surf.transaction.paper.commands.arguments.getCurrencyScale

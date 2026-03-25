@@ -4,7 +4,7 @@ import dev.slne.surf.surfapi.core.api.util.freeze
 import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
 import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
-import dev.slne.surf.transaction.core.common.account.AccountServiceImpl
+import dev.slne.surf.transaction.core.common.account.CoreAccountService
 import java.util.*
 
 class AccountMemberOperationsImpl(
@@ -18,7 +18,7 @@ class AccountMemberOperationsImpl(
         executor: UUID,
         target: UUID
     ): AccountMemberResult {
-        val result = AccountServiceImpl.Companion.get().addMemberToAccount(accountId, executor, target)
+        val result = CoreAccountService.addMemberToAccount(accountId, executor, target)
         if (result == AccountMemberResult.SUCCESS) {
             _members.add(target)
         }
@@ -29,7 +29,7 @@ class AccountMemberOperationsImpl(
         executor: UUID,
         target: UUID
     ): AccountMemberResult {
-        val result = AccountServiceImpl.Companion.get().removeMemberFromAccount(accountId, executor, target)
+        val result = CoreAccountService.removeMemberFromAccount(accountId, executor, target)
         if (result == AccountMemberResult.SUCCESS) {
             _members.remove(target)
         }
