@@ -41,6 +41,7 @@ object Components {
         suspend fun formatCreationResult(result: AccountCreationResult) = buildText {
             when (result) {
                 is AccountCreationResult.Success -> {
+                    appendSuccessPrefix()
                     success("Das Konto ")
                     append(displayName(result.account as AccountImpl))
                     success(" wurde erfolgreich erstellt")
@@ -48,10 +49,25 @@ object Components {
 
                 is AccountCreationResult.Failed -> {
                     when (result.reason) {
-                        NAME_ALREADY_EXISTS -> error("Ein Konto mit diesem Namen existiert bereits")
-                        NAME_TOO_LONG -> error("Der Name darf maximal ${ApiAccount.MAX_NAME_LENGTH} Zeichen lang sein")
-                        NAME_TOO_SHORT -> error("Der Name muss mindestens ${ApiAccount.MIN_NAME_LENGTH} Zeichen lang sein")
-                        NAME_IS_UUID -> error("Der Name darf keine UUID sein")
+                        NAME_ALREADY_EXISTS -> {
+                            appendErrorPrefix()
+                            error("Ein Konto mit diesem Namen existiert bereits")
+                        }
+
+                        NAME_TOO_LONG -> {
+                            appendErrorPrefix()
+                            error("Der Name darf maximal ${ApiAccount.MAX_NAME_LENGTH} Zeichen lang sein")
+                        }
+
+                        NAME_TOO_SHORT -> {
+                            appendErrorPrefix()
+                            error("Der Name muss mindestens ${ApiAccount.MIN_NAME_LENGTH} Zeichen lang sein")
+                        }
+
+                        NAME_IS_UUID -> {
+                            appendErrorPrefix()
+                            error("Der Name darf keine UUID sein")
+                        }
                     }
                 }
             }
@@ -59,9 +75,21 @@ object Components {
 
         fun formatDeletionResult(result: AccountDeleteResult) = buildText {
             when (result) {
-                AccountDeleteResult.SUCCESS -> success("Das Konto wurde erfolgreich gelöscht")
-                AccountDeleteResult.DEFAULT_ACCOUNT_CANNOT_BE_DELETED -> error("Das Standardkonto kann nicht gelöscht werden")
-                AccountDeleteResult.ACCOUNT_NOT_FOUND -> error("Das Konto konnte nicht gefunden werden")
+                AccountDeleteResult.SUCCESS -> {
+                    appendSuccessPrefix()
+                    success("Das Konto wurde erfolgreich gelöscht")
+                }
+
+                AccountDeleteResult.DEFAULT_ACCOUNT_CANNOT_BE_DELETED -> {
+                    appendErrorPrefix()
+                    error("Das Standardkonto kann nicht gelöscht werden")
+                }
+
+                AccountDeleteResult.ACCOUNT_NOT_FOUND -> {
+                    appendErrorPrefix()
+
+                    error("Das Konto konnte nicht gefunden werden")
+                }
             }
         }
 
@@ -70,6 +98,7 @@ object Components {
                 buildText {
                     when (result) {
                         AccountMemberResult.SUCCESS -> {
+                            appendSuccessPrefix()
                             variableValue(usernameOrUuid(member))
                             success(" wurde erfolgreich als Mitglied ")
                             if (added) {
@@ -80,6 +109,7 @@ object Components {
                         }
 
                         AccountMemberResult.NOTHING_CHANGED -> {
+                            appendErrorPrefix()
                             if (added) {
                                 variableValue(usernameOrUuid(member))
                                 error(" ist bereits ein Mitglied des Kontos")
@@ -99,28 +129,33 @@ object Components {
         fun formatCreateResult(currency: CurrencyImpl, result: CurrencyCreateResult) = buildText {
             when (result) {
                 CurrencyCreateResult.SUCCESS -> {
+                    appendSuccessPrefix()
                     success("Die Währung ")
                     append(currency)
                     success(" wurde erfolgreich erstellt")
                 }
 
                 CurrencyCreateResult.ALREADY_EXISTS -> {
+                    appendErrorPrefix()
                     error("Die Währung ")
                     append(currency)
                     error(" existiert bereits!")
                 }
 
                 CurrencyCreateResult.DEFAULT_ALREADY_EXISTS -> {
+                    appendErrorPrefix()
                     error("Es existiert bereits eine Standardwährung!")
                 }
 
                 CurrencyCreateResult.INVALID_NAME -> {
+                    appendErrorPrefix()
                     error("Der Name '")
                     variableValue(currency.name)
                     error("' ist ungültig!")
                 }
 
                 CurrencyCreateResult.INVALID_SYMBOL -> {
+                    appendErrorPrefix()
                     error("Das Symbol '")
                     variableValue(currency.symbol)
                     error("' ist ungültig!")
@@ -134,11 +169,13 @@ object Components {
         ) = buildText {
             when (result) {
                 CurrencyDefaultResult.SUCCESS -> {
+                    appendSuccessPrefix()
                     append(currency)
                     success(" ist nun die Standardwährung")
                 }
 
                 CurrencyDefaultResult.NOT_FOUND -> {
+                    appendErrorPrefix()
                     error("Die Währung ")
                     append(currency)
                     error(" wurde nicht gefunden")

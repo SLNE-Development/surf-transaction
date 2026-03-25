@@ -72,7 +72,7 @@ private suspend fun remove(
 
 private fun handleError(sender: CommandSender, result: TransactionResult, receiverUuid: UUID) {
     sender.sendText {
-        appendPrefix()
+        appendErrorPrefix()
         error("Es ist ein Fehler aufgetreten!")
     }
 
@@ -88,7 +88,7 @@ private suspend fun handleSuccess(
     currency: Currency
 ) {
     sender.sendText {
-        appendPrefix()
+        appendSuccessPrefix()
 
         darkSpacer("[")
         variableKey("Admin")

@@ -31,7 +31,6 @@ private suspend fun makeDefault(sender: CommandSender, currency: Currency) {
     val result = CurrencyServiceImpl.get().makeDefaultCurrency(currency as CurrencyImpl)
 
     sender.sendText {
-        appendPrefix()
         append(Components.Currency.formatChangedDefaultResult(currency, result))
     }
 }

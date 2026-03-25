@@ -80,7 +80,6 @@ private suspend fun create(
     val result = CurrencyServiceImpl.get().createCurrency(currency)
 
     sender.sendText {
-        appendPrefix()
         append(Components.Currency.formatCreateResult(currency, result))
     }
 }

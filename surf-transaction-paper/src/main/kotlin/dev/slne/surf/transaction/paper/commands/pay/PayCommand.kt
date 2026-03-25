@@ -51,7 +51,7 @@ private suspend fun pay(
     }
 
     sender.sendText {
-        appendPrefix()
+        appendInfoPrefix()
         info("Überweisung wird ausgeführt...")
     }
 

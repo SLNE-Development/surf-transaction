@@ -19,7 +19,7 @@ class PaymentEventsHandler {
 
         plugin.launch(plugin.entityDispatcher(receiver)) {
             receiver.sendText {
-                appendPrefix()
+                appendInfoPrefix()
 
                 info("Du hast ")
                 append(event.currency.format(event.amount))

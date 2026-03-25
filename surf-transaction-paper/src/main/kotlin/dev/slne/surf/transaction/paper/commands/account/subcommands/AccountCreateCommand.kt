@@ -20,7 +20,6 @@ fun CommandAPICommand.accountCreateCommand() = subcommand("create") {
         val result = player.transactionUser().createAccount(name)
 
         player.sendText {
-            appendPrefix()
             append(Components.Account.formatCreationResult(result))
         }
     }
