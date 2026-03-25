@@ -12,9 +12,9 @@ import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
-import dev.slne.surf.transaction.core.component.Components
-import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.currency.CurrencyServiceImpl
+import dev.slne.surf.transaction.core.common.component.Components
+import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
+import dev.slne.surf.transaction.core.common.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyScaleArgument
 import dev.slne.surf.transaction.paper.commands.arguments.getCurrencyScale

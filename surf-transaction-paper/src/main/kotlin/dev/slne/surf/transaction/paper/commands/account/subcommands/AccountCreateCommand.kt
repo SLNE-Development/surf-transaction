@@ -7,7 +7,7 @@ import dev.jorel.commandapi.kotlindsl.subcommand
 import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.user.transactionUser
-import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 
 fun CommandAPICommand.accountCreateCommand() = subcommand("create") {

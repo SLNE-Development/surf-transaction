@@ -8,7 +8,7 @@ import dev.slne.surf.surfapi.core.api.font.toSmallCaps
 import dev.slne.surf.surfapi.core.api.messages.pagination.Pagination
 import dev.slne.surf.surfapi.core.api.util.mapAsync
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountArgument
 

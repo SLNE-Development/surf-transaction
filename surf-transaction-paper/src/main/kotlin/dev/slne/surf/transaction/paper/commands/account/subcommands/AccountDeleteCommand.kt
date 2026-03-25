@@ -7,7 +7,7 @@ import dev.slne.surf.surfapi.core.api.command.args.awaiting
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.user.transactionUser
-import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.account.arguments.accountArgument
 

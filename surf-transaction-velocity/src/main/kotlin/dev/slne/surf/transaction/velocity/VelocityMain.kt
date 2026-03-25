@@ -5,7 +5,7 @@ import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.annotation.DataDirectory
-import dev.slne.surf.transaction.core.TransactionInstance
+import dev.slne.surf.transaction.core.common.TransactionInstance
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
 

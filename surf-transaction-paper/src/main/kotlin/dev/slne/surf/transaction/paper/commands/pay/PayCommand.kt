@@ -14,8 +14,8 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
-import dev.slne.surf.transaction.core.component.Components
-import dev.slne.surf.transaction.core.redis.RedisService
+import dev.slne.surf.transaction.core.common.component.Components
+import dev.slne.surf.transaction.core.common.redis.RedisService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.redis.events.pay.PaymentReceivedEvent
 import net.kyori.adventure.text.Component

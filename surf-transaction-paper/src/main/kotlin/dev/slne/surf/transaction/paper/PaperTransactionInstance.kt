@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.paper
 
 import com.google.auto.service.AutoService
-import dev.slne.surf.transaction.core.TransactionInstance
+import dev.slne.surf.transaction.core.common.TransactionInstance
 import dev.slne.surf.transaction.paper.commands.CommandManager
 import java.nio.file.Path
 

@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.velocity
 
 import com.google.auto.service.AutoService
-import dev.slne.surf.transaction.core.TransactionInstance
+import dev.slne.surf.transaction.core.common.TransactionInstance
 import java.nio.file.Path
 
 @AutoService(TransactionInstance::class)

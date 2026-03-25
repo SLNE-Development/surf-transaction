@@ -10,7 +10,7 @@ import dev.slne.surf.surfapi.bukkit.api.command.util.idOrThrow
 import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.core.component.Components
+import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import org.bukkit.command.CommandSender

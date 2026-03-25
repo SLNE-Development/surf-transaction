@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.paper
 
 import com.github.shynixn.mccoroutine.folia.SuspendingJavaPlugin
-import dev.slne.surf.transaction.core.TransactionInstance
+import dev.slne.surf.transaction.core.common.TransactionInstance
 import org.bukkit.plugin.java.JavaPlugin
 
 class PaperMain : SuspendingJavaPlugin() {
