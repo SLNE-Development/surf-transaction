@@ -8,7 +8,7 @@ import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.currency.CurrencyServiceImpl
+import dev.slne.surf.transaction.core.currency.CoreCurrencyService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import org.bukkit.command.CommandSender
@@ -28,7 +28,7 @@ private suspend fun makeDefault(sender: CommandSender, currency: Currency) {
         throw CommandAPI.failWithString("Currency '${currency.name}' is already the default currency.")
     }
 
-    val result = CurrencyServiceImpl.get().makeDefaultCurrency(currency as CurrencyImpl)
+    val result = CoreCurrencyService.get().makeDefaultCurrency(currency as CurrencyImpl)
 
     sender.sendText {
         appendPrefix()
