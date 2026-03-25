@@ -6,8 +6,6 @@ import dev.slne.surf.surfapi.core.api.serializer.java.number.bigdecimal.Serializ
 import dev.slne.surf.surfapi.core.api.serializer.java.uuid.SerializableStringUUID
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import kotlinx.serialization.Serializable
-import java.math.BigDecimal
-import java.util.UUID
 
 @Serializable
 class DepositRequest(
