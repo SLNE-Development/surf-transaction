@@ -8,6 +8,9 @@ import dev.slne.surf.transaction.core.common.CoreTransactionSerializerModule
 import dev.slne.surf.transaction.core.common.TransactionInstance
 import dev.slne.surf.transaction.microservice.db.CreateTables
 import dev.slne.surf.transaction.microservice.handler.account.*
+import dev.slne.surf.transaction.microservice.handler.currency.CreateCurrencyHandler
+import dev.slne.surf.transaction.microservice.handler.currency.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingHandler
+import dev.slne.surf.transaction.microservice.handler.currency.MakeDefaultCurrencyHandler
 import kotlin.io.path.Path
 
 @AutoService(Microservice::class)
@@ -32,6 +35,11 @@ class TransactionMicroservice : Microservice() {
         rabbitApi.registerRequestHandler(FindOrCreateDefaultAccountByPlayerUuidHandler)
         rabbitApi.registerRequestHandler(RemoveMemberFromAccountHandler)
         rabbitApi.registerRequestHandler(CompleteAccountNameSuggestionsHandler)
+
+        // Currency
+        rabbitApi.registerRequestHandler(CreateCurrencyHandler)
+        rabbitApi.registerRequestHandler(FindAllCurrenciesAndCreateDefaultCurrencyIfMissingHandler)
+        rabbitApi.registerRequestHandler(MakeDefaultCurrencyHandler)
 
         rabbitApi.freezeAndConnect()
 
