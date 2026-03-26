@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class FindOrCreateDefaultAccountByPlayerUuidRequestPacket(val playerUUID: @Contextual UUID) :
+data class FindOrCreateDefaultAccountByPlayerUuidRequestPacket(val playerUuid: @Contextual UUID) :
     RabbitRequestPacket<AccountResponse>()

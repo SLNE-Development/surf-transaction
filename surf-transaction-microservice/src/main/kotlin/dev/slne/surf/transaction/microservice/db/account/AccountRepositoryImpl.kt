@@ -3,6 +3,7 @@ package dev.slne.surf.transaction.microservice.db.account
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import dev.slne.surf.surfapi.core.api.util.mutableObjectSetOf
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.common.account.AccountImpl
 import kotlinx.coroutines.flow.map
@@ -47,7 +48,7 @@ class AccountRepositoryImpl : AccountRepository {
 
     override suspend fun findAccountsByOwner(
         ownerUuid: UUID
-    ): List<AccountImpl> = suspendTransaction {
+    ): Set<AccountImpl> = suspendTransaction {
         val accountsResult = AccountTable
             .leftJoin(AccountMemberTable, { AccountTable.id }, { AccountMemberTable.accountId })
             .select(
@@ -200,12 +201,12 @@ class AccountRepositoryImpl : AccountRepository {
         )
     }
 
-    private fun fromMultiResultRowWithMembers(rows: List<ResultRow>): List<AccountImpl> {
-        if (rows.isEmpty()) return emptyList()
+    private fun fromMultiResultRowWithMembers(rows: List<ResultRow>): Set<AccountImpl> {
+        if (rows.isEmpty()) return emptySet()
 
         return rows
             .groupBy { it[AccountTable.accountId] }
             .values
-            .map(::fromResultRowWithMembers)
+            .mapTo(mutableObjectSetOf(), ::fromResultRowWithMembers)
     }
 }

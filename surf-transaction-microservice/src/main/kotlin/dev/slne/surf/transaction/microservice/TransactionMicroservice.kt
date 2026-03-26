@@ -7,6 +7,7 @@ import dev.slne.surf.rabbitmq.api.ServerRabbitMQApi
 import dev.slne.surf.transaction.core.common.CoreTransactionSerializerModule
 import dev.slne.surf.transaction.core.common.TransactionInstance
 import dev.slne.surf.transaction.microservice.db.CreateTables
+import dev.slne.surf.transaction.microservice.handler.account.*
 import kotlin.io.path.Path
 
 @AutoService(Microservice::class)
@@ -14,10 +15,23 @@ class TransactionMicroservice : Microservice() {
     val configPath = Path("config")
 
     private val databaseApi = DatabaseApi.create(configPath)
-    private val rabbitApi = ServerRabbitMQApi.create("surf-transaction", configPath, CoreTransactionSerializerModule.module)
+    private val rabbitApi =
+        ServerRabbitMQApi.create("surf-transaction", configPath, CoreTransactionSerializerModule.module)
 
     override suspend fun onBootstrap(args: List<String>) {
         CreateTables.create()
+
+        // Account
+        rabbitApi.registerRequestHandler(AccountAddMemberHandler)
+        rabbitApi.registerRequestHandler(CreateAccountHandler)
+        rabbitApi.registerRequestHandler(DeleteAccountHandler)
+        rabbitApi.registerRequestHandler(ExistsAccountByAccountNameHandler)
+        rabbitApi.registerRequestHandler(FindAllAccountByOwnerHandler)
+        rabbitApi.registerRequestHandler(FindAccountByAccountIdHandler)
+        rabbitApi.registerRequestHandler(FindAccountByNameHandler)
+        rabbitApi.registerRequestHandler(FindOrCreateDefaultAccountByPlayerUuidHandler)
+        rabbitApi.registerRequestHandler(RemoveMemberFromAccountHandler)
+        rabbitApi.registerRequestHandler(CompleteAccountNameSuggestionsHandler)
 
         rabbitApi.freezeAndConnect()
 

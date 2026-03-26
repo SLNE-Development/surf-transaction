@@ -31,7 +31,7 @@ interface AccountRepository {
     /**
      * Loads all accounts owned by [ownerUuid] including their members.
      */
-    suspend fun findAccountsByOwner(ownerUuid: UUID): List<AccountImpl>
+    suspend fun findAccountsByOwner(ownerUuid: UUID): Set<AccountImpl>
 
     /**
      * Checks whether an account with [name] exists.
