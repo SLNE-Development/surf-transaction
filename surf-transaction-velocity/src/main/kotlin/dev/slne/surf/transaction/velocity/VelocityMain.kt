@@ -1,9 +1,11 @@
 package dev.slne.surf.transaction.velocity
 
+import com.github.shynixn.mccoroutine.velocity.SuspendingPluginContainer
 import com.google.inject.Inject
 import com.velocitypowered.api.event.Subscribe
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
+import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
 import dev.slne.surf.transaction.core.common.TransactionInstance
 import kotlinx.coroutines.runBlocking
@@ -13,9 +15,12 @@ lateinit var plugin: VelocityMain
 
 class VelocityMain @Inject constructor(
     @param:DataDirectory val dataPath: Path,
+    val container: PluginContainer,
+    suspendingPluginContainer: SuspendingPluginContainer
 ) {
     init {
         plugin = this
+        suspendingPluginContainer.initialize(this)
         runBlocking {
             TransactionInstance.get().load()
         }

@@ -72,12 +72,12 @@ private suspend fun remove(
 
 private fun handleError(sender: CommandSender, result: TransactionResult, receiverUuid: UUID) {
     sender.sendText {
-        appendPrefix()
+        appendErrorPrefix()
         error("Es ist ein Fehler aufgetreten!")
     }
 
     log.atSevere()
-        .withCause((result as? TransactionResult.DatabaseError)?.cause)
+        .withCause((result as? TransactionResult.DatabaseError)?.cause?.buildFakeThrowable())
         .log("An error occurred when trying to remove money from player with UUID $receiverUuid")
 }
 
@@ -88,7 +88,7 @@ private suspend fun handleSuccess(
     currency: Currency
 ) {
     sender.sendText {
-        appendPrefix()
+        appendSuccessPrefix()
 
         darkSpacer("[")
         variableKey("Admin")

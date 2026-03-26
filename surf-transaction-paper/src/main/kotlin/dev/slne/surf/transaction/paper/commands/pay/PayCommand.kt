@@ -51,7 +51,7 @@ private suspend fun pay(
     }
 
     sender.sendText {
-        appendPrefix()
+        appendInfoPrefix()
         info("Überweisung wird ausgeführt...")
     }
 
@@ -109,7 +109,7 @@ private fun handleError(sender: Player, error: TransactionResult.DatabaseError) 
     sender.showDialog(payErrorDialog())
 
     log.atSevere()
-        .withCause(error.cause)
+        .withCause(error.cause.buildFakeThrowable())
         .log("Database error during transaction for player ${sender.name} (UUID: ${sender.uniqueId})")
 }
 
