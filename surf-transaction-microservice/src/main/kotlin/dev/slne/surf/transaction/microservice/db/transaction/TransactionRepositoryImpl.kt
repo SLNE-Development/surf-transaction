@@ -6,7 +6,6 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.batchInsert
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.insertReturning
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.select
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.common.transaction.TransactionImpl
@@ -64,9 +63,9 @@ class TransactionRepositoryImpl : TransactionRepository {
         return TransactionResult.Success(transaction)
     }
 
-    override suspend fun balanceDecimal(accountId: UUID, currency: Currency): BigDecimal = suspendTransaction {
+    override suspend fun balanceDecimal(accountId: UUID, currencyName: String): BigDecimal = suspendTransaction {
         balanceDecimal0 {
-            (TransactionTable.currency eqSubQuery CurrencyRepository.findCurrencyIDByNameQuery(currency.name)) and
+            (TransactionTable.currency eqSubQuery CurrencyRepository.findCurrencyIDByNameQuery(currencyName)) and
                     (TransactionTable.receiver eqSubQuery AccountRepository.findAccountIDByIdQuery(accountId))
         }
     }
