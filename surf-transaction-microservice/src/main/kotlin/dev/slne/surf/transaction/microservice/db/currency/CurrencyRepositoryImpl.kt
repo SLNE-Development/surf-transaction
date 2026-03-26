@@ -50,10 +50,10 @@ class CurrencyRepositoryImpl : CurrencyRepository {
         }
     }
 
-    override suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyDefaultResult = suspendTransaction {
+    override suspend fun makeDefaultCurrency(currencyName: String): CurrencyDefaultResult = suspendTransaction {
         val targetRow = CurrencyTable
             .select(CurrencyTable.id, CurrencyTable.defaultCurrency)
-            .where { CurrencyTable.name eq currency.name }
+            .where { CurrencyTable.name eq currencyName }
             .limit(1)
             .singleOrNull()
             ?: return@suspendTransaction CurrencyDefaultResult.NOT_FOUND

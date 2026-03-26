@@ -12,7 +12,7 @@ interface CurrencyRepository {
     suspend fun findAllAndCreateDefaultCurrencyIfMissing(): List<CurrencyImpl>
 
     suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult
-    suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyDefaultResult
+    suspend fun makeDefaultCurrency(currencyName: String): CurrencyDefaultResult
 
     companion object : CurrencyRepository by CurrencyRepositoryImpl() {
         fun init() = Unit

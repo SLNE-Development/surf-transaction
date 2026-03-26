@@ -16,9 +16,6 @@ abstract class RedisService {
     fun connect() {
         register()
 
-//        CurrencyRepository.Companion.init()
-//        AccountRepository.Companion.init()
-//        TransactionRepository.Companion.init()
         AccountService.init()
 
         redisApi.freezeAndConnect()

@@ -6,6 +6,10 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
+import dev.slne.surf.transaction.core.client.rabbitApi
+import dev.slne.surf.transaction.core.common.protocol.transaction.balance.GetTransactionBalanceRequestPacket
+import dev.slne.surf.transaction.core.common.protocol.transaction.create.CreateTransactionRequestPacket
+import dev.slne.surf.transaction.core.common.protocol.transaction.transfer.TransferTransactionCreateRequestPacket
 import dev.slne.surf.transaction.core.common.transaction.CoreTransactionService
 import dev.slne.surf.transaction.core.common.transaction.TransactionImpl
 import java.math.BigDecimal
@@ -32,7 +36,10 @@ class TransactionServiceImpl : CoreTransactionService {
             data = additionalData.toSet()
         )
 
-        return TransactionRepository.Companion.persistTransaction(transaction)
+        val request = CreateTransactionRequestPacket(transaction)
+        val (result) = rabbitApi.sendRequest(request)
+
+        return result
     }
 
     override suspend fun withdraw(
@@ -56,7 +63,10 @@ class TransactionServiceImpl : CoreTransactionService {
             data = additionalData.toSet()
         )
 
-        return TransactionRepository.Companion.persistTransaction(transaction)
+        val request = CreateTransactionRequestPacket(transaction)
+        val (result) = rabbitApi.sendRequest(request)
+
+        return result
     }
 
     override suspend fun transfer(
@@ -95,17 +105,23 @@ class TransactionServiceImpl : CoreTransactionService {
             data = additionalReceiverData.toSet()
         )
 
-        return TransactionRepository.Companion.transfer(senderTransaction, receiverTransaction)
+        val request = TransferTransactionCreateRequestPacket(senderTransaction, receiverTransaction)
+        val (result) = rabbitApi.sendRequest(request)
+
+        return result
     }
 
     override suspend fun balance(
         account: Account,
         currency: Currency
     ): BigDecimal {
-        return TransactionRepository.Companion.balanceDecimal(account.accountId, currency)
+        val request = GetTransactionBalanceRequestPacket(account.accountId, currency.name)
+        val (balance) = rabbitApi.sendRequest(request)
+
+        return balance
     }
 
     companion object {
-        fun get() = TransactionService.Companion.instance as TransactionServiceImpl
+        fun get() = TransactionService.instance as TransactionServiceImpl
     }
 }

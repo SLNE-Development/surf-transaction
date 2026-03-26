@@ -1,10 +1,9 @@
 package dev.slne.surf.transaction.core.common.currency
 
 import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
-import dev.slne.surf.surfapi.core.api.serializer.adventure.component.SerializableComponent
-import dev.slne.surf.surfapi.core.api.serializer.java.number.bigdecimal.SerializableBigDecimal
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
@@ -13,11 +12,11 @@ import java.math.BigDecimal
 @Serializable
 data class CurrencyImpl(
     override val name: String,
-    override val displayName: SerializableComponent,
+    override val displayName: @Contextual Component,
     override val symbol: String,
-    override val symbolDisplay: SerializableComponent,
+    override val symbolDisplay: @Contextual Component,
     override val scale: CurrencyScale,
-    override val minimumAmount: SerializableBigDecimal = BigDecimal.ZERO,
+    override val minimumAmount: @Contextual BigDecimal = BigDecimal.ZERO,
     override var defaultCurrency: Boolean = false
 ) : Currency {
     override fun format(amount: BigDecimal, color: TextColor): Component {

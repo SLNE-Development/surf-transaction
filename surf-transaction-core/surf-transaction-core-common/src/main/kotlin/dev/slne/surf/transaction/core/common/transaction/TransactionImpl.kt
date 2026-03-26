@@ -4,17 +4,20 @@ import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.Transaction
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import org.jetbrains.annotations.Unmodifiable
 import java.math.BigDecimal
 import java.util.*
 
-class TransactionImpl(
-    override val identifier: UUID,
-    override val initiator: UUID?,
-    override val senderAccountId: UUID?,
-    override val receiverAccountId: UUID?,
+@Serializable
+data class TransactionImpl(
+    override val identifier: @Contextual UUID,
+    override val initiator: @Contextual UUID?,
+    override val senderAccountId: @Contextual UUID?,
+    override val receiverAccountId: @Contextual UUID?,
     val currencyName: String,
-    override val amount: BigDecimal,
+    override val amount: @Contextual BigDecimal,
     override val data: @Unmodifiable Set<TransactionData>,
     override val ignoreMinimumAmount: Boolean = false
 ) : Transaction {
@@ -24,8 +27,4 @@ class TransactionImpl(
 
     override suspend fun senderAccount() = senderAccountId?.let { Account.byId(it) }
     override suspend fun receiverAccount() = receiverAccountId?.let { Account.byId(it) }
-
-    override fun toString(): String {
-        return "TransactionImpl(identifier=$identifier, initiator=$initiator, senderAccountId=$senderAccountId, receiverAccountId=$receiverAccountId, currencyName='$currencyName', amount=$amount, data=$data, ignoreMinimumAmount=$ignoreMinimumAmount)"
-    }
 }

@@ -1,5 +1,8 @@
 package dev.slne.surf.transaction.api.transaction
 
+import dev.slne.surf.surfapi.core.api.util.SerializableError
+import kotlinx.serialization.Serializable
+
 /**
  * Represents the result of a transactional operation.
  *
@@ -9,6 +12,7 @@ package dev.slne.surf.transaction.api.transaction
  *
  * @property success whether the transaction completed successfully
  */
+@Serializable
 sealed class TransactionResult(val success: Boolean = false) {
 
     /**
@@ -18,6 +22,7 @@ sealed class TransactionResult(val success: Boolean = false) {
      *
      * @param transaction the resulting transaction
      */
+    @Serializable
     data class Success(val transaction: Transaction) : TransactionResult(true)
 
     /**
@@ -29,6 +34,7 @@ sealed class TransactionResult(val success: Boolean = false) {
      * @param senderTransaction the transaction applied to the sender account
      * @param receiverTransaction the transaction applied to the receiver account
      */
+    @Serializable
     data class TransferSuccess(
         val senderTransaction: Transaction,
         val receiverTransaction: Transaction
@@ -37,11 +43,13 @@ sealed class TransactionResult(val success: Boolean = false) {
     /**
      * Indicates that the receiver account has insufficient funds.
      */
+    @Serializable
     data object ReceiverInsufficientFunds : TransactionResult()
 
     /**
      * Indicates that the sender account has insufficient funds.
      */
+    @Serializable
     data object SenderInsufficientFunds : TransactionResult()
 
     /**
@@ -49,5 +57,6 @@ sealed class TransactionResult(val success: Boolean = false) {
      *
      * @param cause the underlying error
      */
-    data class DatabaseError(val cause: Throwable) : TransactionResult()
+    @Serializable
+    data class DatabaseError(val cause: SerializableError) : TransactionResult()
 }
