@@ -11,7 +11,7 @@ surfCoreApi {
 }
 
 surfMicroservice {
-    withRabbitModule(RabbitModule.SERVER_API)
+    withRabbitModule(RabbitModule.SERVER_API, true)
     withMicroserviceApi()
 }
 

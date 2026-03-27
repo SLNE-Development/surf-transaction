@@ -19,7 +19,7 @@ class TransactionEventsHandler {
 
         plugin.launch(plugin.entityDispatcher(receiver)) {
             receiver.sendText {
-                appendPrefix()
+                appendInfoPrefix()
 
                 darkSpacer("[")
                 variableKey("Admin")
