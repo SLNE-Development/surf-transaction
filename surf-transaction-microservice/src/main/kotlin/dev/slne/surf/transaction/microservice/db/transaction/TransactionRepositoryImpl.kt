@@ -6,11 +6,13 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.batchInsert
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.insertReturning
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.select
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import dev.slne.surf.surfapi.core.api.util.SerializableError
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.common.transaction.TransactionImpl
 import dev.slne.surf.transaction.microservice.db.account.AccountRepository
 import dev.slne.surf.transaction.microservice.db.currency.CurrencyRepository
+import dev.slne.surf.transaction.microservice.db.currency.CurrencyTable
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
@@ -27,37 +29,59 @@ class TransactionRepositoryImpl : TransactionRepository {
     }
 
     suspend fun persistTransaction0(transaction: TransactionImpl): TransactionResult {
+        val currencyRow = CurrencyTable
+            .select(CurrencyTable.id, CurrencyTable.minimumAmount)
+            .where { CurrencyTable.name eq transaction.currencyName }
+            .limit(1)
+            .singleOrNull()
+            ?: return TransactionResult.DatabaseError(
+                SerializableError(
+                    "CURRENCY_NOT_FOUND",
+                    "Currency not found: ${transaction.currencyName}"
+                )
+            )
+
+        val currencyId = currencyRow[CurrencyTable.id]
+        val minimumAmount = currencyRow[CurrencyTable.minimumAmount]
+
+        val senderId = transaction.senderAccountId?.let { senderAccountId ->
+            AccountRepository.findAccountIDByIdQuery(senderAccountId)
+        }
+
+        val receiverId = transaction.receiverAccountId?.let { receiverAccountId ->
+            AccountRepository.findAccountIDByIdQuery(receiverAccountId)
+        }
+
         val insertedTransactionRow = TransactionTable.insertReturning {
             it[identifier] = transaction.identifier
             it[initiator] = transaction.initiator
             it[amount] = transaction.amount
-            it[currency] = CurrencyRepository.findCurrencyIDByNameQuery(transaction.currency.name)
-
-            transaction.senderAccountId?.let { senderAccount ->
-                it[sender] = AccountRepository.findAccountIDByIdQuery(senderAccount)
+            it[currency] = CurrencyRepository.findCurrencyIDByNameQuery(transaction.currencyName)
+            senderId?.let { sender ->
+                it[TransactionTable.sender] = sender
             }
 
-            transaction.receiverAccountId?.let { receiverAccount ->
-                it[receiver] = AccountRepository.findAccountIDByIdQuery(receiverAccount)
+            receiverId?.let { receiver ->
+                it[TransactionTable.receiver] = receiver
             }
         }.single()
 
-        val transactionID = insertedTransactionRow[TransactionTable.id].value
-        val receiverID = insertedTransactionRow[TransactionTable.receiver]?.value
-        val currencyID = insertedTransactionRow[TransactionTable.currency].value
+        val transactionId = insertedTransactionRow[TransactionTable.id].value
+        val insertedReceiverId = insertedTransactionRow[TransactionTable.receiver]?.value
 
-        TransactionDataTable.batchInsert(transaction.data, shouldReturnGeneratedValues = false) {
-            insertTransactionData(transactionID, it)
-        }
-
-        if (receiverID != null && !transaction.ignoreMinimumAmount) {
+        if (insertedReceiverId != null && !transaction.ignoreMinimumAmount) {
             val balanceAfterTransaction = balanceDecimal0 {
-                (TransactionTable.currency eq currencyID) and (TransactionTable.receiver eq receiverID)
+                (TransactionTable.currency eq currencyId.value) and
+                        (TransactionTable.receiver eq insertedReceiverId)
             }
 
-            if (balanceAfterTransaction < transaction.currency.minimumAmount) {
+            if (balanceAfterTransaction < minimumAmount) {
                 return TransactionResult.ReceiverInsufficientFunds
             }
+        }
+
+        TransactionDataTable.batchInsert(transaction.data, shouldReturnGeneratedValues = false) {
+            insertTransactionData(transactionId, it)
         }
 
         return TransactionResult.Success(transaction)
