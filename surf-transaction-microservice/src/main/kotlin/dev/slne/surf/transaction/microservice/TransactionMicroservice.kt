@@ -18,11 +18,15 @@ import kotlin.io.path.Path
 
 @AutoService(Microservice::class)
 class TransactionMicroservice : Microservice() {
-    val configPath = Path("config")
+    override val dataPath = Path("config")
 
-    private val databaseApi = DatabaseApi.create(configPath)
+    private val databaseApi = DatabaseApi.create(dataPath)
     private val rabbitApi =
-        ServerRabbitMQApi.create("surf-transaction", configPath, CoreTransactionSerializerModule.module)
+        ServerRabbitMQApi.create(
+            "surf-transaction",
+            dataPath,
+            CoreTransactionSerializerModule.module
+        )
 
     override suspend fun onBootstrap(args: List<String>) {
         CreateTables.create()
