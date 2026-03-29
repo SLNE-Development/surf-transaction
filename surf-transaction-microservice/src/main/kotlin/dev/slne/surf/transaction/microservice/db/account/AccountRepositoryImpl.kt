@@ -14,7 +14,7 @@ import java.util.*
 
 class AccountRepositoryImpl : AccountRepository {
 
-    override fun findAccountIDByIdQuery(accountId: UUID): Query = AccountTable.select(AccountTable.accountId)
+    override fun findAccountIDByIdQuery(accountId: UUID): Query = AccountTable.select(AccountTable.id)
         .where { AccountTable.accountId eq accountId }
         .limit(1)
 
