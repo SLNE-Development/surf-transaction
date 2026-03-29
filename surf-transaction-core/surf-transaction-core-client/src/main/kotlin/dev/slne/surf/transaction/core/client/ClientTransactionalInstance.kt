@@ -11,13 +11,18 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 
 abstract class ClientTransactionalInstance : TransactionInstance() {
-    val rabbitApi = ClientRabbitMQApi.create("surf-transaction", dataPath, CoreTransactionSerializerModule.module)
+    val rabbitApi = ClientRabbitMQApi.create(
+        "surf-transaction",
+        dataPath,
+        CoreTransactionSerializerModule.module
+    )
     abstract val dataPath: Path
     abstract val scope: CoroutineScope
 
     override suspend fun load() {
         super.load()
 
+        rabbitApi.freezeAndConnect()
         withContext(Dispatchers.IO) { RedisService.get().connect() }
         CurrencyServiceImpl.get().cacheCurrencies()
     }
@@ -25,7 +30,9 @@ abstract class ClientTransactionalInstance : TransactionInstance() {
     override suspend fun disable() {
         super.disable()
 
+        CurrencyServiceImpl.get().disposeScope()
         withContext(Dispatchers.IO) { RedisService.get().disconnect() }
+        rabbitApi.disconnect()
     }
 
     companion object {
