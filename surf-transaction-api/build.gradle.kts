@@ -1,7 +1,6 @@
 @file:OptIn(ExperimentalAbiValidation::class)
 
 import dev.slne.surf.surfapi.gradle.util.slneReleases
-import jdk.jfr.internal.JVM.exclude
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
