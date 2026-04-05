@@ -14,7 +14,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.core.component.Components
 import dev.slne.surf.transaction.core.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.currency.CoreCurrencyService
+import dev.slne.surf.transaction.core.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyScaleArgument
 import dev.slne.surf.transaction.paper.commands.arguments.getCurrencyScale
@@ -77,7 +77,7 @@ private suspend fun create(
         minimumAmount = minimumAmount.toBigDecimal()
     )
 
-    val result = CoreCurrencyService.get().createCurrency(currency)
+    val result = CurrencyServiceImpl.get().createCurrency(currency)
 
     sender.sendText {
         appendPrefix()
