@@ -6,7 +6,9 @@ import dev.slne.surf.transaction.api.util.InternalTransactionApi
 @InternalTransactionApi
 interface TransactionService {
 
-    companion object {
-        val instance = requiredService<TransactionService>()
+    companion object : TransactionService by instance {
+        val INSTANCE get() = instance
     }
 }
+
+private val instance = requiredService<TransactionService>()

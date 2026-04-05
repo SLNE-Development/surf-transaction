@@ -1,5 +1,7 @@
 package dev.slne.surf.transaction.api.account
 
+import dev.slne.surf.transaction.api.account.Account.Companion.MAX_NAME_LENGTH
+import dev.slne.surf.transaction.api.account.Account.Companion.MIN_NAME_LENGTH
 import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.transactional.Transactional
@@ -61,6 +63,7 @@ interface Account : Transactional, AccountMemberOperations {
          * The minimum allowed length of an account name.
          */
         const val MIN_NAME_LENGTH = 3
+
         /**
          * The maximum allowed length of an account name.
          */
@@ -73,14 +76,14 @@ interface Account : Transactional, AccountMemberOperations {
          * @param accountId the account identifier
          */
         suspend fun byId(accountId: UUID): Account? =
-            AccountService.instance.getAccountByAccountId(accountId)
+            AccountService.getAccountByAccountId(accountId)
 
         /**
          * Returns an account by its [name], or `null` if none exists.
          *
          * @param name the name of the account
          */
-        suspend fun byName(name: String): Account? = AccountService.instance.getAccountByName(name)
+        suspend fun byName(name: String): Account? = AccountService.getAccountByName(name)
 
         /**
          * Creates a new account for the given [owner] with the specified [name].
@@ -93,7 +96,7 @@ interface Account : Transactional, AccountMemberOperations {
         suspend fun create(
             owner: UUID,
             name: String
-        ): AccountCreationResult = AccountService.instance.createAccount(owner, name)
+        ): AccountCreationResult = AccountService.createAccount(owner, name)
     }
 
 }

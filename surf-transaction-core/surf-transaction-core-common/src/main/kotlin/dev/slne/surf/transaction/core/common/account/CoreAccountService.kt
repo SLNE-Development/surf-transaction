@@ -12,10 +12,19 @@ interface CoreAccountService : AccountService {
 
     suspend fun deleteAccount(account: Account): AccountDeleteResult
 
-    suspend fun addMemberToAccount(accountId: UUID, executor: UUID, target: UUID): AccountMemberResult
-    suspend fun removeMemberFromAccount(accountId: UUID, executor: UUID, target: UUID): AccountMemberResult
+    suspend fun addMemberToAccount(
+        accountId: UUID,
+        executor: UUID,
+        target: UUID
+    ): AccountMemberResult
+
+    suspend fun removeMemberFromAccount(
+        accountId: UUID,
+        executor: UUID,
+        target: UUID
+    ): AccountMemberResult
 
     suspend fun completeAccountNameSuggestions(input: String, maxSuggestions: Int): List<String>
 
-    companion object : CoreAccountService by AccountService.instance as CoreAccountService
+    companion object : CoreAccountService by AccountService.INSTANCE as CoreAccountService
 }

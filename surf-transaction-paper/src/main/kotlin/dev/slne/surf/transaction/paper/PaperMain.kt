@@ -6,15 +6,15 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class PaperMain : SuspendingJavaPlugin() {
     override suspend fun onLoadAsync() {
-        TransactionInstance.get().load()
+        TransactionInstance.INSTANCE.load()
     }
 
     override suspend fun onEnableAsync() {
-        TransactionInstance.get().enable()
+        TransactionInstance.INSTANCE.enable()
     }
 
     override suspend fun onDisableAsync() {
-        TransactionInstance.get().disable()
+        TransactionInstance.INSTANCE.disable()
     }
 }
 

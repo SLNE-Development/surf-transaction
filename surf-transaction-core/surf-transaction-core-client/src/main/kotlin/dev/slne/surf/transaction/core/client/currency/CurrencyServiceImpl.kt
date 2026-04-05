@@ -39,7 +39,7 @@ class CurrencyServiceImpl : CoreCurrencyService {
     init {
         scope.launch {
             currencyCacheChannel.consumeEach {
-                
+
                 cacheCurrencies0()
             }
         }
@@ -124,6 +124,6 @@ class CurrencyServiceImpl : CoreCurrencyService {
     companion object {
         private val log = logger()
 
-        fun get() = CurrencyService.instance as CurrencyServiceImpl
+        val INSTANCE get() = CurrencyService.INSTANCE as CurrencyServiceImpl
     }
 }

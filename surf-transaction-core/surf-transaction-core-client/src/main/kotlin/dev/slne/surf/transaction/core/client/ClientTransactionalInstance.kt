@@ -23,21 +23,21 @@ abstract class ClientTransactionalInstance : TransactionInstance() {
         super.load()
 
         rabbitApi.freezeAndConnect()
-        withContext(Dispatchers.IO) { RedisService.get().connect() }
-        CurrencyServiceImpl.get().cacheCurrencies()
+        withContext(Dispatchers.IO) { RedisService.INSTANCE.connect() }
+        CurrencyServiceImpl.INSTANCE.cacheCurrencies()
     }
 
     override suspend fun disable() {
         super.disable()
 
-        CurrencyServiceImpl.get().disposeScope()
-        withContext(Dispatchers.IO) { RedisService.get().disconnect() }
+        CurrencyServiceImpl.INSTANCE.disposeScope()
+        withContext(Dispatchers.IO) { RedisService.INSTANCE.disconnect() }
         rabbitApi.disconnect()
     }
 
     companion object {
-        fun get() = TransactionInstance.get() as ClientTransactionalInstance
+        val INSTANCE get() = TransactionInstance.INSTANCE as ClientTransactionalInstance
     }
 }
 
-val rabbitApi get() = ClientTransactionalInstance.get().rabbitApi
+val rabbitApi get() = ClientTransactionalInstance.INSTANCE.rabbitApi

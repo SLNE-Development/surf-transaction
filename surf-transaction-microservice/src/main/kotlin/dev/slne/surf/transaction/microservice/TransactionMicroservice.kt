@@ -55,12 +55,12 @@ class TransactionMicroservice : Microservice() {
 
         rabbitApi.freezeAndConnect()
 
-        TransactionInstance.get().load()
-        TransactionInstance.get().enable()
+        TransactionInstance.INSTANCE.load()
+        TransactionInstance.INSTANCE.enable()
     }
 
     override suspend fun onDisable() {
-        TransactionInstance.get().disable()
+        TransactionInstance.INSTANCE.disable()
         rabbitApi.disconnect()
         databaseApi.shutdown()
     }

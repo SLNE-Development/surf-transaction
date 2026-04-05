@@ -1,6 +1,10 @@
 package dev.slne.surf.transaction.api.currency
 
 import dev.slne.surf.api.core.messages.Colors
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
+import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
+import dev.slne.surf.transaction.api.currency.Currency.Companion.byName
+import dev.slne.surf.transaction.api.currency.Currency.Companion.default
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
@@ -113,19 +117,19 @@ interface Currency : ComponentLike {
         /**
          * Returns the system's default currency.
          */
-        fun default(): Currency = CurrencyService.instance.defaultCurrency
+        fun default(): Currency = CurrencyService.defaultCurrency
 
         /**
          * Returns all registered currencies.
          */
-        fun all(): Set<Currency> = CurrencyService.instance.currencies
+        fun all(): Set<Currency> = CurrencyService.currencies
 
         /**
          * Returns a currency by its [name], or `null` if none exists.
          *
          * @param name the technical name of the currency
          */
-        fun byName(name: String): Currency? = CurrencyService.instance.getCurrencyByName(name)
+        fun byName(name: String): Currency? = CurrencyService.getCurrencyByName(name)
 
         /**
          * Shortcut operator for [byName].

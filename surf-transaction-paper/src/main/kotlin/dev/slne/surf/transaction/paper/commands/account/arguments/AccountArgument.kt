@@ -42,7 +42,7 @@ class AccountArgument(nodeName: String) :
         ): CompletableFuture<Suggestions> = plugin.scope.future {
             val currentInput = info.currentInput
             val suggestions =
-                AccountServiceImpl.get().completeAccountNameSuggestions(currentInput, 100)
+                AccountServiceImpl.INSTANCE.completeAccountNameSuggestions(currentInput, 100)
 
             for (suggestion in suggestions) {
                 builder.suggest(suggestion)

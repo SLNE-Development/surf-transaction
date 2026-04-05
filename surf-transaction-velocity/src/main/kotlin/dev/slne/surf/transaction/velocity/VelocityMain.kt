@@ -22,17 +22,17 @@ class VelocityMain @Inject constructor(
         plugin = this
         suspendingPluginContainer.initialize(this)
         runBlocking {
-            TransactionInstance.get().load()
+            TransactionInstance.INSTANCE.load()
         }
     }
 
     @Subscribe
     suspend fun onProxyInitialize(event: ProxyInitializeEvent) {
-        TransactionInstance.get().enable()
+        TransactionInstance.INSTANCE.enable()
     }
 
     @Subscribe
     suspend fun onProxyShutdown(event: ProxyShutdownEvent) {
-        TransactionInstance.get().disable()
+        TransactionInstance.INSTANCE.disable()
     }
 }

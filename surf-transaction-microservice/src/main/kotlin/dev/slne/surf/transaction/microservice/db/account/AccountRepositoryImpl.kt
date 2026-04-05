@@ -1,9 +1,9 @@
 package dev.slne.surf.transaction.microservice.db.account
 
+import dev.slne.surf.api.core.util.mutableObjectSetOf
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.*
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import dev.slne.surf.api.core.api.util.mutableObjectSetOf
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.common.account.AccountImpl
 import kotlinx.coroutines.flow.map
@@ -14,9 +14,10 @@ import java.util.*
 
 class AccountRepositoryImpl : AccountRepository {
 
-    override fun findAccountIDByIdQuery(accountId: UUID): Query = AccountTable.select(AccountTable.id)
-        .where { AccountTable.accountId eq accountId }
-        .limit(1)
+    override fun findAccountIDByIdQuery(accountId: UUID): Query =
+        AccountTable.select(AccountTable.id)
+            .where { AccountTable.accountId eq accountId }
+            .limit(1)
 
     override suspend fun findAccountByAccountId(
         accountId: UUID
@@ -154,12 +155,13 @@ class AccountRepositoryImpl : AccountRepository {
         AccountMemberResult.SUCCESS to ownerId
     }
 
-    private suspend fun selectAccountIDAndOwnerIdFromAccountId(accountId: UUID): Pair<ULong, UUID>? = AccountTable
-        .select(AccountTable.id, AccountTable.ownerId)
-        .where { AccountTable.accountId eq accountId }
-        .limit(1)
-        .singleOrNull()
-        ?.let { row -> row[AccountTable.id].value to row[AccountTable.ownerId] }
+    private suspend fun selectAccountIDAndOwnerIdFromAccountId(accountId: UUID): Pair<ULong, UUID>? =
+        AccountTable
+            .select(AccountTable.id, AccountTable.ownerId)
+            .where { AccountTable.accountId eq accountId }
+            .limit(1)
+            .singleOrNull()
+            ?.let { row -> row[AccountTable.id].value to row[AccountTable.ownerId] }
 
     override suspend fun deleteAccount(accountId: UUID): Int = suspendTransaction {
         AccountTable.deleteWhere { AccountTable.accountId eq accountId }

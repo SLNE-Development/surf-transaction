@@ -33,7 +33,9 @@ interface CurrencyService {
      */
     fun getCurrencyByName(name: String): Currency?
 
-    companion object {
-        val instance = requiredService<CurrencyService>()
+    companion object : CurrencyService by instance {
+        val INSTANCE get() = instance
     }
 }
+
+private val instance = requiredService<CurrencyService>()

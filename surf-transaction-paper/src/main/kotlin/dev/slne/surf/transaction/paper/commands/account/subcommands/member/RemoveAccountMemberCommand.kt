@@ -26,7 +26,6 @@ fun CommandAPICommand.removeAccountMemberCommand() = subcommand("remove") {
         val result = account.removeMember(sender.uniqueId, targetUuid)
 
         sender.sendText {
-            appendInfoPrefix()
             append(Components.Account.Member.formatResult(result, targetUuid, added = false))
         }
     }

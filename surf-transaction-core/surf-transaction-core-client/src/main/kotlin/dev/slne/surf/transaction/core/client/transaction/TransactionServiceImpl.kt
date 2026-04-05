@@ -122,6 +122,6 @@ class TransactionServiceImpl : CoreTransactionService {
     }
 
     companion object {
-        fun get() = TransactionService.instance as TransactionServiceImpl
+        val INSTANCE get() = TransactionService.INSTANCE as TransactionServiceImpl
     }
 }

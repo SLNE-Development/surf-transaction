@@ -2,7 +2,7 @@ package dev.slne.surf.transaction.api.user
 
 import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
-import java.util.UUID
+import java.util.*
 
 /**
  * Internal service for resolving [TransactionUser] instances.
@@ -26,7 +26,9 @@ interface TransactionUserService {
      */
     fun byUuid(uuid: UUID): TransactionUser
 
-    companion object {
-        val instance = requiredService<TransactionUserService>()
+    companion object : TransactionUserService by instance {
+        val INSTANCE get() = instance
     }
 }
+
+private val instance = requiredService<TransactionUserService>()

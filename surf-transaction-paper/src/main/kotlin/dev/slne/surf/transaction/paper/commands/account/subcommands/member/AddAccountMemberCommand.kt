@@ -36,7 +36,6 @@ fun CommandAPICommand.addAccountMemberCommand() = subcommand("add") {
         )
 
         sender.sendText {
-            appendInfoPrefix()
             append(Components.Account.Member.formatResult(result, targetUuid, added = true))
         }
     }

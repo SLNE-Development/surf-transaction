@@ -8,11 +8,11 @@ class CurrencyEventsListener {
 
     @OnRedisEvent
     fun onCurrencyCreated(event: CurrencyCreatedEvent) {
-        CurrencyServiceImpl.get().cacheCurrency(event.currency)
+        CurrencyServiceImpl.INSTANCE.cacheCurrency(event.currency)
     }
 
     @OnRedisEvent
     fun onChangedDefaultCurrency(event: ChangedDefaultCurrencyEvent) {
-        CurrencyServiceImpl.get().updateDefaultCurrency(event.newDefault)
+        CurrencyServiceImpl.INSTANCE.updateDefaultCurrency(event.newDefault)
     }
 }

@@ -26,7 +26,8 @@ import kotlin.time.Duration.Companion.minutes
 
 @AutoService(AccountService::class)
 class AccountServiceImpl : CoreAccountService {
-    private val defaultAccountCache = RedisService.cache<UUID, AccountImpl>("default_account", 10.minutes)
+    private val defaultAccountCache =
+        RedisService.cache<UUID, AccountImpl>("default_account", 10.minutes)
 
     override suspend fun getAccountByAccountId(accountId: UUID): Account? {
         val request = FindAccountByAccountIdRequestPacket(accountId)
@@ -124,13 +125,16 @@ class AccountServiceImpl : CoreAccountService {
         return result
     }
 
-    override suspend fun completeAccountNameSuggestions(input: String, maxSuggestions: Int): List<String> {
+    override suspend fun completeAccountNameSuggestions(
+        input: String,
+        maxSuggestions: Int
+    ): List<String> {
         val inputLowerCase = input.lowercase()
         val request = CompleteAccountNameSuggestionsRequestPacket(inputLowerCase, maxSuggestions)
         return rabbitApi.sendRequest(request).completions
     }
 
     companion object {
-        fun get() = AccountService.instance as AccountServiceImpl
+        val INSTANCE get() = AccountService.INSTANCE as AccountServiceImpl
     }
 }

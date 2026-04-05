@@ -12,9 +12,9 @@ import dev.slne.surf.api.paper.command.args.MiniMessageArgument
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
+import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
-import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyScaleArgument
 import dev.slne.surf.transaction.paper.commands.arguments.getCurrencyScale
@@ -77,10 +77,9 @@ private suspend fun create(
         minimumAmount = minimumAmount.toBigDecimal()
     )
 
-    val result = CurrencyServiceImpl.get().createCurrency(currency)
+    val result = CurrencyServiceImpl.INSTANCE.createCurrency(currency)
 
     sender.sendText {
-        appendInfoPrefix()
         append(Components.Currency.formatCreateResult(currency, result))
     }
 }

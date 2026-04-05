@@ -44,8 +44,10 @@ interface AccountService {
      */
     suspend fun createAccount(ownerUuid: UUID, name: String): AccountCreationResult
 
-    companion object {
-        val instance = requiredService<AccountService>()
+    companion object : AccountService by instance {
+        val INSTANCE get() = instance
         fun init() = Unit
     }
 }
+
+private val instance = requiredService<AccountService>()

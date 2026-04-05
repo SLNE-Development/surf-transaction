@@ -6,7 +6,7 @@ import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import java.math.BigDecimal
-import java.util.UUID
+import java.util.*
 
 interface CoreTransactionService : TransactionService {
 
@@ -45,5 +45,6 @@ interface CoreTransactionService : TransactionService {
         currency: Currency
     ): BigDecimal
 
-    companion object : CoreTransactionService by TransactionService.instance as CoreTransactionService
+    companion object :
+        CoreTransactionService by TransactionService.INSTANCE as CoreTransactionService
 }

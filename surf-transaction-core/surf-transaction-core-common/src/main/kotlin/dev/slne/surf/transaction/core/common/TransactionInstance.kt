@@ -17,7 +17,8 @@ abstract class TransactionInstance {
     }
 
     companion object {
-        val instance = requiredService<TransactionInstance>()
-        fun get() = instance
+        val INSTANCE get() = instance
     }
 }
+
+private val instance = requiredService<TransactionInstance>()

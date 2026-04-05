@@ -21,7 +21,6 @@ fun CommandAPICommand.accountDeleteCommand() = subcommand("delete") {
         val result = player.transactionUser().deleteAccount(account)
 
         player.sendText {
-            appendInfoPrefix()
             append(Components.Account.formatDeletionResult(result))
         }
     }
