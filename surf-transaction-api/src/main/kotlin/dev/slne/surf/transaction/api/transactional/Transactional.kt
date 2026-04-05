@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.api.transactional
 
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.api.core.util.objectSetOf
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult

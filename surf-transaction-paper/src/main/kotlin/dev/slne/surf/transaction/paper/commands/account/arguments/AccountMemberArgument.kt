@@ -5,10 +5,10 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
-import dev.slne.surf.surfapi.bukkit.api.command.args.SuspendCustomArgument
-import dev.slne.surf.surfapi.core.api.command.args.awaitingOrNull
-import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
-import dev.slne.surf.surfapi.core.api.util.mapAsync
+import dev.slne.surf.api.core.command.args.awaitingOrNull
+import dev.slne.surf.api.core.service.PlayerLookupService
+import dev.slne.surf.api.core.util.mapAsync
+import dev.slne.surf.api.paper.command.args.SuspendCustomArgument
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.paper.plugin
 import kotlinx.coroutines.CoroutineScope

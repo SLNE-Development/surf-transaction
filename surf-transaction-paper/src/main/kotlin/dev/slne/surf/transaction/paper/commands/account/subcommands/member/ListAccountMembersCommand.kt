@@ -2,11 +2,11 @@ package dev.slne.surf.transaction.paper.commands.account.subcommands.member
 
 import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
-import dev.slne.surf.surfapi.core.api.command.args.awaiting
-import dev.slne.surf.surfapi.core.api.font.toSmallCaps
-import dev.slne.surf.surfapi.core.api.messages.pagination.Pagination
-import dev.slne.surf.surfapi.core.api.util.mapAsync
+import dev.slne.surf.api.core.command.args.awaiting
+import dev.slne.surf.api.core.font.toSmallCaps
+import dev.slne.surf.api.core.messages.pagination.Pagination
+import dev.slne.surf.api.core.util.mapAsync
+import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission

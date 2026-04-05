@@ -2,9 +2,9 @@
 
 package dev.slne.surf.transaction.paper.commands.pay
 
-import dev.slne.surf.surfapi.bukkit.api.dialog.base
-import dev.slne.surf.surfapi.bukkit.api.dialog.dialog
-import dev.slne.surf.surfapi.bukkit.api.dialog.type
+import dev.slne.surf.api.paper.dialog.base
+import dev.slne.surf.api.paper.dialog.dialog
+import dev.slne.surf.api.paper.dialog.type
 import io.papermc.paper.registry.data.dialog.DialogBase
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player

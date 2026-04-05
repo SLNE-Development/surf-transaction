@@ -8,7 +8,7 @@ import dev.jorel.commandapi.SuggestionInfo
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
-import dev.slne.surf.surfapi.bukkit.api.command.args.SuspendCustomArgument
+import dev.slne.surf.api.paper.command.args.SuspendCustomArgument
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.core.client.account.AccountServiceImpl
 import dev.slne.surf.transaction.paper.plugin

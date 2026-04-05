@@ -6,7 +6,7 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.batchInsert
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.insertReturning
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.select
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
-import dev.slne.surf.surfapi.core.api.util.SerializableError
+import dev.slne.surf.api.core.api.util.SerializableError
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.common.transaction.TransactionImpl

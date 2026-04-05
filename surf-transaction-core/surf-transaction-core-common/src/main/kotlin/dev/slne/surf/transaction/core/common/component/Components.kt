@@ -1,10 +1,10 @@
 package dev.slne.surf.transaction.core.common.component
 
-import dev.slne.surf.surfapi.core.api.messages.Colors
-import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
-import dev.slne.surf.surfapi.core.api.messages.adventure.text
-import dev.slne.surf.surfapi.core.api.messages.builder.SurfComponentBuilder
-import dev.slne.surf.surfapi.core.api.service.PlayerLookupService
+import dev.slne.surf.api.core.messages.Colors
+import dev.slne.surf.api.core.messages.adventure.buildText
+import dev.slne.surf.api.core.messages.adventure.text
+import dev.slne.surf.api.core.messages.builder.SurfComponentBuilder
+import dev.slne.surf.api.core.service.PlayerLookupService
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult.FailureReason.*

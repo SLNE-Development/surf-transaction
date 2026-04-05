@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.api.currency
 
-import dev.slne.surf.surfapi.core.api.util.requiredService
+import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 
 /**

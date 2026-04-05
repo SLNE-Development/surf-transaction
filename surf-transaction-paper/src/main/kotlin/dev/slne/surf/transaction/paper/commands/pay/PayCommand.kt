@@ -5,11 +5,11 @@ import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
 import dev.jorel.commandapi.kotlindsl.doubleArgument
-import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
-import dev.slne.surf.surfapi.bukkit.api.command.util.awaitAsyncPlayerProfile
-import dev.slne.surf.surfapi.bukkit.api.command.util.idOrThrow
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
-import dev.slne.surf.surfapi.core.api.util.logger
+import dev.slne.surf.api.core.messages.adventure.sendText
+import dev.slne.surf.api.core.util.logger
+import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
+import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
+import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser

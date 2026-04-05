@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.core.common.currency
 
-import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
+import dev.slne.surf.api.core.messages.adventure.buildText
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import kotlinx.serialization.Contextual

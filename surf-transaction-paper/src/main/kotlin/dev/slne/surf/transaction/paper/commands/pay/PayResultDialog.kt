@@ -2,10 +2,10 @@
 
 package dev.slne.surf.transaction.paper.commands.pay
 
-import dev.slne.surf.surfapi.bukkit.api.dialog.noticeDialog
-import dev.slne.surf.surfapi.bukkit.api.dialog.noticeDialogWithBuilder
-import dev.slne.surf.surfapi.core.api.messages.Colors
-import dev.slne.surf.surfapi.core.api.messages.adventure.text
+import dev.slne.surf.api.core.messages.Colors
+import dev.slne.surf.api.core.messages.adventure.text
+import dev.slne.surf.api.paper.dialog.noticeDialog
+import dev.slne.surf.api.paper.dialog.noticeDialogWithBuilder
 import net.kyori.adventure.text.Component
 
 fun paySuccessDialog(

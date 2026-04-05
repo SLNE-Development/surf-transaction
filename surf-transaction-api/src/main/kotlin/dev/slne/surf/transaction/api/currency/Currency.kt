@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.api.currency
 
-import dev.slne.surf.surfapi.core.api.messages.Colors
+import dev.slne.surf.api.core.messages.Colors
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike

@@ -6,9 +6,9 @@ import dev.jorel.commandapi.CommandAPICommand
 import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.subcommand
-import dev.slne.surf.surfapi.bukkit.api.command.executors.playerExecutorSuspend
-import dev.slne.surf.surfapi.core.api.command.args.awaiting
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.api.core.command.args.awaiting
+import dev.slne.surf.api.core.messages.adventure.sendText
+import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
@@ -36,7 +36,7 @@ fun CommandAPICommand.addAccountMemberCommand() = subcommand("add") {
         )
 
         sender.sendText {
-            appendPrefix()
+            appendInfoPrefix()
             append(Components.Account.Member.formatResult(result, targetUuid, added = true))
         }
     }

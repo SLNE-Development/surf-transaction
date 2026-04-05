@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.api.account
 
-import dev.slne.surf.surfapi.core.api.util.requiredService
+import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.transaction.api.account.result.AccountCreationResult
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import java.util.*

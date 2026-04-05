@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.api.user
 
-import dev.slne.surf.surfapi.core.api.messages.adventure.getPointer
-import dev.slne.surf.surfapi.core.api.util.objectSetOf
+import dev.slne.surf.api.core.util.objectSetOf
+import dev.slne.surf.api.core.messages.adventure.getPointer
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.account.AccountAccess
 import dev.slne.surf.transaction.api.currency.Currency

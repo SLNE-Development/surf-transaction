@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.core.common.account.member
 
-import dev.slne.surf.surfapi.core.api.util.freeze
-import dev.slne.surf.surfapi.core.api.util.toMutableObjectSet
+import dev.slne.surf.api.core.util.freeze
+import dev.slne.surf.api.core.util.toMutableObjectSet
 import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.common.account.CoreAccountService

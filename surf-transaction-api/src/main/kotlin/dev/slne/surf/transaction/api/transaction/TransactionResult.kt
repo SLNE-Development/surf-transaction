@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.api.transaction
 
-import dev.slne.surf.surfapi.core.api.util.SerializableError
+import dev.slne.surf.api.core.util.SerializableError
 import kotlinx.serialization.Serializable
 
 /**

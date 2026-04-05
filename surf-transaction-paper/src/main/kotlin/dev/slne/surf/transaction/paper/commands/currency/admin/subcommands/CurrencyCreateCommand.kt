@@ -6,10 +6,10 @@ import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
 import dev.jorel.commandapi.kotlindsl.stringArgument
-import dev.slne.surf.surfapi.bukkit.api.command.args.MiniMessageArgument
-import dev.slne.surf.surfapi.bukkit.api.command.executors.anyExecutorSuspend
-import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.api.core.messages.adventure.buildText
+import dev.slne.surf.api.core.messages.adventure.sendText
+import dev.slne.surf.api.paper.command.args.MiniMessageArgument
+import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.core.common.component.Components
@@ -80,7 +80,7 @@ private suspend fun create(
     val result = CurrencyServiceImpl.get().createCurrency(currency)
 
     sender.sendText {
-        appendPrefix()
+        appendInfoPrefix()
         append(Components.Currency.formatCreateResult(currency, result))
     }
 }

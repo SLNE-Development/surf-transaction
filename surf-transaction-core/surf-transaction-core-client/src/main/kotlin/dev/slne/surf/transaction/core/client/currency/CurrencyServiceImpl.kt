@@ -1,9 +1,9 @@
 package dev.slne.surf.transaction.core.client.currency
 
 import com.google.auto.service.AutoService
-import dev.slne.surf.surfapi.core.api.messages.adventure.plain
-import dev.slne.surf.surfapi.core.api.util.logger
-import dev.slne.surf.surfapi.core.api.util.toObjectSet
+import dev.slne.surf.api.core.messages.adventure.plain
+import dev.slne.surf.api.core.util.logger
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyService
 import dev.slne.surf.transaction.core.client.rabbitApi
@@ -15,7 +15,7 @@ import dev.slne.surf.transaction.core.common.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyDefaultResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
 import dev.slne.surf.transaction.core.common.protocol.currency.create.CreateCurrencyRequestPacket
-import dev.slne.surf.transaction.core.common.protocol.currency.findAllAndCreateDefaultCurrencyIfMissing.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket
+import dev.slne.surf.transaction.core.common.protocol.currency.findAllOrCreateDefault.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.currency.makeDefaultCurrency.MakeDefaultCurrencyRequestPacket
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

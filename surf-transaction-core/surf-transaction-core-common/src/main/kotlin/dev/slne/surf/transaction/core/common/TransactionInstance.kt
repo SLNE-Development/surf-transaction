@@ -1,6 +1,6 @@
 package dev.slne.surf.transaction.core.common
 
-import dev.slne.surf.surfapi.core.api.util.requiredService
+import dev.slne.surf.api.core.util.requiredService
 import org.jetbrains.annotations.MustBeInvokedByOverriders
 
 abstract class TransactionInstance {

@@ -3,8 +3,8 @@ package dev.slne.surf.transaction.paper.commands.currency.admin.subcommands
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.literalArgument
-import dev.slne.surf.surfapi.bukkit.api.command.executors.anyExecutorSuspend
-import dev.slne.surf.surfapi.core.api.messages.adventure.sendText
+import dev.slne.surf.api.core.messages.adventure.sendText
+import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
@@ -31,7 +31,7 @@ private suspend fun makeDefault(sender: CommandSender, currency: Currency) {
     val result = CurrencyServiceImpl.get().makeDefaultCurrency(currency as CurrencyImpl)
 
     sender.sendText {
-        appendPrefix()
+        appendInfoPrefix()
         append(Components.Currency.formatChangedDefaultResult(currency, result))
     }
 }

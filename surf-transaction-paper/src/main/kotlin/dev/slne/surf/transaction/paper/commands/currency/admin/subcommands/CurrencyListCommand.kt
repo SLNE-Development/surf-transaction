@@ -3,15 +3,15 @@ package dev.slne.surf.transaction.paper.commands.currency.admin.subcommands
 import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.kotlindsl.anyExecutor
 import dev.jorel.commandapi.kotlindsl.literalArgument
-import dev.slne.surf.surfapi.core.api.messages.CommonComponents
-import dev.slne.surf.surfapi.core.api.messages.adventure.buildText
-import dev.slne.surf.surfapi.core.api.messages.pagination.Pagination
+import dev.slne.surf.api.core.messages.CommonComponents
+import dev.slne.surf.api.core.messages.adventure.buildText
+import dev.slne.surf.api.core.messages.pagination.Pagination
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 
 private val pagination = Pagination<Currency> {
     title { primary("Currencies") }
-    rowRenderer { currency, idx ->
+    rowRenderer { currency, _ ->
         listOf(
             buildText {
                 append(CommonComponents.EM_DASH)

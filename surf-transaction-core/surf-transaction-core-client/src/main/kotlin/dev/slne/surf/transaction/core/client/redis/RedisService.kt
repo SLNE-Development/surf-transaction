@@ -2,7 +2,7 @@ package dev.slne.surf.transaction.core.client.redis
 
 import dev.slne.surf.redis.RedisApi
 import dev.slne.surf.redis.event.RedisEvent
-import dev.slne.surf.surfapi.core.api.util.requiredService
+import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.transaction.api.account.AccountService
 import dev.slne.surf.transaction.core.client.currency.CurrencyEventsListener
 import org.jetbrains.annotations.Blocking

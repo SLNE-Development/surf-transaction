@@ -1,7 +1,7 @@
 package dev.slne.surf.transaction.paper.redis.events.transaction
 
+import dev.slne.surf.api.core.serializer.java.uuid.SerializableUUID
 import dev.slne.surf.redis.event.RedisEvent
-import dev.slne.surf.surfapi.core.api.serializer.java.uuid.SerializableUUID
 import dev.slne.surf.transaction.core.client.redis.serializer.NetworkCurrency
 import kotlinx.serialization.Serializable
 

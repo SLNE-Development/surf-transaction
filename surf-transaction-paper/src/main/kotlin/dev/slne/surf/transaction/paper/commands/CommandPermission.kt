@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.paper.commands
 
-import dev.slne.surf.surfapi.bukkit.api.permission.PermissionRegistry
+import dev.slne.surf.api.paper.permission.PermissionRegistry
+
 
 object CommandPermission : PermissionRegistry() {
     private const val PREFIX = "surf.transaction.command"
