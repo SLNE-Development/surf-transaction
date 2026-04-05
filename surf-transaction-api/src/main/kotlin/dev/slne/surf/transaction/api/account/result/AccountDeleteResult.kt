@@ -1,8 +1,11 @@
 package dev.slne.surf.transaction.api.account.result
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents the result of an account deletion attempt.
  */
+@Serializable
 enum class AccountDeleteResult {
 
     /**

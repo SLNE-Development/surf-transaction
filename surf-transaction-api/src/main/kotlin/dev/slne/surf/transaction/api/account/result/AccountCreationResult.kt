@@ -1,5 +1,6 @@
 package dev.slne.surf.transaction.api.account.result
 
+import kotlinx.serialization.Serializable
 import dev.slne.surf.transaction.api.account.Account
 
 /**
@@ -27,6 +28,7 @@ sealed interface AccountCreationResult {
     /**
      * Describes possible reasons why account creation may fail.
      */
+    @Serializable
     enum class FailureReason {
         /**
          * An account with the given name already exists.

@@ -41,9 +41,14 @@ public final class dev/slne/surf/transaction/api/account/member/results/AccountM
 	public static final field ACCOUNT_NOT_FOUND Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
 	public static final field NOTHING_CHANGED Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
 	public static final field SUCCESS Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+	public static final field Companion Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult$Companion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
 	public static fun values ()[Ldev/slne/surf/transaction/api/account/member/results/AccountMemberResult;
+}
+
+public final class dev/slne/surf/transaction/api/account/member/results/AccountMemberResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract interface class dev/slne/surf/transaction/api/account/result/AccountCreationResult {
@@ -65,9 +70,14 @@ public final class dev/slne/surf/transaction/api/account/result/AccountCreationR
 	public static final field NAME_IS_UUID Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
 	public static final field NAME_TOO_LONG Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
 	public static final field NAME_TOO_SHORT Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+	public static final field Companion Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason$Companion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
 	public static fun values ()[Ldev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason;
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountCreationResult$FailureReason$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/slne/surf/transaction/api/account/result/AccountCreationResult$Success : dev/slne/surf/transaction/api/account/result/AccountCreationResult {
@@ -85,9 +95,14 @@ public final class dev/slne/surf/transaction/api/account/result/AccountDeleteRes
 	public static final field ACCOUNT_NOT_FOUND Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
 	public static final field DEFAULT_ACCOUNT_CANNOT_BE_DELETED Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
 	public static final field SUCCESS Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+	public static final field Companion Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult$Companion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
 	public static fun values ()[Ldev/slne/surf/transaction/api/account/result/AccountDeleteResult;
+}
+
+public final class dev/slne/surf/transaction/api/account/result/AccountDeleteResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract interface class dev/slne/surf/transaction/api/currency/Currency : net/kyori/adventure/text/ComponentLike {
