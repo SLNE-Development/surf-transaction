@@ -10,7 +10,7 @@ import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.slne.surf.surfapi.bukkit.api.command.args.SuspendCustomArgument
 import dev.slne.surf.transaction.api.account.Account
-import dev.slne.surf.transaction.core.account.CoreAccountService
+import dev.slne.surf.transaction.core.account.AccountServiceImpl
 import dev.slne.surf.transaction.paper.plugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
@@ -42,7 +42,7 @@ class AccountArgument(nodeName: String) :
         ): CompletableFuture<Suggestions> = plugin.scope.future {
             val currentInput = info.currentInput
             val suggestions =
-                CoreAccountService.get().completeAccountNameSuggestions(currentInput, 100)
+                AccountServiceImpl.get().completeAccountNameSuggestions(currentInput, 100)
 
             for (suggestion in suggestions) {
                 builder.suggest(suggestion)
