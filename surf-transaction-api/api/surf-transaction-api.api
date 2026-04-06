@@ -26,8 +26,12 @@ public abstract interface class dev/slne/surf/transaction/api/account/AccountAcc
 	public abstract fun getUserUuid ()Ljava/util/UUID;
 }
 
-public final class dev/slne/surf/transaction/api/account/AccountService$Companion {
-	public final fun getInstance ()Ldev/slne/surf/transaction/api/account/AccountService;
+public final class dev/slne/surf/transaction/api/account/AccountService$Companion : dev/slne/surf/transaction/api/account/AccountService {
+	public fun createAccount (Ljava/util/UUID;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAccountByAccountId (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun getAccountByName (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/account/AccountService;
+	public final fun init ()V
 }
 
 public abstract interface class dev/slne/surf/transaction/api/account/member/AccountMemberOperations {
@@ -136,8 +140,11 @@ public abstract class dev/slne/surf/transaction/api/currency/CurrencyScale : jav
 	public static fun values ()[Ldev/slne/surf/transaction/api/currency/CurrencyScale;
 }
 
-public final class dev/slne/surf/transaction/api/currency/CurrencyService$Companion {
-	public final fun getInstance ()Ldev/slne/surf/transaction/api/currency/CurrencyService;
+public final class dev/slne/surf/transaction/api/currency/CurrencyService$Companion : dev/slne/surf/transaction/api/currency/CurrencyService {
+	public fun getCurrencies ()Ljava/util/Set;
+	public fun getCurrencyByName (Ljava/lang/String;)Ldev/slne/surf/transaction/api/currency/Currency;
+	public fun getDefaultCurrency ()Ldev/slne/surf/transaction/api/currency/Currency;
+	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/currency/CurrencyService;
 }
 
 public abstract interface class dev/slne/surf/transaction/api/transaction/Transaction {
@@ -154,26 +161,50 @@ public abstract interface class dev/slne/surf/transaction/api/transaction/Transa
 }
 
 public abstract class dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionResult$Companion;
+	public synthetic fun <init> (IZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getSuccess ()Z
+	public static final synthetic fun write$Self (Ldev/slne/surf/transaction/api/transaction/TransactionResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError : dev/slne/surf/transaction/api/transaction/TransactionResult {
-	public fun <init> (Ljava/lang/Throwable;)V
-	public final fun component1 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Throwable;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
-	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;Ljava/lang/Throwable;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError$Companion;
+	public fun <init> (Ldev/slne/surf/api/core/util/SerializableError;)V
+	public final fun component1 ()Ldev/slne/surf/api/core/util/SerializableError;
+	public final fun copy (Ldev/slne/surf/api/core/util/SerializableError;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;Ldev/slne/surf/api/core/util/SerializableError;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getCause ()Ljava/lang/Throwable;
+	public final fun getCause ()Ldev/slne/surf/api/core/util/SerializableError;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$DatabaseError$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/slne/surf/transaction/api/transaction/TransactionResult$ReceiverInsufficientFunds : dev/slne/surf/transaction/api/transaction/TransactionResult {
 	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$ReceiverInsufficientFunds;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -181,10 +212,12 @@ public final class dev/slne/surf/transaction/api/transaction/TransactionResult$S
 	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$SenderInsufficientFunds;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class dev/slne/surf/transaction/api/transaction/TransactionResult$Success : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success$Companion;
 	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
 	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
 	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;
@@ -195,7 +228,23 @@ public final class dev/slne/surf/transaction/api/transaction/TransactionResult$S
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionResult$Success$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionResult$Success;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$Success$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class dev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess : dev/slne/surf/transaction/api/transaction/TransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess$Companion;
 	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
 	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
 	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
@@ -208,8 +257,23 @@ public final class dev/slne/surf/transaction/api/transaction/TransactionResult$T
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class dev/slne/surf/transaction/api/transaction/TransactionService$Companion {
-	public final fun getInstance ()Ldev/slne/surf/transaction/api/transaction/TransactionService;
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionResult$TransferSuccess$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionService$Companion : dev/slne/surf/transaction/api/transaction/TransactionService {
+	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/transaction/TransactionService;
 }
 
 public final class dev/slne/surf/transaction/api/transaction/data/TransactionData {
@@ -288,8 +352,9 @@ public final class dev/slne/surf/transaction/api/user/TransactionUserKt {
 	public static final fun transactionUserOrNull (Lnet/kyori/adventure/audience/Audience;)Ldev/slne/surf/transaction/api/user/TransactionUser;
 }
 
-public final class dev/slne/surf/transaction/api/user/TransactionUserService$Companion {
-	public final fun getInstance ()Ldev/slne/surf/transaction/api/user/TransactionUserService;
+public final class dev/slne/surf/transaction/api/user/TransactionUserService$Companion : dev/slne/surf/transaction/api/user/TransactionUserService {
+	public fun byUuid (Ljava/util/UUID;)Ldev/slne/surf/transaction/api/user/TransactionUser;
+	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/user/TransactionUserService;
 }
 
 public abstract interface annotation class dev/slne/surf/transaction/api/util/InternalTransactionApi : java/lang/annotation/Annotation {
