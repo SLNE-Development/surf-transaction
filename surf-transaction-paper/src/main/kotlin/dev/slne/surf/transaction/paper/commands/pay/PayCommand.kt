@@ -11,11 +11,12 @@ import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
 import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyScale.Companion.maxValue
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
-import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.client.redis.RedisService
+import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.redis.events.pay.PaymentReceivedEvent
 import net.kyori.adventure.text.Component
@@ -29,7 +30,7 @@ fun payCommand() = commandTree("pay") {
     withAliases("bezahlen", "überweisen")
 
     argument(AsyncPlayerProfileArgument("receiver")) {
-        doubleArgument("amount", min = 1.0, max = Int.MAX_VALUE.toDouble()) {
+        doubleArgument("amount", min = 1.0, max = Currency.default().scale.maxValue().toDouble()) {
             playerExecutorSuspend { sender, args ->
                 pay(
                     sender,
