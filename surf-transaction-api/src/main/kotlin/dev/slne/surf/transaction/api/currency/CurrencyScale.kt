@@ -60,4 +60,28 @@ enum class CurrencyScale {
         amount: BigDecimal,
         locale: Locale = Locale.getDefault(Locale.Category.FORMAT)
     ): String = NumberFormat.getNumberInstance(locale).format(format(amount))
+
+    companion object {
+        /**
+         * The maximum allowed transaction amount based on database constraints.
+         *
+         * The database column is defined as DECIMAL(20,10), which supports
+         * values up to 9999999999.9999999999.
+         */
+        val MAX_VALUE: BigDecimal = BigDecimal("9999999999.9999999999")
+
+        /**
+         * Returns the maximum allowed value for this currency scale.
+         *
+         * @return the maximum BigDecimal value that can be represented with this scale
+         */
+        fun CurrencyScale.maxValue(): BigDecimal =
+            MAX_VALUE.setScale(
+                when (this) {
+                    INTEGER -> 0
+                    DECIMAL_2 -> 2
+                },
+                RoundingMode.DOWN
+            )
+    }
 }
