@@ -75,11 +75,13 @@ enum class CurrencyScale {
          *
          * @return the maximum BigDecimal value that can be represented with this scale
          */
-        fun CurrencyScale.maxValue(): BigDecimal {
-            return when (this) {
-                INTEGER -> BigDecimal("9999999999") // 10 digits before decimal
-                DECIMAL_2 -> BigDecimal("9999999999.99") // 10 digits before, 2 after decimal
-            }
-        }
+        fun CurrencyScale.maxValue(): BigDecimal =
+            MAX_VALUE.setScale(
+                when (this) {
+                    INTEGER -> 0
+                    DECIMAL_2 -> 2
+                },
+                RoundingMode.DOWN
+            )
     }
 }
