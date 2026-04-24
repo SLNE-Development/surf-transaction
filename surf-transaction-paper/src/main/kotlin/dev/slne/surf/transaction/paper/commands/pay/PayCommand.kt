@@ -29,7 +29,7 @@ fun payCommand() = commandTree("pay") {
     withAliases("bezahlen", "überweisen")
 
     argument(AsyncPlayerProfileArgument("receiver")) {
-        doubleArgument("amount", min = 1.0) {
+        doubleArgument("amount", min = 1.0, max = Int.MAX_VALUE.toDouble()) {
             playerExecutorSuspend { sender, args ->
                 pay(
                     sender,
