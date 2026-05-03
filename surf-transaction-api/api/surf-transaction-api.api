@@ -129,6 +129,7 @@ public final class dev/slne/surf/transaction/api/currency/Currency$DefaultImpls 
 }
 
 public abstract class dev/slne/surf/transaction/api/currency/CurrencyScale : java/lang/Enum {
+	public static final field Companion Ldev/slne/surf/transaction/api/currency/CurrencyScale$Companion;
 	public static final field DECIMAL_2 Ldev/slne/surf/transaction/api/currency/CurrencyScale;
 	public static final field INTEGER Ldev/slne/surf/transaction/api/currency/CurrencyScale;
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -138,6 +139,11 @@ public abstract class dev/slne/surf/transaction/api/currency/CurrencyScale : jav
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/currency/CurrencyScale;
 	public static fun values ()[Ldev/slne/surf/transaction/api/currency/CurrencyScale;
+}
+
+public final class dev/slne/surf/transaction/api/currency/CurrencyScale$Companion {
+	public final fun getMAX_VALUE ()Ljava/math/BigDecimal;
+	public final fun maxValue (Ldev/slne/surf/transaction/api/currency/CurrencyScale;)Ljava/math/BigDecimal;
 }
 
 public final class dev/slne/surf/transaction/api/currency/CurrencyService$Companion : dev/slne/surf/transaction/api/currency/CurrencyService {
