@@ -11,6 +11,7 @@ import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
 import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyScale
 import dev.slne.surf.transaction.api.currency.CurrencyScale.Companion.maxValue
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
@@ -30,7 +31,7 @@ fun payCommand() = commandTree("pay") {
     withAliases("bezahlen", "überweisen")
 
     argument(AsyncPlayerProfileArgument("receiver")) {
-        doubleArgument("amount", min = 1.0, max = Currency.default().scale.maxValue().toDouble()) {
+        doubleArgument("amount", min = 1.0, max = 9_999_999.0) {
             playerExecutorSuspend { sender, args ->
                 pay(
                     sender,
