@@ -7,6 +7,7 @@ object CommandPermission : PermissionRegistry() {
     private const val PREFIX = "surf.transaction.command"
 
     val BALANCE = create("$PREFIX.balance")
+    val BALANCE_OTHER = create("$BALANCE.other")
 
     val CURRENCY = create("$PREFIX.currency")
     val CURRENCY_ADMIN = create("$CURRENCY.admin")

@@ -31,6 +31,8 @@ fun balanceCommand() = commandTree("balance") {
         }
 
         argument(AsyncPlayerProfileArgument("player")) {
+            withPermission(CommandPermission.BALANCE_OTHER)
+
             anyExecutorSuspend { sender, args ->
                 balance(
                     sender,
