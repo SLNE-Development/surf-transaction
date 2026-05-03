@@ -11,8 +11,6 @@ import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
 import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.api.currency.CurrencyScale
-import dev.slne.surf.transaction.api.currency.CurrencyScale.Companion.maxValue
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
