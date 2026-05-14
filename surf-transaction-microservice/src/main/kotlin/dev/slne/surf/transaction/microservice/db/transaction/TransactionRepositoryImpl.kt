@@ -68,8 +68,9 @@ class TransactionRepositoryImpl : TransactionRepository {
 
         val transactionId = insertedTransactionRow[TransactionTable.id].value
         val insertedReceiverId = insertedTransactionRow[TransactionTable.receiver]?.value
+        val reducesReceiverBalance = transaction.amount < BigDecimal.ZERO
 
-        if (insertedReceiverId != null && !transaction.ignoreMinimumAmount) {
+        if (insertedReceiverId != null && !transaction.ignoreMinimumAmount && reducesReceiverBalance) {
             val balanceAfterTransaction = balanceDecimal0 {
                 (TransactionTable.currency eq currencyId.value) and
                         (TransactionTable.receiver eq insertedReceiverId)
