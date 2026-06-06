@@ -50,11 +50,6 @@ private suspend fun pay(
         throw CommandAPI.failWithString("Du kannst dir kein Geld selbst überweisen!")
     }
 
-    sender.sendText {
-        appendInfoPrefix()
-        info("Überweisung wird ausgeführt...")
-    }
-
     val currency = Currency.default()
 
     val receiverName = Components.usernameOrUuid(receiverUuid)
