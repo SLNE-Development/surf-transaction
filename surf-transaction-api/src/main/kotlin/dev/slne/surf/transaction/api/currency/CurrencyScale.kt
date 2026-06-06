@@ -58,7 +58,7 @@ enum class CurrencyScale {
      */
     fun formatString(
         amount: BigDecimal,
-        locale: Locale = Locale.getDefault(Locale.Category.FORMAT)
+        locale: Locale = Locale.GERMAN
     ): String = NumberFormat.getNumberInstance(locale).format(format(amount))
 
     companion object {
