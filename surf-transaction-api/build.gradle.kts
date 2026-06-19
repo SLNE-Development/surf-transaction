@@ -9,7 +9,6 @@ plugins {
 
 kotlin {
     abiValidation {
-        enabled = true
         filters {
             exclude {
                 annotatedWith.add("dev.slne.surf.transaction.api.util.InternalTransactionApi")
