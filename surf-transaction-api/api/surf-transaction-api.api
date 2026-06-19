@@ -132,7 +132,6 @@ public abstract class dev/slne/surf/transaction/api/currency/CurrencyScale : jav
 	public static final field Companion Ldev/slne/surf/transaction/api/currency/CurrencyScale$Companion;
 	public static final field DECIMAL_2 Ldev/slne/surf/transaction/api/currency/CurrencyScale;
 	public static final field INTEGER Ldev/slne/surf/transaction/api/currency/CurrencyScale;
-	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun format (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public final fun formatString (Ljava/math/BigDecimal;Ljava/util/Locale;)Ljava/lang/String;
 	public static synthetic fun formatString$default (Ldev/slne/surf/transaction/api/currency/CurrencyScale;Ljava/math/BigDecimal;Ljava/util/Locale;ILjava/lang/Object;)Ljava/lang/String;
@@ -169,7 +168,6 @@ public abstract interface class dev/slne/surf/transaction/api/transaction/Transa
 public abstract class dev/slne/surf/transaction/api/transaction/TransactionResult {
 	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionResult$Companion;
 	public synthetic fun <init> (IZLkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun <init> (ZLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getSuccess ()Z
 	public static final synthetic fun write$Self (Ldev/slne/surf/transaction/api/transaction/TransactionResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
@@ -284,7 +282,6 @@ public final class dev/slne/surf/transaction/api/transaction/TransactionService$
 
 public final class dev/slne/surf/transaction/api/transaction/data/TransactionData {
 	public static final field Companion Ldev/slne/surf/transaction/api/transaction/data/TransactionData$Companion;
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
