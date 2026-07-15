@@ -2,13 +2,48 @@ package dev.slne.surf.transaction.core.common.transaction
 
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.transaction.PendingTransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import java.math.BigDecimal
 import java.util.*
+import kotlin.time.Duration
 
 interface CoreTransactionService : TransactionService {
+
+    suspend fun beginDeposit(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration,
+        ignoreMinimum: Boolean,
+        vararg additionalData: TransactionData
+    ): PendingTransactionResult
+
+    suspend fun beginWithdrawal(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration,
+        ignoreMinimum: Boolean,
+        vararg additionalData: TransactionData
+    ): PendingTransactionResult
+
+    suspend fun beginTransfer(
+        initiator: UUID,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
+        timeout: Duration,
+        ignoreSenderMinimum: Boolean,
+        ignoreReceiverMinimum: Boolean,
+        additionalSenderData: Set<TransactionData>,
+        additionalReceiverData: Set<TransactionData>
+    ): PendingTransactionResult
 
     suspend fun deposit(
         account: Account,
