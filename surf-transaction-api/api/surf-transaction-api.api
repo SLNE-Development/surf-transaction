@@ -907,6 +907,12 @@ public final class dev/slne/surf/transaction/api/transactional/PendingExecutionR
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResultExtensionsKt {
+	public static final fun getTransactionOrNull (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult;)Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public static final fun getValueOrNull (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult;)Ljava/lang/Object;
+	public static final fun isCompleted (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult;)Z
+}
+
 public abstract interface class dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure {
 }
 
