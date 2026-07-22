@@ -152,17 +152,311 @@ public final class dev/slne/surf/transaction/api/currency/CurrencyService$Compan
 	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/currency/CurrencyService;
 }
 
+public final class dev/slne/surf/transaction/api/transaction/PendingReservationTimeoutException : java/lang/RuntimeException {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/PendingReservationTimeoutException$Companion;
+	public fun <init> (Ljava/util/Set;Ljava/lang/Throwable;)V
+	public final fun getTransactionIdentifiers ()Ljava/util/Set;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingReservationTimeoutException$Companion {
+}
+
+public abstract class dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$Created$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest$Companion;
+	public fun <init> (Ldev/slne/surf/api/core/util/SerializableError;)V
+	public final fun component1 ()Ldev/slne/surf/api/core/util/SerializableError;
+	public final fun copy (Ldev/slne/surf/api/core/util/SerializableError;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest;Ldev/slne/surf/api/core/util/SerializableError;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ldev/slne/surf/api/core/util/SerializableError;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidRequest$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidTimeout : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$InvalidTimeout;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$ReceiverInsufficientFunds : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$ReceiverInsufficientFunds;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$SenderInsufficientFunds : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$SenderInsufficientFunds;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated : dev/slne/surf/transaction/api/transaction/PendingTransactionResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReceiverTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getSenderTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactionResult$TransferCreated$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/PendingTransactions {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/PendingTransactions;
+	public final fun getDEFAULT_TIMEOUT-UwyO8pc ()J
+}
+
 public abstract interface class dev/slne/surf/transaction/api/transaction/Transaction {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/Transaction$Companion;
+	public abstract fun commit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getAmount ()Ljava/math/BigDecimal;
 	public abstract fun getCurrency ()Ldev/slne/surf/transaction/api/currency/Currency;
 	public abstract fun getData ()Ljava/util/Set;
+	public abstract fun getExpiresAt ()Ljava/time/Instant;
 	public abstract fun getIdentifier ()Ljava/util/UUID;
 	public abstract fun getIgnoreMinimumAmount ()Z
 	public abstract fun getInitiator ()Ljava/util/UUID;
 	public abstract fun getReceiverAccountId ()Ljava/util/UUID;
 	public abstract fun getSenderAccountId ()Ljava/util/UUID;
+	public abstract fun getState ()Ldev/slne/surf/transaction/api/transaction/TransactionState;
 	public abstract fun receiverAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun refresh (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun rollback (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun senderAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/Transaction$Companion {
+	public final fun byIdentifier (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$AlreadyCommitted$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Committed$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$Expired$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$InvalidState$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$NotFound : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$NotFound;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack : dev/slne/surf/transaction/api/transaction/TransactionCommitResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionCommitResult$RolledBack$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public abstract class dev/slne/surf/transaction/api/transaction/TransactionResult {
@@ -276,8 +570,179 @@ public final class dev/slne/surf/transaction/api/transaction/TransactionResult$T
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public static final synthetic fun write$Self (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$AlreadyRolledBack$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Committed$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$Expired$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$InvalidState$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$NotFound : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$NotFound;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack : dev/slne/surf/transaction/api/transaction/TransactionRollbackResult {
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack$Companion;
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionRollbackResult$RolledBack$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
 public final class dev/slne/surf/transaction/api/transaction/TransactionService$Companion : dev/slne/surf/transaction/api/transaction/TransactionService {
+	public fun commit (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun find (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getINSTANCE ()Ldev/slne/surf/transaction/api/transaction/TransactionService;
+	public fun rollback (Ljava/util/UUID;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionState : java/lang/Enum {
+	public static final field COMMITTED Ldev/slne/surf/transaction/api/transaction/TransactionState;
+	public static final field Companion Ldev/slne/surf/transaction/api/transaction/TransactionState$Companion;
+	public static final field EXPIRED Ldev/slne/surf/transaction/api/transaction/TransactionState;
+	public static final field PENDING Ldev/slne/surf/transaction/api/transaction/TransactionState;
+	public static final field ROLLED_BACK Ldev/slne/surf/transaction/api/transaction/TransactionState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/slne/surf/transaction/api/transaction/TransactionState;
+	public static fun values ()[Ldev/slne/surf/transaction/api/transaction/TransactionState;
+}
+
+public final class dev/slne/surf/transaction/api/transaction/TransactionState$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/slne/surf/transaction/api/transaction/data/TransactionData {
@@ -308,29 +773,268 @@ public final class dev/slne/surf/transaction/api/transaction/data/TransactionDat
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract interface class dev/slne/surf/transaction/api/transactional/PendingExecutionDecision {
+	public static final field Companion Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Companion;
+	public abstract fun getValue ()Ljava/lang/Object;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Commit : dev/slne/surf/transaction/api/transactional/PendingExecutionDecision {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Commit;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Commit;Ljava/lang/Object;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Commit;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Companion {
+	public final fun commit ()Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+	public final fun commit (Ljava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+	public final fun from (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+	public final fun fromBoolean (Z)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+	public final fun rollback ()Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+	public final fun rollback (Ljava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Rollback : dev/slne/surf/transaction/api/transactional/PendingExecutionDecision {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Rollback;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Rollback;Ljava/lang/Object;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionDecision$Rollback;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$CommitFailed : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun component3 ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun copy (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$CommitFailed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$CommitFailed;Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$CommitFailed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFailure ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$Completed : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$Completed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$Completed;Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$Completed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRollbackFailed : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun component3 ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun copy (Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRollbackFailed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRollbackFailed;Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRollbackFailed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public final fun getFailure ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRolledBack : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRolledBack;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRolledBack;Ljava/lang/Throwable;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ExternalFailureRolledBack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$ReservationFailed : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;)V
+	public final fun component1 ()Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;
+	public final fun copy (Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ReservationFailed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ReservationFailed;Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$ReservationFailed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getResult ()Ldev/slne/surf/transaction/api/transaction/PendingTransactionResult;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$RollbackFailed : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun component3 ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun copy (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RollbackFailed;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RollbackFailed;Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RollbackFailed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFailure ()Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure;
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingExecutionResult$RolledBack : dev/slne/surf/transaction/api/transactional/PendingExecutionResult {
+	public fun <init> (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2 ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun copy (Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RolledBack;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RolledBack;Ljava/lang/Object;Ldev/slne/surf/transaction/api/transaction/Transaction;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingExecutionResult$RolledBack;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTransaction ()Ldev/slne/surf/transaction/api/transaction/Transaction;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure {
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$Thrown : dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure {
+	public fun <init> (Ljava/lang/Throwable;)V
+	public final fun component1 ()Ljava/lang/Throwable;
+	public final fun copy (Ljava/lang/Throwable;)Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$Thrown;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$Thrown;Ljava/lang/Throwable;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$Thrown;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Ljava/lang/Throwable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$TypedResult : dev/slne/surf/transaction/api/transactional/PendingLifecycleFailure {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$TypedResult;
+	public static synthetic fun copy$default (Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$TypedResult;Ljava/lang/Object;ILjava/lang/Object;)Ldev/slne/surf/transaction/api/transactional/PendingLifecycleFailure$TypedResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getResult ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/slne/surf/transaction/api/transactional/PendingRollbackPolicy {
+	public static final field Companion Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy$Companion;
+	public fun and (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun includeCauses ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun includeCauses (I)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun includeDirectCause ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun negate ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun onRootCause ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public fun or (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public abstract fun shouldRollback (Ljava/lang/Throwable;)Z
+	public fun unwrap (Lkotlin/jvm/functions/Function1;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingRollbackPolicy$Companion {
+	public final fun allOf (Ljava/lang/Iterable;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun allOf ([Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun anyOf (Ljava/lang/Iterable;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun anyOf ([Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun getAlways ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun getNever ()Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun matching (Lkotlin/jvm/functions/Function1;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public final fun onAny ([Ljava/lang/Class;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+}
+
+public final class dev/slne/surf/transaction/api/transactional/PendingRollbackPolicy$DefaultImpls {
+	public static fun and (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun includeCauses (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun includeCauses (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;I)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun includeDirectCause (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun negate (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun onRootCause (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun or (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+	public static fun unwrap (Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function1;)Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;
+}
+
 public abstract interface class dev/slne/surf/transaction/api/transactional/Transactional {
 	public abstract fun balance (Ldev/slne/surf/transaction/api/account/Account;Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun beginDeposit-Zb7fWow (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginDeposit-Zb7fWow$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun beginTransfer-Q4fo6ws (Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginTransfer-Q4fo6ws$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun beginWithdrawal-Zb7fWow (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginWithdrawal-Zb7fWow$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun deposit (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun transfer (Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingDeposit-pBtzt7M (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDeposit-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingDepositDecision-pBtzt7M (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDepositDecision-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingTransfer-5ndHN30 (Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransfer-5ndHN30$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingTransferDecision-5ndHN30 (Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransferDecision-5ndHN30$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingWithdrawal-pBtzt7M (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawal-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun withPendingWithdrawalDecision-pBtzt7M (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawalDecision-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun withdraw (Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class dev/slne/surf/transaction/api/transactional/Transactional$DefaultImpls {
+	public static synthetic fun beginDeposit-Zb7fWow$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun beginTransfer-Q4fo6ws$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun beginWithdrawal-Zb7fWow$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingDeposit-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingDepositDecision-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransfer-5ndHN30$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransferDecision-5ndHN30$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ljava/util/UUID;Ldev/slne/surf/transaction/api/account/Account;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawal-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawalDecision-pBtzt7M$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/transactional/Transactional;Ldev/slne/surf/transaction/api/account/Account;Ljava/util/UUID;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/slne/surf/transaction/api/user/TransactionUser : dev/slne/surf/transaction/api/account/AccountAccess, dev/slne/surf/transaction/api/transactional/Transactional {
 	public static final field Companion Ldev/slne/surf/transaction/api/user/TransactionUser$Companion;
 	public fun balance (Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beginDeposit-WPi__2c (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginDeposit-WPi__2c$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun beginTransfer-SBKQj6I (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginTransfer-SBKQj6I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun beginWithdrawal-WPi__2c (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginWithdrawal-WPi__2c$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun deposit (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun transfer (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingDeposit-KVH2U2I (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDeposit-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingDepositDecision-KVH2U2I (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDepositDecision-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingTransfer-Tp8oMn4 (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransfer-Tp8oMn4$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingTransferDecision-Tp8oMn4 (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransferDecision-Tp8oMn4$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingWithdrawal-KVH2U2I (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawal-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun withPendingWithdrawalDecision-KVH2U2I (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawalDecision-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public fun withdraw (Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
@@ -342,10 +1046,28 @@ public final class dev/slne/surf/transaction/api/user/TransactionUser$Companion 
 
 public final class dev/slne/surf/transaction/api/user/TransactionUser$DefaultImpls {
 	public static fun balance (Ldev/slne/surf/transaction/api/user/TransactionUser;Ldev/slne/surf/transaction/api/currency/Currency;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun beginDeposit-WPi__2c (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginDeposit-WPi__2c$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun beginTransfer-SBKQj6I (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginTransfer-SBKQj6I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun beginWithdrawal-WPi__2c (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun beginWithdrawal-WPi__2c$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZ[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun deposit (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun deposit$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun transfer (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun transfer$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;ZZLjava/util/Set;Ljava/util/Set;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingDeposit-KVH2U2I (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDeposit-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingDepositDecision-KVH2U2I (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingDepositDecision-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingTransfer-Tp8oMn4 (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransfer-Tp8oMn4$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingTransferDecision-Tp8oMn4 (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingTransferDecision-Tp8oMn4$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Ldev/slne/surf/transaction/api/account/Account;JZZLjava/util/Set;Ljava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingWithdrawal-KVH2U2I (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawal-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun withPendingWithdrawalDecision-KVH2U2I (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun withPendingWithdrawalDecision-KVH2U2I$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;JZLjava/util/Set;Ldev/slne/surf/transaction/api/transactional/PendingRollbackPolicy;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun withdraw (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun withdraw$default (Ldev/slne/surf/transaction/api/user/TransactionUser;Ljava/math/BigDecimal;Ldev/slne/surf/transaction/api/currency/Currency;Z[Ldev/slne/surf/transaction/api/transaction/data/TransactionData;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }

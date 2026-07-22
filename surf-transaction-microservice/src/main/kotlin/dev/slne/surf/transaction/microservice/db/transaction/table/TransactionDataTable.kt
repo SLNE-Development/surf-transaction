@@ -1,4 +1,4 @@
-package dev.slne.surf.transaction.microservice.db.transaction
+package dev.slne.surf.transaction.microservice.db.transaction.table
 
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.ReferenceOption
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.dao.id.ULongIdTable

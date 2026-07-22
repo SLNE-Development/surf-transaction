@@ -12,4 +12,15 @@ surfMicroservice {
 
 dependencies {
     api(projects.surfTransactionApi)
+
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-stdlib:2.4.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
+    testRuntimeOnly("dev.slne.surf.api:surf-api-core:+")
+    testRuntimeOnly("net.kyori:adventure-api:5.1.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.1")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
