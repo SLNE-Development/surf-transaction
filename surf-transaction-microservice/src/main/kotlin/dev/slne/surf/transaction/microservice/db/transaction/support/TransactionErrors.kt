@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.microservice.db.transaction.support
 
 import dev.slne.surf.api.core.util.SerializableError
+import dev.slne.surf.api.core.util.toSerializableError
 import dev.slne.surf.database.libs.io.r2dbc.spi.R2dbcDataIntegrityViolationException
 import java.util.*
 
@@ -24,7 +25,8 @@ internal object TransactionErrors {
 
     fun constraintViolation(violation: R2dbcDataIntegrityViolationException) = SerializableError(
         "TRANSACTION_CONSTRAINT_VIOLATION",
-        "The transaction violates a database constraint${violation.sqlStateSuffix()}"
+        "The transaction violates a database constraint${violation.sqlStateSuffix()}",
+        violation.toSerializableError()
     )
 
     fun unexpected(cause: Exception) = SerializableError(
