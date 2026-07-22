@@ -10,7 +10,7 @@ repositories {
 }
 
 surfCoreApi {
-    withSurfDatabaseR2dbc("2.3.1-SNAPSHOT", "dev.slne.surf.transaction.libs.db")
+    withSurfDatabaseR2dbc("2.3.1", "dev.slne.surf.transaction.libs.db")
 }
 
 surfMicroservice {
