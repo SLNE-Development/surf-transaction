@@ -16,6 +16,7 @@ include("surf-transaction-api")
 include("surf-transaction-core:surf-transaction-core-common")
 include("surf-transaction-core:surf-transaction-core-client")
 include("surf-transaction-paper")
+include("surf-transaction-minestom")
 include("surf-transaction-velocity")
 
 include("surf-transaction-microservice")

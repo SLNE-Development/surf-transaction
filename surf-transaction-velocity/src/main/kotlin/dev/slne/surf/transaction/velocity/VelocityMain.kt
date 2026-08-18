@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent
 import com.velocitypowered.api.plugin.PluginContainer
 import com.velocitypowered.api.plugin.annotation.DataDirectory
+import com.velocitypowered.api.proxy.ProxyServer
 import dev.slne.surf.transaction.core.common.TransactionInstance
 import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
@@ -16,6 +17,7 @@ lateinit var plugin: VelocityMain
 class VelocityMain @Inject constructor(
     @param:DataDirectory val dataPath: Path,
     val container: PluginContainer,
+    val proxy: ProxyServer,
     suspendingPluginContainer: SuspendingPluginContainer
 ) {
     init {

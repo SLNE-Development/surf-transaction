@@ -5,6 +5,12 @@ import dev.slne.surf.redis.event.RedisEvent
 import dev.slne.surf.transaction.core.client.redis.serializer.NetworkCurrency
 import kotlinx.serialization.Serializable
 
+/**
+ * Published when an administrator added money to or removed money from a player's balance.
+ *
+ * Redis identifies events by their fully qualified class name, so this package is part of the wire
+ * format and must stay stable across every server that exchanges this event.
+ */
 @Serializable
 class AdminTransactionEvent(
     val receiverUuid: SerializableUUID,

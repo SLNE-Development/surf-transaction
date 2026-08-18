@@ -5,7 +5,6 @@ import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
 import dev.jorel.commandapi.kotlindsl.doubleArgument
-import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.core.util.logger
 import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
@@ -14,6 +13,8 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.api.user.transactionUser
+import dev.slne.surf.transaction.core.client.command.PayAmount
+import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.paper.commands.CommandPermission
@@ -29,7 +30,7 @@ fun payCommand() = commandTree("pay") {
     withAliases("bezahlen", "überweisen")
 
     argument(AsyncPlayerProfileArgument("receiver")) {
-        doubleArgument("amount", min = 1.0, max = 9_999_999.0) {
+        doubleArgument("amount", min = PayAmount.MINIMUM, max = PayAmount.MAXIMUM) {
             playerExecutorSuspend { sender, args ->
                 pay(
                     sender,
@@ -47,7 +48,7 @@ private suspend fun pay(
     amount: Double
 ) {
     if (sender.uniqueId == receiverUuid) {
-        throw CommandAPI.failWithString("Du kannst dir kein Geld selbst überweisen!")
+        throw CommandAPI.failWithString(ClientComponents.Pay.SELF_TRANSFER_NOT_ALLOWED)
     }
 
     val currency = Currency.default()

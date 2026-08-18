@@ -1,9 +1,9 @@
 package dev.slne.surf.transaction.paper.redis
 
 import com.google.auto.service.AutoService
+import dev.slne.surf.transaction.core.client.pay.PaymentEventsHandler
 import dev.slne.surf.transaction.core.client.redis.RedisService
-import dev.slne.surf.transaction.paper.pay.PaymentEventsHandler
-import dev.slne.surf.transaction.paper.transaction.TransactionEventsHandler
+import dev.slne.surf.transaction.core.client.transaction.TransactionEventsHandler
 
 @AutoService(RedisService::class)
 class PaperRedisService: RedisService() {

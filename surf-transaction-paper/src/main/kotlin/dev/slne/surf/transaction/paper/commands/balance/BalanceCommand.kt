@@ -3,14 +3,13 @@ package dev.slne.surf.transaction.paper.commands.balance
 import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
-import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
 import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.core.common.component.Components
+import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
 import org.bukkit.command.CommandSender
@@ -51,18 +50,11 @@ private suspend fun balance(
 ) {
     val balance = TransactionUser.byUuid(queryTarget).balance(currency)
 
-    sender.sendText {
-        appendInfoPrefix()
-
+    sender.sendMessage(
         if (sender is Player && queryTarget == sender.uniqueId) {
-            info("Dein Kontostand beträgt ")
+            ClientComponents.Balance.own(currency, balance)
         } else {
-            info("Der Kontostand von ")
-            append(Components.usernameOrUuidComponent(queryTarget))
-            info(" beträgt ")
+            ClientComponents.Balance.other(currency, balance, queryTarget)
         }
-
-        append(currency.format(balance))
-        info(".")
-    }
+    )
 }

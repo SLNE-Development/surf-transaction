@@ -6,10 +6,11 @@ import dev.jorel.commandapi.arguments.Argument
 import dev.jorel.commandapi.arguments.MultiLiteralArgument
 import dev.jorel.commandapi.executors.CommandArguments
 import dev.slne.surf.transaction.api.currency.CurrencyScale
+import dev.slne.surf.transaction.core.client.currency.CurrencyScaleNames
 
 fun currencyScaleArgument0(nodeName: String) = MultiLiteralArgument(
     nodeName,
-    *CurrencyScale.entries.map { it.name.lowercase() }.toTypedArray()
+    *CurrencyScaleNames.all.toTypedArray()
 )
 
 inline fun CommandTree.currencyScaleArgument(
@@ -32,4 +33,4 @@ inline fun CommandAPICommand.currencyScaleArgument(
     withArguments(currencyScaleArgument0(nodeName).setOptional(optional).apply(block))
 
 fun CommandArguments.getCurrencyScale(nodeName: String): CurrencyScale =
-    CurrencyScale.valueOf(getUnchecked<String>(nodeName)!!.uppercase())
+    CurrencyScaleNames.parse(getUnchecked<String>(nodeName)!!)

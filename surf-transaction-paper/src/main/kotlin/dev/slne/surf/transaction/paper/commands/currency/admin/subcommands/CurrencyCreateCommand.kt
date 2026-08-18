@@ -6,12 +6,12 @@ import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
 import dev.jorel.commandapi.kotlindsl.stringArgument
-import dev.slne.surf.api.core.messages.adventure.buildText
 import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.paper.command.args.MiniMessageArgument
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.currency.CurrencyScale
+import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
@@ -61,11 +61,9 @@ private suspend fun create(
 ) {
     val existingCurrency = Currency.byName(name)
     if (existingCurrency != null) {
-        throw CommandAPIPaper.failWithAdventureComponent(buildText {
-            error("Die Währung ")
-            append(existingCurrency)
-            error(" existiert bereits!")
-        })
+        throw CommandAPIPaper.failWithAdventureComponent(
+            ClientComponents.CurrencyMessages.alreadyExists(existingCurrency)
+        )
     }
 
     val currency = CurrencyImpl(

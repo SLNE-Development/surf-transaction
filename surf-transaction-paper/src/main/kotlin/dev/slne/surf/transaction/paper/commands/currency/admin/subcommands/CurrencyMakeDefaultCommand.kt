@@ -6,6 +6,7 @@ import dev.jorel.commandapi.kotlindsl.literalArgument
 import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.common.component.Components
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
@@ -25,7 +26,9 @@ fun Argument<*>.currencyMakeDefaultCommand() = literalArgument("makeDefault") {
 
 private suspend fun makeDefault(sender: CommandSender, currency: Currency) {
     if (currency.defaultCurrency) {
-        throw CommandAPI.failWithString("Currency '${currency.name}' is already the default currency.")
+        throw CommandAPI.failWithString(
+            ClientComponents.CurrencyMessages.alreadyDefault(currency)
+        )
     }
 
     val result = CurrencyServiceImpl.INSTANCE.makeDefaultCurrency(currency as CurrencyImpl)

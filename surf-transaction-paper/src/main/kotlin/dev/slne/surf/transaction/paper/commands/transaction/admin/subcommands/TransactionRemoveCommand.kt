@@ -5,7 +5,6 @@ import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
-import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.core.util.logger
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
@@ -14,7 +13,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
-import dev.slne.surf.transaction.core.common.component.Components
+import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
 import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
@@ -71,10 +70,7 @@ private suspend fun remove(
 
 
 private fun handleError(sender: CommandSender, result: TransactionResult, receiverUuid: UUID) {
-    sender.sendText {
-        appendErrorPrefix()
-        error("Es ist ein Fehler aufgetreten!")
-    }
+    sender.sendMessage(ClientComponents.Transaction.adminFailure())
 
     log.atSevere()
         .withCause((result as? TransactionResult.DatabaseError)?.cause?.buildFakeThrowable())
@@ -87,19 +83,9 @@ private suspend fun handleSuccess(
     amount: Double,
     currency: Currency
 ) {
-    sender.sendText {
-        appendSuccessPrefix()
-
-        darkSpacer("[")
-        variableKey("Admin")
-        darkSpacer("] ")
-
-        success("Du hast ")
-        append(currency.format(amount.toBigDecimal()))
-        success(" von ")
-        variableValue(Components.usernameOrUuid(receiverUuid))
-        success(" abgezogen!")
-    }
+    sender.sendMessage(
+        ClientComponents.Transaction.adminRemoved(currency, amount, receiverUuid)
+    )
 
     val event = AdminTransactionEvent(
         receiverUuid,
