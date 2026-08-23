@@ -26,6 +26,7 @@ class TransactionMinestomEntrypoint @Inject constructor(
     }
 
     companion object {
+        @Volatile
         lateinit var dataPath: Path
     }
 }

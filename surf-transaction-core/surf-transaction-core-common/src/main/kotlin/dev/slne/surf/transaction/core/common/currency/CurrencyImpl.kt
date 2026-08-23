@@ -17,7 +17,7 @@ data class CurrencyImpl(
     override val symbolDisplay: @Contextual Component,
     override val scale: CurrencyScale,
     override val minimumAmount: @Contextual BigDecimal = BigDecimal.ZERO,
-    override var defaultCurrency: Boolean = false
+    override val defaultCurrency: Boolean = false
 ) : Currency {
     override fun format(amount: BigDecimal, color: TextColor): Component {
         return buildText {

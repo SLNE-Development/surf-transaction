@@ -1,18 +1,20 @@
 package dev.slne.surf.transaction.core.common.account.member
 
-import dev.slne.surf.api.core.util.freeze
-import dev.slne.surf.api.core.util.toMutableObjectSet
+import dev.slne.surf.api.core.util.toObjectSet
 import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.account.member.results.AccountMemberResult
 import dev.slne.surf.transaction.core.common.account.CoreAccountService
 import java.util.*
+import java.util.concurrent.atomic.AtomicReference
 
 class AccountMemberOperationsImpl(
     private val accountId: UUID,
     members: Set<UUID>
 ) : AccountMemberOperations {
-    private val _members = members.toMutableObjectSet()
-    override val members: Set<UUID> = _members.freeze()
+
+    private val memberSnapshot: AtomicReference<Set<UUID>> = AtomicReference(members.toObjectSet())
+
+    override val members: Set<UUID> get() = memberSnapshot.get()
 
     override suspend fun addMember(
         executor: UUID,
@@ -20,7 +22,9 @@ class AccountMemberOperationsImpl(
     ): AccountMemberResult {
         val result = CoreAccountService.addMemberToAccount(accountId, executor, target)
         if (result == AccountMemberResult.SUCCESS) {
-            _members.add(target)
+            memberSnapshot.updateAndGet { current ->
+                if (target in current) current else (current + target).toObjectSet()
+            }
         }
         return result
     }
@@ -31,7 +35,9 @@ class AccountMemberOperationsImpl(
     ): AccountMemberResult {
         val result = CoreAccountService.removeMemberFromAccount(accountId, executor, target)
         if (result == AccountMemberResult.SUCCESS) {
-            _members.remove(target)
+            memberSnapshot.updateAndGet { current ->
+                if (target in current) (current - target).toObjectSet() else current
+            }
         }
         return result
     }

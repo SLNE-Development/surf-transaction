@@ -24,7 +24,7 @@ abstract class ClientTransactionalInstance : TransactionInstance() {
 
         rabbitApi.freezeAndConnect()
         withContext(Dispatchers.IO) { RedisService.INSTANCE.connect() }
-        CurrencyServiceImpl.INSTANCE.cacheCurrencies()
+        CurrencyServiceImpl.INSTANCE.loadCurrencies()
     }
 
     override suspend fun disable() {

@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.microservice.db.currency
 
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.ResultRow
+import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.SortOrder
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.eq
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.core.statements.UpdateBuilder
 import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.*
@@ -51,10 +52,17 @@ class CurrencyRepositoryImpl : CurrencyRepository {
     }
 
     override suspend fun makeDefaultCurrency(currencyName: String): CurrencyDefaultResult = suspendTransaction {
+        CurrencyTable
+            .select(CurrencyTable.id)
+            .orderBy(CurrencyTable.id, SortOrder.ASC)
+            .forUpdate()
+            .toList()
+
         val targetRow = CurrencyTable
             .select(CurrencyTable.id, CurrencyTable.defaultCurrency)
             .where { CurrencyTable.name eq currencyName }
             .limit(1)
+            .forUpdate()
             .singleOrNull()
             ?: return@suspendTransaction CurrencyDefaultResult.NOT_FOUND
 

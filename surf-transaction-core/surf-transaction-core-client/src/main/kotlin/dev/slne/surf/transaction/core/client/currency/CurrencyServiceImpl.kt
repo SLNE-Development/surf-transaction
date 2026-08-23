@@ -17,15 +17,15 @@ import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
 import dev.slne.surf.transaction.core.common.protocol.currency.create.CreateCurrencyRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.currency.findAllOrCreateDefault.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.currency.makeDefaultCurrency.MakeDefaultCurrencyRequestPacket
+import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.consumeEach
-import kotlin.properties.Delegates
+import java.util.concurrent.atomic.AtomicReference
 
 @AutoService(CurrencyService::class)
 class CurrencyServiceImpl : CoreCurrencyService {
-    override var defaultCurrency: CurrencyImpl by Delegates.notNull()
-    override var currencies: Set<CurrencyImpl> by Delegates.notNull()
+    private val registry = AtomicReference<CurrencyRegistry>()
 
     private val currencyCacheChannel = Channel<Unit>(Channel.CONFLATED)
 
@@ -38,43 +38,47 @@ class CurrencyServiceImpl : CoreCurrencyService {
 
     init {
         scope.launch {
-            currencyCacheChannel.consumeEach {
-
-                cacheCurrencies0()
-            }
+            currencyCacheChannel.consumeEach { loadCurrencies() }
         }
     }
+
+    override val defaultCurrency: CurrencyImpl get() = loadedRegistry().defaultCurrency
+    override val currencies: Set<CurrencyImpl> get() = loadedRegistry().currencies
 
     fun disposeScope() {
         scope.cancel("Disposing CurrencyServiceImpl scope")
     }
 
-    override fun getCurrencyByName(name: String) =
-        currencies.find { it.name.equals(name, ignoreCase = true) }
+    override fun getCurrencyByName(name: String) = loadedRegistry().byName(name)
 
+    suspend fun loadCurrencies() {
+        try {
+            val request = FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket()
+            val (currencies) = rabbitApi.sendRequest(request)
+
+            registry.set(
+                CurrencyRegistry(currencies, currencies.single { it.defaultCurrency })
+            )
+        } catch (cause: CancellationException) {
+            throw cause
+        } catch (cause: Throwable) {
+            log.atSevere().withCause(cause).log("Failed to load the currency cache")
+        }
+    }
+
+    /** Requests an asynchronous registry refresh; repeated requests are coalesced. */
     fun cacheCurrencies() {
         currencyCacheChannel.trySend(Unit)
     }
 
-    private suspend fun cacheCurrencies0() {
-        val request = FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket()
-        val (currencies) = rabbitApi.sendRequest(request)
-
-        this.defaultCurrency = currencies.single { it.defaultCurrency }
-        this.currencies = currencies.toObjectSet()
-    }
-
     fun cacheCurrency(currency: CurrencyImpl) {
-        this.currencies = this.currencies.plus(currency).toObjectSet()
+        loadedRegistry()
+        registry.updateAndGet { current -> current.plus(currency) }
     }
 
     fun updateDefaultCurrency(newDefaultName: String) {
-        val newDefaultCurrency = getCurrencyByName(newDefaultName) ?: return
-
-        this.defaultCurrency.defaultCurrency = false
-        newDefaultCurrency.defaultCurrency = true
-
-        defaultCurrency = newDefaultCurrency
+        loadedRegistry()
+        registry.updateAndGet { current -> current.withDefault(newDefaultName) ?: current }
     }
 
     override suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult {
@@ -121,9 +125,57 @@ class CurrencyServiceImpl : CoreCurrencyService {
         return result
     }
 
+    private fun loadedRegistry(): CurrencyRegistry = registry.get()
+        ?: error("Currencies have not been cached yet")
+
     companion object {
         private val log = logger()
 
         val INSTANCE get() = CurrencyService.INSTANCE as CurrencyServiceImpl
+    }
+}
+
+internal class CurrencyRegistry(
+    currencies: List<CurrencyImpl>,
+    val defaultCurrency: CurrencyImpl
+) {
+    private val ordered: List<CurrencyImpl> = currencies.toList()
+    val currencies: Set<CurrencyImpl> = ordered.toObjectSet()
+
+    fun byName(name: String): CurrencyImpl? {
+        val index = indexOfName(name)
+        return if (index >= 0) ordered[index] else null
+    }
+
+    fun plus(currency: CurrencyImpl): CurrencyRegistry {
+        if (currency in currencies) return this
+
+        return CurrencyRegistry(ordered + currency, defaultCurrency)
+    }
+
+    fun withDefault(name: String): CurrencyRegistry? {
+        val targetIndex = indexOfName(name)
+        if (targetIndex < 0) return null
+        if (ordered[targetIndex] === defaultCurrency) return this
+
+        val updated = ObjectArrayList<CurrencyImpl>(ordered.size)
+        for (index in ordered.indices) {
+            val currency = ordered[index]
+            updated += when {
+                index == targetIndex -> currency.copy(defaultCurrency = true)
+                currency.defaultCurrency -> currency.copy(defaultCurrency = false)
+                else -> currency
+            }
+        }
+
+        return CurrencyRegistry(updated, updated[targetIndex])
+    }
+
+    private fun indexOfName(name: String): Int {
+        for (index in ordered.indices) {
+            if (ordered[index].name.equals(name, ignoreCase = true)) return index
+        }
+
+        return -1
     }
 }

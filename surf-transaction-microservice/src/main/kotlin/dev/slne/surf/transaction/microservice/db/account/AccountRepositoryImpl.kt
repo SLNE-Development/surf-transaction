@@ -99,19 +99,19 @@ class AccountRepositoryImpl : AccountRepository {
         }.single().let(::fromResultRow)
     }
 
-    override suspend fun findOrCreateDefaultAccount(
-        ownerId: UUID
-    ): AccountImpl = suspendTransaction {
-        val existingDefaultAccount = AccountTable
-            .leftJoin(AccountMemberTable, { AccountTable.id }, { AccountMemberTable.accountId })
-            .selectAll()
-            .where { (AccountTable.ownerId eq ownerId) and (AccountTable.defaultAccount eq true) }
-            .toList()
+    override suspend fun findOrCreateDefaultAccount(ownerId: UUID): AccountImpl {
+        findDefaultAccount(ownerId)?.let { return it }
 
-        if (existingDefaultAccount.isNotEmpty()) {
-            fromResultRowWithMembers(existingDefaultAccount)
-        } else {
-            createAccount0(ownerId, ownerId.toString(), true)
+        return try {
+            suspendTransaction { createAccount0(ownerId, ownerId.toString(), true) }
+        } catch (cause: ExposedR2dbcException) {
+            findDefaultAccount(ownerId) ?: throw cause
+        }
+    }
+
+    private suspend fun findDefaultAccount(ownerId: UUID): AccountImpl? = suspendTransaction {
+        findAccountBy {
+            (AccountTable.ownerId eq ownerId) and (AccountTable.defaultAccount eq true)
         }
     }
 

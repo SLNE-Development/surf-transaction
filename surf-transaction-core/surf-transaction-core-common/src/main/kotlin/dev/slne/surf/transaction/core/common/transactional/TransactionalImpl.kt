@@ -15,6 +15,11 @@ import java.math.BigDecimal
 import java.util.*
 import kotlin.time.Duration
 
+/**
+ * Shared [TransactionalImpl] delegate.
+ */
+internal val sharedTransactional = TransactionalImpl()
+
 class TransactionalImpl : Transactional {
 
     override suspend fun beginDeposit(

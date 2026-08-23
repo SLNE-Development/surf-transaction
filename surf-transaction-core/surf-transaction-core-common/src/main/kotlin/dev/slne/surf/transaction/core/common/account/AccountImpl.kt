@@ -5,7 +5,7 @@ import dev.slne.surf.transaction.api.account.member.AccountMemberOperations
 import dev.slne.surf.transaction.api.transactional.Transactional
 import dev.slne.surf.transaction.core.common.account.member.AccountMemberOperationsImpl
 import dev.slne.surf.transaction.core.common.component.Components
-import dev.slne.surf.transaction.core.common.transactional.TransactionalImpl
+import dev.slne.surf.transaction.core.common.transactional.sharedTransactional
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -18,7 +18,7 @@ data class AccountImpl(
     override val defaultAccount: Boolean = false,
     override val members: Set<@Contextual UUID>
 ) : Account,
-    Transactional by TransactionalImpl(),
+    Transactional by sharedTransactional,
     AccountMemberOperations by AccountMemberOperationsImpl(accountId, members) {
 
     override suspend fun asComponent() = Components.Account.displayName(this)
