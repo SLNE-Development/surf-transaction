@@ -2,7 +2,7 @@ package dev.slne.surf.transaction.paper.papi.placeholder
 
 import dev.slne.surf.api.paper.hook.papi.expansion.PapiPlaceholder
 import dev.slne.surf.transaction.api.currency.Currency
-import dev.slne.surf.transaction.core.client.balance.BalanceCache
+import dev.slne.surf.transaction.api.user.TransactionUser
 import org.bukkit.OfflinePlayer
 
 object CurrentBalancePlaceholder : PapiPlaceholder("current-balance") {
@@ -13,7 +13,7 @@ object CurrentBalancePlaceholder : PapiPlaceholder("current-balance") {
         val currencyName = args.getOrNull(0) ?: return null
         val currency = Currency.byName(currencyName) ?: return null
 
-        val balance = BalanceCache.cachedBalance(player.uniqueId, currency) ?: return "..."
+        val balance = TransactionUser.byUuid(player.uniqueId).cachedBalance(currency) ?: return "..."
 
         return balance.toPlainString()
     }
