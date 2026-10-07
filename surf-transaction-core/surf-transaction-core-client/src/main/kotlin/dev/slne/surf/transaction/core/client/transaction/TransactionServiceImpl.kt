@@ -12,6 +12,7 @@ import dev.slne.surf.transaction.api.transaction.TransactionRollbackResult
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
+import dev.slne.surf.transaction.core.client.balance.BalanceCache
 import dev.slne.surf.transaction.core.client.rabbitApi
 import dev.slne.surf.transaction.core.common.protocol.transaction.balance.GetTransactionBalanceRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.transaction.create.CreateTransactionRequestPacket
@@ -51,7 +52,7 @@ class TransactionServiceImpl : CoreTransactionService {
 
         return pendingRpcRequest(setOf(transaction.identifier)) {
             transactionRpc.beginTransaction(transaction, timeoutMillis)
-        }
+        }.also { BalanceCache.balancesChanged(it.transactions) }
     }
 
     override suspend fun beginWithdrawal(
@@ -76,7 +77,7 @@ class TransactionServiceImpl : CoreTransactionService {
 
         return pendingRpcRequest(setOf(transaction.identifier)) {
             transactionRpc.beginTransaction(transaction, timeoutMillis)
-        }
+        }.also { BalanceCache.balancesChanged(it.transactions) }
     }
 
     override suspend fun beginTransfer(
@@ -113,7 +114,7 @@ class TransactionServiceImpl : CoreTransactionService {
                 receiverTransaction,
                 timeoutMillis
             )
-        }
+        }.also { BalanceCache.balancesChanged(it.transactions) }
     }
 
     override suspend fun deposit(
@@ -134,6 +135,7 @@ class TransactionServiceImpl : CoreTransactionService {
         )
 
         val (result) = rabbitApi.sendRequest(CreateTransactionRequestPacket(transaction))
+        BalanceCache.balancesChanged(result.transactions)
         return result
     }
 
@@ -155,6 +157,7 @@ class TransactionServiceImpl : CoreTransactionService {
         )
 
         val (result) = rabbitApi.sendRequest(CreateTransactionRequestPacket(transaction))
+        BalanceCache.balancesChanged(result.transactions)
         return result
     }
 
@@ -184,6 +187,7 @@ class TransactionServiceImpl : CoreTransactionService {
         val (result) = rabbitApi.sendRequest(
             TransferTransactionCreateRequestPacket(senderTransaction, receiverTransaction)
         )
+        BalanceCache.balancesChanged(result.transactions)
         return result
     }
 
@@ -197,8 +201,11 @@ class TransactionServiceImpl : CoreTransactionService {
         return balance
     }
 
-    override suspend fun commit(identifier: UUID): TransactionCommitResult = transactionRpc.commit(identifier)
-    override suspend fun rollback(identifier: UUID): TransactionRollbackResult = transactionRpc.rollback(identifier)
+    override suspend fun commit(identifier: UUID): TransactionCommitResult =
+        transactionRpc.commit(identifier).also { BalanceCache.balancesChanged(it.transactions) }
+
+    override suspend fun rollback(identifier: UUID): TransactionRollbackResult =
+        transactionRpc.rollback(identifier).also { BalanceCache.balancesChanged(it.transactions) }
     override suspend fun find(identifier: UUID): Transaction? = transactionRpc.find(identifier)
 
     private fun createTransaction(
@@ -271,3 +278,35 @@ class TransactionServiceImpl : CoreTransactionService {
         val INSTANCE get() = TransactionService.INSTANCE as TransactionServiceImpl
     }
 }
+
+/** Transactions whose accounts' balances changed through this result. */
+private val TransactionResult.transactions: List<Transaction>
+    get() = when (this) {
+        is TransactionResult.Success -> listOf(transaction)
+        is TransactionResult.TransferSuccess -> listOf(senderTransaction, receiverTransaction)
+        else -> emptyList()
+    }
+
+/** Transactions whose accounts' available balances changed by reserving them. */
+private val PendingTransactionResult.transactions: List<Transaction>
+    get() = when (this) {
+        is PendingTransactionResult.Created -> listOf(transaction)
+        is PendingTransactionResult.TransferCreated -> listOf(senderTransaction, receiverTransaction)
+        else -> emptyList()
+    }
+
+/** Transactions whose accounts' balances changed by committing or expiring them. */
+private val TransactionCommitResult.transactions: List<Transaction>
+    get() = when (this) {
+        is TransactionCommitResult.Committed -> listOf(transaction)
+        is TransactionCommitResult.Expired -> listOf(transaction)
+        else -> emptyList()
+    }
+
+/** Transactions whose accounts' available balances changed by releasing their reservation. */
+private val TransactionRollbackResult.transactions: List<Transaction>
+    get() = when (this) {
+        is TransactionRollbackResult.RolledBack -> listOf(transaction)
+        is TransactionRollbackResult.Expired -> listOf(transaction)
+        else -> emptyList()
+    }

@@ -434,6 +434,20 @@ interface TransactionUser : Transactional, AccountAccess {
         currency: Currency
     ): BigDecimal = balance(getDefaultAccount(), currency)
 
+    /**
+     * Returns the locally cached balance of the user's default account in the specified [currency]
+     * without suspending.
+     *
+     * The cached balance is re-queried from the database whenever a transaction changes it.
+     * If it is not cached yet, loading starts in the background and `null` is returned.
+     *
+     * @param currency the currency of the balance
+     * @return the cached balance, or `null` if it is not cached yet
+     */
+    fun cachedBalance(
+        currency: Currency
+    ): BigDecimal?
+
     @OptIn(InternalTransactionApi::class)
     companion object {
         /**

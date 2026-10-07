@@ -7,7 +7,7 @@ import dev.slne.surf.transaction.core.common.account.AccountAccessImpl
 import dev.slne.surf.transaction.core.common.transactional.sharedTransactional
 import java.util.*
 
-class TransactionUserImpl(
+abstract class TransactionUserImpl(
     userUuid: UUID
 ) : TransactionUser,
     AccountAccess by AccountAccessImpl(userUuid),

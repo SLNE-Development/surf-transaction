@@ -1,6 +1,7 @@
 package dev.slne.surf.transaction.core.client
 
 import dev.slne.surf.rabbitmq.api.ClientRabbitMQApi
+import dev.slne.surf.transaction.core.client.balance.BalanceCache
 import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.core.common.CoreTransactionSerializerModule
@@ -31,6 +32,7 @@ abstract class ClientTransactionalInstance : TransactionInstance() {
         super.disable()
 
         CurrencyServiceImpl.INSTANCE.disposeScope()
+        BalanceCache.disposeScope()
         withContext(Dispatchers.IO) { RedisService.INSTANCE.disconnect() }
         rabbitApi.disconnect()
     }

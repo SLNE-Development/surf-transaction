@@ -5,6 +5,7 @@ import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.doubleArgument
 import dev.jorel.commandapi.kotlindsl.literalArgument
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.core.util.logger
 import dev.slne.surf.api.paper.command.executors.anyExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
@@ -13,6 +14,7 @@ import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.user.TransactionUser
+import dev.slne.surf.transaction.core.client.command.TransactionPermissions
 import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.paper.commands.CommandPermission
@@ -49,6 +51,14 @@ private suspend fun remove(
     currency: Currency,
     amount: Double
 ) {
+    if(!sender.hasPermission(TransactionPermissions.TRANSACTION_ADMIN_CURRENCY(currency.name))) {
+        sender.sendText {
+            appendErrorPrefix()
+            error("Du hast keine Berechtigung, um Transaktionen in der Währung ${currency.name} durchzuführen.")
+        }
+        return
+    }
+
     val result = TransactionUser.byUuid(targetUuid).withdraw(
         amount = amount.toBigDecimal(),
         currency = currency,

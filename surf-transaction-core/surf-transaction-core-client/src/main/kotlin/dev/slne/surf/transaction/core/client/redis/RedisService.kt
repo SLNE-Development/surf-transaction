@@ -4,6 +4,7 @@ import dev.slne.surf.api.core.util.requiredService
 import dev.slne.surf.redis.RedisApi
 import dev.slne.surf.redis.event.RedisEvent
 import dev.slne.surf.transaction.api.account.AccountService
+import dev.slne.surf.transaction.core.client.balance.BalanceEventsListener
 import dev.slne.surf.transaction.core.client.currency.CurrencyEventsListener
 import org.jetbrains.annotations.Blocking
 import org.jetbrains.annotations.MustBeInvokedByOverriders
@@ -29,6 +30,7 @@ abstract class RedisService {
     @MustBeInvokedByOverriders
     protected open fun register() {
         redisApi.subscribeToEvents(CurrencyEventsListener())
+        redisApi.subscribeToEvents(BalanceEventsListener())
     }
 
     companion object {
