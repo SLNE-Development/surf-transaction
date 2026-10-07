@@ -30,5 +30,4 @@ object CommandPermission : PermissionRegistry() {
     val ACCOUNT_MEMBER_ADD = create(TransactionPermissions.ACCOUNT_MEMBER_ADD)
     val ACCOUNT_MEMBER_REMOVE = create(TransactionPermissions.ACCOUNT_MEMBER_REMOVE)
     val ACCOUNT_MEMBER_LIST = create(TransactionPermissions.ACCOUNT_MEMBER_LIST)
-
 }

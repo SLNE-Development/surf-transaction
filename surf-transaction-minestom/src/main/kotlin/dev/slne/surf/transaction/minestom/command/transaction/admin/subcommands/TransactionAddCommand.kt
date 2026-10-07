@@ -4,6 +4,8 @@ import dev.slne.minestom.lobby.api.command.commandapi.argument.Argument
 import dev.slne.minestom.lobby.api.command.commandapi.dsl.anyExecutorSuspend
 import dev.slne.minestom.lobby.api.command.commandapi.dsl.doubleArgument
 import dev.slne.minestom.lobby.api.command.commandapi.dsl.literalArgument
+import dev.slne.surf.api.core.messages.adventure.hasPermission
+import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.core.util.logger
 import dev.slne.surf.core.api.minestom.command.argument.surfOfflinePlayerArgument
 import dev.slne.surf.transaction.api.currency.Currency
@@ -48,6 +50,14 @@ private suspend fun add(
     currency: Currency,
     amount: Double
 ) {
+    if(!sender.hasPermission(TransactionPermissions.TRANSACTION_ADMIN_CURRENCY(currency.name))) {
+        sender.sendText {
+            appendErrorPrefix()
+            error("Du hast keine Berechtigung, um Transaktionen in der Währung ${currency.name} durchzuführen.")
+        }
+        return
+    }
+
     val result = TransactionUser.byUuid(playerUuid).deposit(
         amount = amount.toBigDecimal(),
         currency = currency,

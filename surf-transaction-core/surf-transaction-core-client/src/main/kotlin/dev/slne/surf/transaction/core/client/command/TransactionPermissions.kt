@@ -22,6 +22,8 @@ object TransactionPermissions {
     const val TRANSACTION_ADMIN_ADD = "$TRANSACTION_ADMIN.add"
     const val TRANSACTION_ADMIN_REMOVE = "$TRANSACTION_ADMIN.remove"
 
+    fun TRANSACTION_ADMIN_CURRENCY(currencyName: String) = "$TRANSACTION_ADMIN.$currencyName"
+
     const val ACCOUNT = "$PREFIX.account"
     const val ACCOUNT_INFO = "$ACCOUNT.info"
     const val ACCOUNT_LIST = "$ACCOUNT.list"
