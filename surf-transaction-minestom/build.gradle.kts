@@ -11,10 +11,6 @@ surfMinestomApi {
     withSurfRedis()
 }
 
-repositories {
-    mavenLocal()
-}
-
 minestomPluginFile {
     id = "surf-transaction-minestom"
     main = "dev.slne.surf.transaction.minestom.TransactionMinestomPlugin"
