@@ -1,11 +1,11 @@
 package dev.slne.surf.transaction.minestom.command.currency.admin.subcommands
 
-import dev.slne.minestom.lobby.api.command.commandapi.CommandAPI
-import dev.slne.minestom.lobby.api.command.commandapi.argument.Argument
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.anyExecutorSuspend
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.doubleArgument
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.literalArgument
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.stringArgument
+import dev.slne.surf.api.minestom.command.CommandAPI
+import dev.slne.surf.api.minestom.command.argument.Argument
+import dev.slne.surf.api.minestom.command.dsl.anyExecutorSuspend
+import dev.slne.surf.api.minestom.command.dsl.doubleArgument
+import dev.slne.surf.api.minestom.command.dsl.literalArgument
+import dev.slne.surf.api.minestom.command.dsl.stringArgument
 import dev.slne.surf.api.core.messages.adventure.sendText
 import dev.slne.surf.api.minestom.command.args.miniMessageArgument
 import dev.slne.surf.transaction.api.currency.Currency

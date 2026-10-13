@@ -1,8 +1,8 @@
 package dev.slne.surf.transaction.minestom.command.balance
 
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.anyExecutorSuspend
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.commandTree
-import dev.slne.minestom.lobby.api.command.commandapi.dsl.playerExecutorSuspend
+import dev.slne.surf.api.minestom.command.dsl.anyExecutorSuspend
+import dev.slne.surf.api.minestom.command.dsl.commandTree
+import dev.slne.surf.api.minestom.command.dsl.playerExecutorSuspend
 import dev.slne.surf.core.api.minestom.command.argument.surfOfflinePlayerArgument
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.user.TransactionUser

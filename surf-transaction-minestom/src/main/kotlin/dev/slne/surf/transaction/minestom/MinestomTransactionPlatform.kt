@@ -1,8 +1,8 @@
 package dev.slne.surf.transaction.minestom
 
 import com.google.auto.service.AutoService
-import dev.slne.minestom.lobby.api.coroutine.minestomAsyncScope
-import dev.slne.minestom.lobby.api.extension.ConnectionManager
+import dev.slne.surf.api.minestom.coroutine.minestomAsyncScope
+import dev.slne.surf.api.minestom.extension.ConnectionManager
 import dev.slne.surf.transaction.core.client.platform.TransactionPlatform
 import kotlinx.coroutines.launch
 import net.kyori.adventure.audience.Audience
