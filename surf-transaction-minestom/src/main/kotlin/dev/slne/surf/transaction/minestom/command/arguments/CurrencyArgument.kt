@@ -1,12 +1,12 @@
 package dev.slne.surf.transaction.minestom.command.arguments
 
-import dev.slne.minestom.lobby.api.command.commandapi.CommandAPI
-import dev.slne.minestom.lobby.api.command.commandapi.CommandAPICommand
-import dev.slne.minestom.lobby.api.command.commandapi.CommandTree
-import dev.slne.minestom.lobby.api.command.commandapi.argument.Argument
-import dev.slne.minestom.lobby.api.command.commandapi.argument.CustomArgument
-import dev.slne.minestom.lobby.api.command.commandapi.argument.StringArgument
-import dev.slne.minestom.lobby.api.command.commandapi.suggestion.ArgumentSuggestions
+import dev.slne.surf.api.minestom.command.CommandAPI
+import dev.slne.surf.api.minestom.command.CommandAPICommand
+import dev.slne.surf.api.minestom.command.CommandTree
+import dev.slne.surf.api.minestom.command.argument.Argument
+import dev.slne.surf.api.minestom.command.argument.CustomArgument
+import dev.slne.surf.api.minestom.command.argument.StringArgument
+import dev.slne.surf.api.minestom.command.suggestion.ArgumentSuggestions
 import dev.slne.surf.transaction.api.currency.Currency
 
 class CurrencyArgument(nodeName: String) : CustomArgument<Currency, String>(
