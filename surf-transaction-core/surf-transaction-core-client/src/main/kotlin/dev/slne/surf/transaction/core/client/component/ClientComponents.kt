@@ -19,24 +19,26 @@ object ClientComponents {
 
     object Balance {
         /**
-         * The hint shown below the default currency balance on how to query another currency.
-         */
-        val CURRENCY_HINT: Component = buildText {
-            appendInfoPrefix()
-            info("Für den Kontostand einer bestimmten Währung nutze ")
-            variableValue("/balance <currency>")
-            info(".")
-        }
-
-        /**
          * The balance message for a player asking about their own balance.
+         *
+         * With [showCurrencyHint] a second line explains how to query another currency.
          */
-        fun own(currency: Currency, balance: BigDecimal) = buildText {
-            appendInfoPrefix()
-            info("Dein Kontostand beträgt ")
-            append(currency.format(balance))
-            info(".")
-        }
+        fun own(currency: Currency, balance: BigDecimal, showCurrencyHint: Boolean = false) =
+            buildText {
+                appendInfoPrefix()
+                info("Dein Kontostand beträgt ")
+                append(currency.format(balance))
+                info(".")
+
+                if (showCurrencyHint) {
+                    appendNewline {
+                        appendInfoPrefix()
+                        info("Für den Kontostand einer bestimmten Währung nutze ")
+                        variableValue("/balance <currency>")
+                        info(".")
+                    }
+                }
+            }
 
         /**
          * The balance message for an audience asking about the balance of [queryTarget].
