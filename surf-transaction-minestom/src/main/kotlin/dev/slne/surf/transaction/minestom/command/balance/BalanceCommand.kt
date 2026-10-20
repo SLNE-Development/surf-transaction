@@ -19,7 +19,12 @@ fun balanceCommand() = commandTree("balance") {
     withAliases("bal", "konto", "money")
 
     playerExecutorSuspend { sender, _ ->
-        balance(sender, Currency.default(), sender.uuid, showCurrencyHint = true)
+        balance(
+            sender,
+            Currency.default(),
+            sender.uuid,
+            showCurrencyHint = true,
+        )
     }
 
     currencyArgument("currency") {
@@ -49,7 +54,7 @@ private suspend fun balance(
     sender: CommandSender,
     currency: Currency,
     queryTarget: UUID,
-    showCurrencyHint: Boolean = false
+    showCurrencyHint: Boolean = false,
 ) {
     val balance = TransactionUser.byUuid(queryTarget).balance(currency)
 
