@@ -23,8 +23,11 @@ object ClientComponents {
          *
          * With [showCurrencyHint] a second line explains how to query another currency.
          */
-        fun own(currency: Currency, balance: BigDecimal, showCurrencyHint: Boolean = false) =
-            buildText {
+        fun own(
+            currency: Currency,
+            balance: BigDecimal,
+            showCurrencyHint: Boolean = false,
+        ) = buildText {
                 appendInfoPrefix()
                 info("Dein Kontostand beträgt ")
                 append(currency.format(balance))
