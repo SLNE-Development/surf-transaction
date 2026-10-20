@@ -9,6 +9,7 @@ import dev.slne.surf.api.core.messages.pagination.Pagination
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.core.common.component.Components
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import java.math.BigDecimal
 import java.util.UUID
 
@@ -37,7 +38,11 @@ object ClientComponents {
                 appendNewline {
                     appendInfoPrefix()
                     info("Für den Kontostand einer bestimmten Währung nutze ")
-                    variableValue("/balance <currency>")
+                    append {
+                        variableValue("/balance <currency>")
+                        hoverEvent(buildText { info("Klicke hier") })
+                        clickEvent(ClickEvent.suggestCommand("/balance "))
+                    }
                     info(".")
                 }
             }
