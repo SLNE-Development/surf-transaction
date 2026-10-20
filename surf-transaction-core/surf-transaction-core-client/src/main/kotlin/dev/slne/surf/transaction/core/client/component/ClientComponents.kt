@@ -28,20 +28,20 @@ object ClientComponents {
             balance: BigDecimal,
             showCurrencyHint: Boolean = false,
         ) = buildText {
-                appendInfoPrefix()
-                info("Dein Kontostand beträgt ")
-                append(currency.format(balance))
-                info(".")
+            appendInfoPrefix()
+            info("Dein Kontostand beträgt ")
+            append(currency.format(balance))
+            info(".")
 
-                if (showCurrencyHint) {
-                    appendNewline {
-                        appendInfoPrefix()
-                        info("Für den Kontostand einer bestimmten Währung nutze ")
-                        variableValue("/balance <currency>")
-                        info(".")
-                    }
+            if (showCurrencyHint) {
+                appendNewline {
+                    appendInfoPrefix()
+                    info("Für den Kontostand einer bestimmten Währung nutze ")
+                    variableValue("/balance <currency>")
+                    info(".")
                 }
             }
+        }
 
         /**
          * The balance message for an audience asking about the balance of [queryTarget].
