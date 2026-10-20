@@ -20,6 +20,10 @@ fun balanceCommand() = commandTree("balance") {
     withPermission(CommandPermission.BALANCE)
     withAliases("bal", "konto", "money")
 
+    playerExecutorSuspend { sender, _ ->
+        balance(sender, Currency.default(), sender.uniqueId)
+    }
+
     currencyArgument("currency") {
         playerExecutorSuspend { sender, args ->
             balance(
