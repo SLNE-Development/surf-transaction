@@ -41,7 +41,7 @@ object ClientComponents {
                     append {
                         variableValue("/balance <currency>")
                         hoverEvent(buildText { info("Klicke hier") })
-                        clickEvent(ClickEvent.suggestCommand("/balance "))
+                        clickSuggestsCommand("/balance ")
                     }
                     info(".")
                 }
