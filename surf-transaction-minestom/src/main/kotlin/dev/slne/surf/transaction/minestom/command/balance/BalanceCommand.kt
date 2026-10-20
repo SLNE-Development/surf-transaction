@@ -18,6 +18,15 @@ fun balanceCommand() = commandTree("balance") {
     withPermission(TransactionPermissions.BALANCE)
     withAliases("bal", "konto", "money")
 
+    playerExecutorSuspend { sender, _ ->
+        balance(
+            sender,
+            Currency.default(),
+            sender.uuid,
+            showCurrencyHint = true,
+        )
+    }
+
     currencyArgument("currency") {
         playerExecutorSuspend { sender, args ->
             balance(
@@ -44,13 +53,14 @@ fun balanceCommand() = commandTree("balance") {
 private suspend fun balance(
     sender: CommandSender,
     currency: Currency,
-    queryTarget: UUID
+    queryTarget: UUID,
+    showCurrencyHint: Boolean = false,
 ) {
     val balance = TransactionUser.byUuid(queryTarget).balance(currency)
 
     sender.sendMessage(
         if (sender is Player && queryTarget == sender.uuid) {
-            ClientComponents.Balance.own(currency, balance)
+            ClientComponents.Balance.own(currency, balance, showCurrencyHint)
         } else {
             ClientComponents.Balance.other(currency, balance, queryTarget)
         }
