@@ -19,6 +19,16 @@ object ClientComponents {
 
     object Balance {
         /**
+         * The hint shown below the default currency balance on how to query another currency.
+         */
+        val CURRENCY_HINT: Component = buildText {
+            appendInfoPrefix()
+            info("Für den Kontostand einer bestimmten Währung nutze ")
+            variableValue("/balance <currency>")
+            info(".")
+        }
+
+        /**
          * The balance message for a player asking about their own balance.
          */
         fun own(currency: Currency, balance: BigDecimal) = buildText {

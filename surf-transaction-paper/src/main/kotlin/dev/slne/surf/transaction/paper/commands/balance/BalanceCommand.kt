@@ -22,6 +22,7 @@ fun balanceCommand() = commandTree("balance") {
 
     playerExecutorSuspend { sender, _ ->
         balance(sender, Currency.default(), sender.uniqueId)
+        sender.sendMessage(ClientComponents.Balance.CURRENCY_HINT)
     }
 
     currencyArgument("currency") {
