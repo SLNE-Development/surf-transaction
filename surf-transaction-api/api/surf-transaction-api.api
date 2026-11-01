@@ -121,7 +121,7 @@ public abstract interface class dev/slne/surf/transaction/api/currency/Currency 
 	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;Ljava/math/BigDecimal;Lnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
 	public abstract fun getDefaultCurrency ()Z
 	public abstract fun getDisplayName ()Lnet/kyori/adventure/text/Component;
-	public fun getEnabled ()Z
+	public abstract fun getEnabled ()Z
 	public abstract fun getMinimumAmount ()Ljava/math/BigDecimal;
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getScale ()Ldev/slne/surf/transaction/api/currency/CurrencyScale;
