@@ -10,13 +10,16 @@ import dev.slne.surf.transaction.core.client.rabbitApi
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.core.client.redis.events.currency.ChangedDefaultCurrencyEvent
 import dev.slne.surf.transaction.core.client.redis.events.currency.CurrencyCreatedEvent
+import dev.slne.surf.transaction.core.client.redis.events.currency.CurrencyEnabledChangedEvent
 import dev.slne.surf.transaction.core.common.currency.CoreCurrencyService
 import dev.slne.surf.transaction.core.common.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyDefaultResult
+import dev.slne.surf.transaction.core.common.currency.CurrencyEnabledResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
 import dev.slne.surf.transaction.core.common.protocol.currency.create.CreateCurrencyRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.currency.findAllOrCreateDefault.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.currency.makeDefaultCurrency.MakeDefaultCurrencyRequestPacket
+import dev.slne.surf.transaction.core.common.protocol.currency.setEnabled.SetCurrencyEnabledRequestPacket
 import it.unimi.dsi.fastutil.objects.ObjectArrayList
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -81,6 +84,11 @@ class CurrencyServiceImpl : CoreCurrencyService {
         registry.updateAndGet { current -> current.withDefault(newDefaultName) ?: current }
     }
 
+    fun updateCurrencyEnabled(name: String, enabled: Boolean) {
+        loadedRegistry()
+        registry.updateAndGet { current -> current.withEnabled(name, enabled) ?: current }
+    }
+
     override suspend fun createCurrency(currency: CurrencyImpl): CurrencyCreateResult {
         require(!currency.defaultCurrency) { "Cannot create default currency. Use makeDefaultCurrency() instead." }
         validateCurrency(currency)?.let { return it }
@@ -114,12 +122,29 @@ class CurrencyServiceImpl : CoreCurrencyService {
 
     override suspend fun makeDefaultCurrency(currency: CurrencyImpl): CurrencyDefaultResult {
         require(!currency.defaultCurrency) { "Currency '${currency.name}' is already the default currency." }
+        if (!currency.enabled) return CurrencyDefaultResult.DISABLED
 
         val request = MakeDefaultCurrencyRequestPacket(currency.name)
         val (result) = rabbitApi.sendRequest(request)
 
         if (result == CurrencyDefaultResult.SUCCESS) {
             RedisService.publish(ChangedDefaultCurrencyEvent(currency.name)).await()
+        }
+
+        return result
+    }
+
+    override suspend fun setCurrencyEnabled(
+        currency: CurrencyImpl,
+        enabled: Boolean
+    ): CurrencyEnabledResult {
+        if (!enabled && currency.defaultCurrency) return CurrencyEnabledResult.IS_DEFAULT
+
+        val request = SetCurrencyEnabledRequestPacket(currency.name, enabled)
+        val (result) = rabbitApi.sendRequest(request)
+
+        if (result == CurrencyEnabledResult.SUCCESS) {
+            RedisService.publish(CurrencyEnabledChangedEvent(currency.name, enabled)).await()
         }
 
         return result
@@ -169,6 +194,25 @@ internal class CurrencyRegistry(
         }
 
         return CurrencyRegistry(updated, updated[targetIndex])
+    }
+
+    /**
+     * Returns a registry in which the currency [name] has the given [enabled] state, this
+     * registry if nothing changes, or `null` if no such currency exists.
+     */
+    fun withEnabled(name: String, enabled: Boolean): CurrencyRegistry? {
+        val targetIndex = indexOfName(name)
+        if (targetIndex < 0) return null
+
+        val target = ordered[targetIndex]
+        if (target.enabled == enabled) return this
+
+        val updatedTarget = target.copy(enabled = enabled)
+        val updated = ObjectArrayList(ordered)
+        updated[targetIndex] = updatedTarget
+
+        val newDefault = if (target === defaultCurrency) updatedTarget else defaultCurrency
+        return CurrencyRegistry(updated, newDefault)
     }
 
     private fun indexOfName(name: String): Int {

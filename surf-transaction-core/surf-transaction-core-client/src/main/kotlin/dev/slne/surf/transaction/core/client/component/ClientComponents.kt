@@ -214,6 +214,26 @@ object ClientComponents {
             "Currency '${currency.name}' is already the default currency."
 
         /**
+         * The error shown when a player uses a disabled currency.
+         */
+        fun disabled(currency: Currency) = buildText {
+            appendErrorPrefix()
+            error("Die Währung ")
+            append(currency)
+            error(" ist deaktiviert.")
+        }
+
+        /**
+         * The marker appended to a disabled currency in admin views.
+         */
+        val disabledTag = buildText {
+            appendSpace()
+            darkSpacer("(")
+            error("deaktiviert")
+            darkSpacer(")")
+        }
+
+        /**
          * The paginated listing of all known currencies.
          */
         val pagination by lazy {
@@ -229,6 +249,8 @@ object ClientComponents {
                             append(CommonComponents.EM_DASH)
                             variableKey(" Default: ")
                             variableValue(currency.defaultCurrency)
+                            variableKey(" Aktiviert: ")
+                            variableValue(currency.enabled)
                         }
                     )
                 }

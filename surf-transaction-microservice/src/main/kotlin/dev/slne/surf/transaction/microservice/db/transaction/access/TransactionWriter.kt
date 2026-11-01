@@ -70,6 +70,10 @@ internal class TransactionWriter(private val reader: TransactionReader) {
      * identifier constraint recognize an idempotent retry before an already existing reservation
      * could be counted against the balance twice. A minimum violation is raised as an exception so
      * the surrounding database transaction rolls back every inserted row.
+     *
+     * The disabled-currency check runs before any insert, so a retry of a write stored before the
+     * currency was disabled returns [TransactionWriteResult.CurrencyDisabled] instead of the
+     * idempotent success.
      */
     private suspend fun insertAll(
         transactions: List<TransactionImpl>,
@@ -79,6 +83,9 @@ internal class TransactionWriter(private val reader: TransactionReader) {
         require(transactions.isNotEmpty()) { "Cannot write an empty transaction list" }
 
         val context = writeContext(transactions) ?: return UnknownAccountOrCurrency
+        if (TransactionRules.rejectsDisabledCurrency(context.currencyEnabled, transactions)) {
+            return TransactionWriteResult.CurrencyDisabled(transactions.first().currencyName)
+        }
         val expiresAt = timeoutMillis?.let(context.now::plusMillis)
         val operationId = transactions.first().identifier
 
@@ -208,7 +215,7 @@ internal class TransactionWriter(private val reader: TransactionReader) {
         if (accountRows.size != accountIds.size) return null
 
         val currencyRow = CurrencyTable
-            .select(CurrencyTable.id, CurrencyTable.minimumAmount)
+            .select(CurrencyTable.id, CurrencyTable.minimumAmount, CurrencyTable.enabled)
             .where { CurrencyTable.name eq currencyName }
             .limit(1)
             .singleOrNull()
@@ -220,6 +227,7 @@ internal class TransactionWriter(private val reader: TransactionReader) {
             },
             currencyId = currencyRow[CurrencyTable.id],
             minimumAmount = currencyRow[CurrencyTable.minimumAmount],
+            currencyEnabled = currencyRow[CurrencyTable.enabled],
             now = accountRows.first()[CurrentTimestamp]
         )
     }
@@ -234,6 +242,7 @@ internal class TransactionWriter(private val reader: TransactionReader) {
                 AccountTable.id,
                 AccountTable.accountId,
                 CurrencyTable.id,
+                CurrencyTable.enabled,
                 CurrentTimestamp
             )
             .where {
@@ -253,6 +262,7 @@ internal class TransactionWriter(private val reader: TransactionReader) {
             currencyId = firstRow[CurrencyTable.id],
             // No minimum-balance check is needed, so the currency's minimum is irrelevant
             minimumAmount = BigDecimal.ZERO,
+            currencyEnabled = firstRow[CurrencyTable.enabled],
             now = firstRow[CurrentTimestamp]
         )
     }
@@ -357,6 +367,9 @@ internal sealed interface TransactionWriteResult {
     /** A referenced account or currency does not exist. */
     data object UnknownAccountOrCurrency : TransactionWriteResult
 
+    /** The currency is disabled and not every transaction bypasses it; nothing was written. */
+    data class CurrencyDisabled(val currencyName: String) : TransactionWriteResult
+
     /** [identifier] already belongs to a transaction with different data or state. */
     data class IdentifierConflict(val identifier: UUID) : TransactionWriteResult
 
@@ -370,6 +383,7 @@ private data class WriteContext(
     val accounts: Map<UUID, EntityID<ULong>>,
     val currencyId: EntityID<ULong>,
     val minimumAmount: BigDecimal,
+    val currencyEnabled: Boolean,
     val now: Instant
 )
 

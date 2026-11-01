@@ -30,7 +30,7 @@ fun Argument<*>.transactionAddCommand() = literalArgument("add") {
     withPermission(CommandPermission.TRANSACTION_ADMIN_ADD)
 
     argument(AsyncPlayerProfileArgument("player")) {
-        currencyArgument("currency") {
+        currencyArgument("currency", includeDisabled = true) {
             doubleArgument("amount", min = 1.0) {
                 anyExecutorSuspend { sender, args ->
                     add(
@@ -62,6 +62,7 @@ private suspend fun add(
     val result = TransactionUser.byUuid(playerUuid).deposit(
         amount = amount.toBigDecimal(),
         currency = currency,
+        ignoreDisabled = true,
         additionalData = arrayOf(
             TransactionData.of(
                 "admin.transaction.add",

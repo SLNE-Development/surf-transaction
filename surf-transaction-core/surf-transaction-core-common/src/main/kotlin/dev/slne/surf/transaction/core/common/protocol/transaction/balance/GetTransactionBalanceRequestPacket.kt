@@ -6,5 +6,8 @@ import kotlinx.serialization.Serializable
 import java.util.*
 
 @Serializable
-data class GetTransactionBalanceRequestPacket(val accountId: @Contextual UUID, val currencyName: String) :
-    RabbitRequestPacket<GetTransactionBalanceResponsePacket>()
+data class GetTransactionBalanceRequestPacket(
+    val accountId: @Contextual UUID,
+    val currencyName: String,
+    val ignoreDisabled: Boolean = false
+) : RabbitRequestPacket<GetTransactionBalanceResponsePacket>()

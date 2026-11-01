@@ -53,4 +53,13 @@ sealed class PendingTransactionResult {
      */
     @Serializable
     data class InvalidRequest(val cause: SerializableError) : PendingTransactionResult()
+
+    /**
+     * The currency is disabled and the caller did not pass `ignoreDisabled = true`.
+     * Nothing was reserved.
+     *
+     * @property currencyName the technical name of the disabled currency
+     */
+    @Serializable
+    data class CurrencyDisabled(val currencyName: String) : PendingTransactionResult()
 }

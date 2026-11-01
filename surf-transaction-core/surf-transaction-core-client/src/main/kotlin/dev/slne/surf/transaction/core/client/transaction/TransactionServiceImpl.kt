@@ -4,6 +4,7 @@ import com.google.auto.service.AutoService
 import dev.slne.surf.rabbitmq.api.exception.SurfRabbitRequestTimeoutException
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyDisabledException
 import dev.slne.surf.transaction.api.transaction.PendingReservationTimeoutException
 import dev.slne.surf.transaction.api.transaction.PendingTransactionResult
 import dev.slne.surf.transaction.api.transaction.Transaction
@@ -13,6 +14,7 @@ import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.TransactionService
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.core.client.balance.BalanceCache
+import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.client.rabbitApi
 import dev.slne.surf.transaction.core.common.protocol.transaction.balance.GetTransactionBalanceRequestPacket
 import dev.slne.surf.transaction.core.common.protocol.transaction.create.CreateTransactionRequestPacket
@@ -37,8 +39,12 @@ class TransactionServiceImpl : CoreTransactionService {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return PendingTransactionResult.CurrencyDisabled(currency.name)
+        }
         val timeoutMillis = timeout.timeoutMillisOrNull()
             ?: return PendingTransactionResult.InvalidTimeout
         val transaction = createTransaction(
@@ -47,7 +53,8 @@ class TransactionServiceImpl : CoreTransactionService {
             amount = amount.abs(),
             currency = currency,
             ignoreMinimum = ignoreMinimum,
-            additionalData = additionalData.toSet()
+            additionalData = additionalData.toSet(),
+            ignoreDisabled = ignoreDisabled
         )
 
         return pendingRpcRequest(setOf(transaction.identifier)) {
@@ -62,8 +69,12 @@ class TransactionServiceImpl : CoreTransactionService {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return PendingTransactionResult.CurrencyDisabled(currency.name)
+        }
         val timeoutMillis = timeout.timeoutMillisOrNull()
             ?: return PendingTransactionResult.InvalidTimeout
         val transaction = createTransaction(
@@ -72,7 +83,8 @@ class TransactionServiceImpl : CoreTransactionService {
             amount = amount.abs().negate(),
             currency = currency,
             ignoreMinimum = ignoreMinimum,
-            additionalData = additionalData.toSet()
+            additionalData = additionalData.toSet(),
+            ignoreDisabled = ignoreDisabled
         )
 
         return pendingRpcRequest(setOf(transaction.identifier)) {
@@ -90,8 +102,12 @@ class TransactionServiceImpl : CoreTransactionService {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return PendingTransactionResult.CurrencyDisabled(currency.name)
+        }
         val timeoutMillis = timeout.timeoutMillisOrNull()
             ?: return PendingTransactionResult.InvalidTimeout
         val (senderTransaction, receiverTransaction) = createTransferTransactions(
@@ -103,7 +119,8 @@ class TransactionServiceImpl : CoreTransactionService {
             ignoreSenderMinimum,
             ignoreReceiverMinimum,
             additionalSenderData,
-            additionalReceiverData
+            additionalReceiverData,
+            ignoreDisabled
         )
 
         return pendingRpcRequest(
@@ -123,15 +140,20 @@ class TransactionServiceImpl : CoreTransactionService {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return TransactionResult.CurrencyDisabled(currency.name)
+        }
         val transaction = createTransaction(
             account = account,
             initiator = initiator,
             amount = amount.abs(),
             currency = currency,
             ignoreMinimum = ignoreMinimum,
-            additionalData = additionalData.toSet()
+            additionalData = additionalData.toSet(),
+            ignoreDisabled = ignoreDisabled
         )
 
         val (result) = rabbitApi.sendRequest(CreateTransactionRequestPacket(transaction))
@@ -145,15 +167,20 @@ class TransactionServiceImpl : CoreTransactionService {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return TransactionResult.CurrencyDisabled(currency.name)
+        }
         val transaction = createTransaction(
             account = account,
             initiator = initiator,
             amount = amount.abs().negate(),
             currency = currency,
             ignoreMinimum = ignoreMinimum,
-            additionalData = additionalData.toSet()
+            additionalData = additionalData.toSet(),
+            ignoreDisabled = ignoreDisabled
         )
 
         val (result) = rabbitApi.sendRequest(CreateTransactionRequestPacket(transaction))
@@ -170,8 +197,12 @@ class TransactionServiceImpl : CoreTransactionService {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): TransactionResult {
+        if (!ignoreDisabled && isDisabled(currency)) {
+            return TransactionResult.CurrencyDisabled(currency.name)
+        }
         val (senderTransaction, receiverTransaction) = createTransferTransactions(
             initiator,
             sender,
@@ -181,7 +212,8 @@ class TransactionServiceImpl : CoreTransactionService {
             ignoreSenderMinimum,
             ignoreReceiverMinimum,
             additionalSenderData,
-            additionalReceiverData
+            additionalReceiverData,
+            ignoreDisabled
         )
 
         val (result) = rabbitApi.sendRequest(
@@ -193,10 +225,15 @@ class TransactionServiceImpl : CoreTransactionService {
 
     override suspend fun balance(
         account: Account,
-        currency: Currency
+        currency: Currency,
+        ignoreDisabled: Boolean
     ): BigDecimal {
-        val request = GetTransactionBalanceRequestPacket(account.accountId, currency.name)
-        val (balance) = rabbitApi.sendRequest(request)
+        if (!ignoreDisabled && isDisabled(currency)) throw CurrencyDisabledException(currency.name)
+
+        val request =
+            GetTransactionBalanceRequestPacket(account.accountId, currency.name, ignoreDisabled)
+        val (balance, currencyDisabled) = rabbitApi.sendRequest(request)
+        if (currencyDisabled) throw CurrencyDisabledException(currency.name)
 
         return balance
     }
@@ -214,7 +251,8 @@ class TransactionServiceImpl : CoreTransactionService {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        additionalData: Set<TransactionData>
+        additionalData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ) = TransactionImpl(
         identifier = UUID.randomUUID(),
         senderAccountId = null,
@@ -223,7 +261,8 @@ class TransactionServiceImpl : CoreTransactionService {
         amount = amount,
         currencyName = currency.name,
         ignoreMinimumAmount = ignoreMinimum,
-        data = additionalData
+        data = additionalData,
+        ignoreDisabledCurrency = ignoreDisabled
     )
 
     private fun createTransferTransactions(
@@ -235,7 +274,8 @@ class TransactionServiceImpl : CoreTransactionService {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): Pair<TransactionImpl, TransactionImpl> {
         val senderTransaction = TransactionImpl(
             initiator = initiator,
@@ -245,7 +285,8 @@ class TransactionServiceImpl : CoreTransactionService {
             amount = amount.abs().negate(),
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreSenderMinimum,
-            data = additionalSenderData.toSet()
+            data = additionalSenderData.toSet(),
+            ignoreDisabledCurrency = ignoreDisabled
         )
         val receiverTransaction = TransactionImpl(
             initiator = initiator,
@@ -255,10 +296,18 @@ class TransactionServiceImpl : CoreTransactionService {
             amount = amount.abs(),
             currencyName = currency.name,
             ignoreMinimumAmount = ignoreReceiverMinimum,
-            data = additionalReceiverData.toSet()
+            data = additionalReceiverData.toSet(),
+            ignoreDisabledCurrency = ignoreDisabled
         )
         return senderTransaction to receiverTransaction
     }
+
+    /**
+     * Checks the local registry, which may lag behind the microservice; the microservice enforces
+     * the disabled state authoritatively.
+     */
+    private fun isDisabled(currency: Currency): Boolean =
+        CurrencyServiceImpl.INSTANCE.getCurrencyByName(currency.name)?.enabled == false
 
     private fun Duration.timeoutMillisOrNull(): Long? =
         takeIf { it.isFinite() && it.isPositive() }

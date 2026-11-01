@@ -13,6 +13,12 @@ import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
 
+/**
+ * Serializable [Transaction] snapshot exchanged between clients and the microservice.
+ *
+ * [ignoreDisabledCurrency] is a request-time flag that lets the write proceed for a disabled
+ * currency. It is not persisted, so stored snapshots always report `false`.
+ */
 @Serializable
 data class TransactionImpl(
     override val identifier: @Contextual UUID,
@@ -24,7 +30,8 @@ data class TransactionImpl(
     override val data: @Unmodifiable Set<TransactionData>,
     override val ignoreMinimumAmount: Boolean = false,
     override val state: TransactionState = TransactionState.COMMITTED,
-    override val expiresAt: @Contextual Instant? = null
+    override val expiresAt: @Contextual Instant? = null,
+    val ignoreDisabledCurrency: Boolean = false
 ) : Transaction {
     override val currency: Currency
         get() = Currency.byName(currencyName)

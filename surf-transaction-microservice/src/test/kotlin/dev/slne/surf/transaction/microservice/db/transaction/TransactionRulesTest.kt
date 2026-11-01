@@ -254,6 +254,18 @@ class TransactionRulesTest {
         assertEquals(null, transaction.expiresAt)
     }
 
+    @Test
+    fun `disabled currency rejects writes unless every transaction bypasses it`() {
+        val plain = transaction(TransactionState.PENDING)
+        val bypassing = plain.copy(ignoreDisabledCurrency = true)
+
+        assertFalse(TransactionRules.rejectsDisabledCurrency(true, listOf(plain)))
+        assertTrue(TransactionRules.rejectsDisabledCurrency(false, listOf(plain)))
+        assertFalse(TransactionRules.rejectsDisabledCurrency(false, listOf(bypassing)))
+        assertTrue(TransactionRules.rejectsDisabledCurrency(false, listOf(bypassing, plain)))
+        assertFalse(TransactionRules.rejectsDisabledCurrency(false, listOf(bypassing, bypassing)))
+    }
+
     private fun committed(amount: String) = Entry(
         amount = BigDecimal(amount),
         state = TransactionState.COMMITTED,

@@ -1,5 +1,6 @@
 package dev.slne.surf.transaction.paper.commands.balance
 
+import dev.jorel.commandapi.CommandAPIPaper
 import dev.jorel.commandapi.arguments.AsyncPlayerProfileArgument
 import dev.jorel.commandapi.kotlindsl.argument
 import dev.jorel.commandapi.kotlindsl.commandTree
@@ -8,10 +9,12 @@ import dev.slne.surf.api.paper.command.executors.playerExecutorSuspend
 import dev.slne.surf.api.paper.command.util.awaitAsyncPlayerProfile
 import dev.slne.surf.api.paper.command.util.idOrThrow
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyDisabledException
 import dev.slne.surf.transaction.api.user.TransactionUser
+import dev.slne.surf.transaction.core.client.command.TransactionPermissions
 import dev.slne.surf.transaction.core.client.component.ClientComponents
 import dev.slne.surf.transaction.paper.commands.CommandPermission
-import dev.slne.surf.transaction.paper.commands.arguments.currencyArgument
+import dev.slne.surf.transaction.paper.commands.arguments.CurrencyArgument
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
@@ -29,7 +32,7 @@ fun balanceCommand() = commandTree("balance") {
         )
     }
 
-    currencyArgument("currency") {
+    argument(CurrencyArgument("currency", ::canUseDisabledCurrencies)) {
         playerExecutorSuspend { sender, args ->
             balance(
                 sender,
@@ -58,13 +61,27 @@ private suspend fun balance(
     queryTarget: UUID,
     showCurrencyHint: Boolean = false,
 ) {
-    val balance = TransactionUser.byUuid(queryTarget).balance(currency)
+    val isAdmin = canUseDisabledCurrencies(sender)
+    val balance = try {
+        TransactionUser.byUuid(queryTarget).balance(currency, ignoreDisabled = isAdmin)
+    } catch (_: CurrencyDisabledException) {
+        throw CommandAPIPaper.failWithAdventureComponent(
+            ClientComponents.CurrencyMessages.disabled(currency)
+        )
+    }
 
-    sender.sendMessage(
-        if (sender is Player && queryTarget == sender.uniqueId) {
-            ClientComponents.Balance.own(currency, balance, showCurrencyHint)
-        } else {
-            ClientComponents.Balance.other(currency, balance, queryTarget)
-        }
-    )
+    var message = if (sender is Player && queryTarget == sender.uniqueId) {
+        ClientComponents.Balance.own(currency, balance, showCurrencyHint)
+    } else {
+        ClientComponents.Balance.other(currency, balance, queryTarget)
+    }
+
+    if (!currency.enabled) {
+        message = message.append(ClientComponents.CurrencyMessages.disabledTag)
+    }
+
+    sender.sendMessage(message)
 }
+
+private fun canUseDisabledCurrencies(sender: CommandSender) =
+    sender.hasPermission(TransactionPermissions.CURRENCY_ADMIN)

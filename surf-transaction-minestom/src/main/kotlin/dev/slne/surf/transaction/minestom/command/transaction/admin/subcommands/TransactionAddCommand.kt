@@ -29,7 +29,7 @@ fun Argument<String>.transactionAddCommand() = literalArgument("add") {
     withPermission(TransactionPermissions.TRANSACTION_ADMIN_ADD)
 
     surfOfflinePlayerArgument("player") {
-        currencyArgument("currency") {
+        currencyArgument("currency", includeDisabled = true) {
             doubleArgument("amount", min = 1.0) {
                 anyExecutorSuspend { sender, args ->
                     add(
@@ -63,7 +63,8 @@ private suspend fun add(
         currency = currency,
         additionalData = arrayOf(
             TransactionData.of("admin.transaction.add", sender.senderId)
-        )
+        ),
+        ignoreDisabled = true
     )
 
     if (result.success) {

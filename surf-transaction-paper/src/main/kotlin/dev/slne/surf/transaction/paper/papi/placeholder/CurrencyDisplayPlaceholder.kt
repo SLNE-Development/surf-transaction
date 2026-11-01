@@ -11,6 +11,7 @@ object CurrencyDisplayPlaceholder : PapiPlaceholder("currency-display") {
     ): String? {
         val currencyName = args.getOrNull(0) ?: return null
         val currency = Currency.byName(currencyName) ?: return null
+        if (!currency.enabled) return ""
 
         return currency.symbol
     }

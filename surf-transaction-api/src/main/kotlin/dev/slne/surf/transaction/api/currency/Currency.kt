@@ -1,10 +1,6 @@
 package dev.slne.surf.transaction.api.currency
 
 import dev.slne.surf.api.core.messages.Colors
-import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_NAME_MAX_LENGTH
-import dev.slne.surf.transaction.api.currency.Currency.Companion.CURRENCY_SYMBOL_MAX_LENGTH
-import dev.slne.surf.transaction.api.currency.Currency.Companion.byName
-import dev.slne.surf.transaction.api.currency.Currency.Companion.default
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
@@ -46,6 +42,14 @@ interface Currency : ComponentLike {
      * The default currency is returned by [default].
      */
     val defaultCurrency: Boolean
+
+    /**
+     * Whether this currency is enabled.
+     *
+     * Operations on a disabled currency fail unless the caller passes `ignoreDisabled = true`.
+     * The default currency is always enabled.
+     */
+    val enabled: Boolean
 
     /**
      * The textual symbol of this currency (e.g. "$", "€", "¥").
@@ -120,9 +124,15 @@ interface Currency : ComponentLike {
         fun default(): Currency = CurrencyService.defaultCurrency
 
         /**
-         * Returns all registered currencies.
+         * Returns all registered currencies, including disabled ones.
          */
         fun all(): Set<Currency> = CurrencyService.currencies
+
+        /**
+         * Returns all registered currencies that are [enabled].
+         */
+        fun allEnabled(): Set<Currency> = CurrencyService.currencies
+            .filterTo(mutableSetOf()) { it.enabled }
 
         /**
          * Returns a currency by its [name], or `null` if none exists.

@@ -14,6 +14,8 @@ object TransactionPermissions {
     const val CURRENCY_ADMIN_CREATE = "$CURRENCY_ADMIN.create"
     const val CURRENCY_ADMIN_MAKE_DEFAULT = "$CURRENCY_ADMIN.make-default"
     const val CURRENCY_ADMIN_LIST = "$CURRENCY_ADMIN.list"
+    const val CURRENCY_ADMIN_ENABLE = "$CURRENCY_ADMIN.enable"
+    const val CURRENCY_ADMIN_DISABLE = "$CURRENCY_ADMIN.disable"
 
     const val PAY = "$PREFIX.pay"
 

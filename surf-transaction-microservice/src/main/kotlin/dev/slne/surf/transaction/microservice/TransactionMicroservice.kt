@@ -14,6 +14,7 @@ import dev.slne.surf.transaction.microservice.handler.account.*
 import dev.slne.surf.transaction.microservice.handler.currency.CreateCurrencyHandler
 import dev.slne.surf.transaction.microservice.handler.currency.FindAllCurrenciesAndCreateDefaultCurrencyIfMissingHandler
 import dev.slne.surf.transaction.microservice.handler.currency.MakeDefaultCurrencyHandler
+import dev.slne.surf.transaction.microservice.handler.currency.SetCurrencyEnabledHandler
 import dev.slne.surf.transaction.microservice.handler.transaction.*
 import dev.slne.surf.transaction.microservice.rpc.TransactionRpcServiceImpl
 import kotlinx.coroutines.*
@@ -52,6 +53,7 @@ class TransactionMicroservice : Microservice() {
         rabbitApi.registerRequestHandler(CreateCurrencyHandler)
         rabbitApi.registerRequestHandler(FindAllCurrenciesAndCreateDefaultCurrencyIfMissingHandler)
         rabbitApi.registerRequestHandler(MakeDefaultCurrencyHandler)
+        rabbitApi.registerRequestHandler(SetCurrencyEnabledHandler)
 
         // Transaction
         rabbitApi.registerRequestHandler(GetTransactionBalanceHandler)

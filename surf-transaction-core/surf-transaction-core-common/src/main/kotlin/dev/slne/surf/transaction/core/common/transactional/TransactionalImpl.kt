@@ -29,7 +29,8 @@ class TransactionalImpl : Transactional {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult = CoreTransactionService.beginDeposit(
         account,
         initiator,
@@ -37,7 +38,8 @@ class TransactionalImpl : Transactional {
         currency,
         timeout,
         ignoreMinimum,
-        *additionalData
+        *additionalData,
+        ignoreDisabled = ignoreDisabled
     )
 
     override suspend fun beginWithdrawal(
@@ -47,7 +49,8 @@ class TransactionalImpl : Transactional {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult = CoreTransactionService.beginWithdrawal(
         account,
         initiator,
@@ -55,7 +58,8 @@ class TransactionalImpl : Transactional {
         currency,
         timeout,
         ignoreMinimum,
-        *additionalData
+        *additionalData,
+        ignoreDisabled = ignoreDisabled
     )
 
     override suspend fun beginTransfer(
@@ -68,7 +72,8 @@ class TransactionalImpl : Transactional {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult = CoreTransactionService.beginTransfer(
         initiator,
         sender,
@@ -79,7 +84,8 @@ class TransactionalImpl : Transactional {
         ignoreSenderMinimum,
         ignoreReceiverMinimum,
         additionalSenderData,
-        additionalReceiverData
+        additionalReceiverData,
+        ignoreDisabled
     )
 
     override suspend fun <T> withPendingDeposit(
@@ -91,6 +97,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         additionalData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T> {
         val reservation = beginDeposit(
@@ -100,7 +107,8 @@ class TransactionalImpl : Transactional {
             currency,
             timeout,
             ignoreMinimum,
-            *additionalData.toTypedArray()
+            *additionalData.toTypedArray(),
+            ignoreDisabled = ignoreDisabled
         )
         return executePendingReservation(
             reservation = reservation,
@@ -120,6 +128,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         additionalData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T> {
         val reservation = beginWithdrawal(
@@ -129,7 +138,8 @@ class TransactionalImpl : Transactional {
             currency,
             timeout,
             ignoreMinimum,
-            *additionalData.toTypedArray()
+            *additionalData.toTypedArray(),
+            ignoreDisabled = ignoreDisabled
         )
         return executePendingReservation(
             reservation = reservation,
@@ -152,6 +162,7 @@ class TransactionalImpl : Transactional {
         additionalSenderData: Set<TransactionData>,
         additionalReceiverData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T> {
         val reservation = beginTransfer(
@@ -164,7 +175,8 @@ class TransactionalImpl : Transactional {
             ignoreSenderMinimum,
             ignoreReceiverMinimum,
             additionalSenderData,
-            additionalReceiverData
+            additionalReceiverData,
+            ignoreDisabled
         )
         return executePendingReservation(
             reservation = reservation,
@@ -184,6 +196,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         additionalData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T> {
         val reservation = beginDeposit(
@@ -193,7 +206,8 @@ class TransactionalImpl : Transactional {
             currency,
             timeout,
             ignoreMinimum,
-            *additionalData.toTypedArray()
+            *additionalData.toTypedArray(),
+            ignoreDisabled = ignoreDisabled
         )
         return executePendingReservationDecision(
             reservation = reservation,
@@ -213,6 +227,7 @@ class TransactionalImpl : Transactional {
         ignoreMinimum: Boolean,
         additionalData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T> {
         val reservation = beginWithdrawal(
@@ -222,7 +237,8 @@ class TransactionalImpl : Transactional {
             currency,
             timeout,
             ignoreMinimum,
-            *additionalData.toTypedArray()
+            *additionalData.toTypedArray(),
+            ignoreDisabled = ignoreDisabled
         )
         return executePendingReservationDecision(
             reservation = reservation,
@@ -245,6 +261,7 @@ class TransactionalImpl : Transactional {
         additionalSenderData: Set<TransactionData>,
         additionalReceiverData: Set<TransactionData>,
         rollbackOn: PendingRollbackPolicy,
+        ignoreDisabled: Boolean,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T> {
         val reservation = beginTransfer(
@@ -257,7 +274,8 @@ class TransactionalImpl : Transactional {
             ignoreSenderMinimum,
             ignoreReceiverMinimum,
             additionalSenderData,
-            additionalReceiverData
+            additionalReceiverData,
+            ignoreDisabled
         )
         return executePendingReservationDecision(
             reservation = reservation,
@@ -274,7 +292,8 @@ class TransactionalImpl : Transactional {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult {
         return CoreTransactionService.deposit(
             account,
@@ -282,7 +301,8 @@ class TransactionalImpl : Transactional {
             amount,
             currency,
             ignoreMinimum,
-            *additionalData
+            *additionalData,
+            ignoreDisabled = ignoreDisabled
         )
     }
 
@@ -292,7 +312,8 @@ class TransactionalImpl : Transactional {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult {
         return CoreTransactionService.withdraw(
             account,
@@ -300,7 +321,8 @@ class TransactionalImpl : Transactional {
             amount,
             currency,
             ignoreMinimum,
-            *additionalData
+            *additionalData,
+            ignoreDisabled = ignoreDisabled
         )
     }
 
@@ -313,7 +335,8 @@ class TransactionalImpl : Transactional {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): TransactionResult {
         return CoreTransactionService.transfer(
             initiator,
@@ -324,14 +347,16 @@ class TransactionalImpl : Transactional {
             ignoreSenderMinimum,
             ignoreReceiverMinimum,
             additionalSenderData,
-            additionalReceiverData
+            additionalReceiverData,
+            ignoreDisabled
         )
     }
 
     override suspend fun balance(
         account: Account,
-        currency: Currency
+        currency: Currency,
+        ignoreDisabled: Boolean
     ): BigDecimal {
-        return CoreTransactionService.balance(account, currency)
+        return CoreTransactionService.balance(account, currency, ignoreDisabled)
     }
 }

@@ -1,14 +1,16 @@
 package dev.slne.surf.transaction.minestom.command.balance
 
+import dev.slne.surf.api.core.messages.adventure.hasPermission
 import dev.slne.surf.api.minestom.command.dsl.anyExecutorSuspend
 import dev.slne.surf.api.minestom.command.dsl.commandTree
 import dev.slne.surf.api.minestom.command.dsl.playerExecutorSuspend
 import dev.slne.surf.core.api.minestom.command.argument.surfOfflinePlayerArgument
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyDisabledException
 import dev.slne.surf.transaction.api.user.TransactionUser
 import dev.slne.surf.transaction.core.client.command.TransactionPermissions
 import dev.slne.surf.transaction.core.client.component.ClientComponents
-import dev.slne.surf.transaction.minestom.command.arguments.currencyArgument
+import dev.slne.surf.transaction.minestom.command.arguments.CurrencyArgument
 import dev.slne.surf.transaction.minestom.command.awaitSurfOfflinePlayerUuid
 import net.minestom.server.command.CommandSender
 import net.minestom.server.entity.Player
@@ -27,7 +29,11 @@ fun balanceCommand() = commandTree("balance") {
         )
     }
 
-    currencyArgument("currency") {
+    val currencyArgument = CurrencyArgument("currency") {
+        it.hasPermission(TransactionPermissions.CURRENCY_ADMIN)
+    }
+
+    then(currencyArgument.apply {
         playerExecutorSuspend { sender, args ->
             balance(
                 sender,
@@ -47,7 +53,7 @@ fun balanceCommand() = commandTree("balance") {
                 )
             }
         }
-    }
+    })
 }
 
 private suspend fun balance(
@@ -56,13 +62,25 @@ private suspend fun balance(
     queryTarget: UUID,
     showCurrencyHint: Boolean = false,
 ) {
-    val balance = TransactionUser.byUuid(queryTarget).balance(currency)
+    val canUseDisabled = sender.hasPermission(TransactionPermissions.CURRENCY_ADMIN)
+    val balance = try {
+        TransactionUser.byUuid(queryTarget).balance(currency, ignoreDisabled = canUseDisabled)
+    } catch (_: CurrencyDisabledException) {
+        sender.sendMessage(ClientComponents.CurrencyMessages.disabled(currency))
+        return
+    }
+
+    val message = if (sender is Player && queryTarget == sender.uuid) {
+        ClientComponents.Balance.own(currency, balance, showCurrencyHint)
+    } else {
+        ClientComponents.Balance.other(currency, balance, queryTarget)
+    }
 
     sender.sendMessage(
-        if (sender is Player && queryTarget == sender.uuid) {
-            ClientComponents.Balance.own(currency, balance, showCurrencyHint)
+        if (currency.enabled) {
+            message
         } else {
-            ClientComponents.Balance.other(currency, balance, queryTarget)
+            message.append(ClientComponents.CurrencyMessages.disabledTag)
         }
     )
 }

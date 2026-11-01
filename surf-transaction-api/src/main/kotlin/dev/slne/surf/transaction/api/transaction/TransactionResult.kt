@@ -59,4 +59,13 @@ sealed class TransactionResult(val success: Boolean = false) {
      */
     @Serializable
     data class DatabaseError(val cause: SerializableError) : TransactionResult()
+
+    /**
+     * Indicates that the currency is disabled and the caller did not pass
+     * `ignoreDisabled = true`. Nothing was written.
+     *
+     * @param currencyName the technical name of the disabled currency
+     */
+    @Serializable
+    data class CurrencyDisabled(val currencyName: String) : TransactionResult()
 }

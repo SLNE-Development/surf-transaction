@@ -64,6 +64,15 @@ internal object TransactionRules {
     }
 
     /**
+     * Returns whether a write of [transactions] must be rejected because the currency is disabled.
+     * A write proceeds on a disabled currency only when every transaction bypasses it.
+     */
+    fun rejectsDisabledCurrency(
+        currencyEnabled: Boolean,
+        transactions: List<TransactionImpl>
+    ): Boolean = !currencyEnabled && !transactions.all(TransactionImpl::ignoreDisabledCurrency)
+
+    /**
      * Whether adding [amount] to [availableBalance] keeps the account at or above the currency's
      * [minimumAmount].
      */

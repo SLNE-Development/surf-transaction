@@ -86,6 +86,10 @@ private suspend fun pay(
         )
 
         is TransactionResult.DatabaseError -> handleError(sender, result)
+
+        is TransactionResult.CurrencyDisabled -> sender.sendMessage(
+            ClientComponents.CurrencyMessages.disabled(currency)
+        )
     }
 }
 

@@ -7,6 +7,7 @@ import dev.slne.surf.api.core.util.logger
 import dev.slne.surf.transaction.api.currency.Currency
 import dev.slne.surf.transaction.api.transaction.Transaction
 import dev.slne.surf.transaction.core.client.account.AccountServiceImpl
+import dev.slne.surf.transaction.core.client.currency.CurrencyServiceImpl
 import dev.slne.surf.transaction.core.client.rabbitApi
 import dev.slne.surf.transaction.core.client.redis.RedisService
 import dev.slne.surf.transaction.core.client.redis.events.balance.BalanceChangedEvent
@@ -50,9 +51,17 @@ object BalanceCache {
     /**
      * Returns the cached balance of the default account of [playerUuid] in [currency].
      *
-     * Returns `null` while the balance is not cached yet and starts loading it in the background.
+     * Returns `null` while the balance is not cached yet and starts loading it in the background,
+     * and while [currency] is disabled unless [ignoreDisabled] is set. Entries of a disabled
+     * currency are kept and refreshed, so they are available again as soon as it is re-enabled.
      */
-    fun cachedBalance(playerUuid: UUID, currency: Currency): BigDecimal? {
+    fun cachedBalance(
+        playerUuid: UUID,
+        currency: Currency,
+        ignoreDisabled: Boolean = false
+    ): BigDecimal? {
+        val disabled = CurrencyServiceImpl.INSTANCE.getCurrencyByName(currency.name)?.enabled == false
+        if (disabled && !ignoreDisabled) return null
         val accountId = defaultAccountIds.get(playerUuid).getNowOrNull() ?: return null
         val key = BalanceKey(accountId, currency.name)
 
@@ -100,7 +109,11 @@ object BalanceCache {
 
         scope.launch {
             try {
-                val request = GetTransactionBalanceRequestPacket(key.accountId, key.currencyName)
+                val request = GetTransactionBalanceRequestPacket(
+                    key.accountId,
+                    key.currencyName,
+                    ignoreDisabled = true
+                )
                 val (balance) = rabbitApi.sendRequest(request)
 
                 entry.update(version, balance)

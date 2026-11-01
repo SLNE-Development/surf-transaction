@@ -3,16 +3,17 @@ package dev.slne.surf.transaction.api.transactional
 import dev.slne.surf.api.core.util.objectSetOf
 import dev.slne.surf.transaction.api.account.Account
 import dev.slne.surf.transaction.api.currency.Currency
+import dev.slne.surf.transaction.api.currency.CurrencyDisabledException
+import dev.slne.surf.transaction.api.transaction.PendingReservationTimeoutException
 import dev.slne.surf.transaction.api.transaction.PendingTransactionResult
 import dev.slne.surf.transaction.api.transaction.PendingTransactions
-import dev.slne.surf.transaction.api.transaction.PendingReservationTimeoutException
 import dev.slne.surf.transaction.api.transaction.TransactionResult
 import dev.slne.surf.transaction.api.transaction.data.TransactionData
 import dev.slne.surf.transaction.api.util.InternalTransactionApi
-import org.jetbrains.annotations.ApiStatus
 import java.math.BigDecimal
 import java.util.UUID
 import kotlin.time.Duration
+import org.jetbrains.annotations.ApiStatus
 
 /**
  * Defines transactional operations that can be performed on accounts.
@@ -42,6 +43,8 @@ interface Transactional {
      * @param timeout the persistent reservation lifetime
      * @param ignoreMinimum whether to ignore the configured minimum balance check
      * @param additionalData immutable audit metadata
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [PendingTransactionResult.CurrencyDisabled]
      * @return the typed reservation result
      */
     suspend fun beginDeposit(
@@ -51,8 +54,29 @@ interface Transactional {
         currency: Currency,
         timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
         ignoreMinimum: Boolean = false,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean = false
     ): PendingTransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun beginDeposit(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ): PendingTransactionResult = beginDeposit(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        *additionalData,
+        ignoreDisabled = false
+    )
 
     /**
      * Atomically creates a durable pending withdrawal and reserves spendable funds immediately.
@@ -65,6 +89,8 @@ interface Transactional {
      * @param timeout the persistent reservation lifetime
      * @param ignoreMinimum whether to ignore the configured minimum balance check
      * @param additionalData immutable audit metadata
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [PendingTransactionResult.CurrencyDisabled]
      * @return the typed reservation result
      */
     suspend fun beginWithdrawal(
@@ -74,8 +100,29 @@ interface Transactional {
         currency: Currency,
         timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
         ignoreMinimum: Boolean = false,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean = false
     ): PendingTransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun beginWithdrawal(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ): PendingTransactionResult = beginWithdrawal(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        *additionalData,
+        ignoreDisabled = false
+    )
 
     /**
      * Atomically creates both sides of a durable pending transfer.
@@ -94,6 +141,8 @@ interface Transactional {
      * @param ignoreReceiverMinimum whether to ignore the receiver minimum balance check
      * @param additionalSenderData sender-side audit metadata
      * @param additionalReceiverData receiver-side audit metadata
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [PendingTransactionResult.CurrencyDisabled]
      * @return the typed reservation result
      */
     suspend fun beginTransfer(
@@ -106,8 +155,35 @@ interface Transactional {
         ignoreSenderMinimum: Boolean = false,
         ignoreReceiverMinimum: Boolean = false,
         additionalSenderData: Set<TransactionData> = objectSetOf(),
-        additionalReceiverData: Set<TransactionData> = objectSetOf()
+        additionalReceiverData: Set<TransactionData> = objectSetOf(),
+        ignoreDisabled: Boolean = false
     ): PendingTransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun beginTransfer(
+        initiator: UUID,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: Set<TransactionData> = objectSetOf(),
+        additionalReceiverData: Set<TransactionData> = objectSetOf()
+    ): PendingTransactionResult = beginTransfer(
+        initiator,
+        sender,
+        amount,
+        currency,
+        receiver,
+        timeout,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData,
+        ignoreDisabled = false
+    )
 
     /**
      * Reserves a deposit, executes [block], and commits on normal completion.
@@ -129,6 +205,8 @@ interface Transactional {
      * @param additionalData immutable transaction metadata
      * @param rollbackOn policy identifying failures for which rollback is safe
      * @param block external suspending operation receiving the stable transaction identifier
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingDeposit(
@@ -140,8 +218,33 @@ interface Transactional {
         ignoreMinimum: Boolean = false,
         additionalData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingDeposit(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        additionalData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> T
+    ): PendingExecutionResult<T> = withPendingDeposit(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        additionalData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Reserves a withdrawal, executes [block], and commits on normal completion.
@@ -163,6 +266,8 @@ interface Transactional {
      * @param additionalData immutable transaction metadata
      * @param rollbackOn policy identifying failures for which rollback is safe
      * @param block external suspending operation receiving the stable transaction identifier
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingWithdrawal(
@@ -174,8 +279,33 @@ interface Transactional {
         ignoreMinimum: Boolean = false,
         additionalData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingWithdrawal(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        additionalData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> T
+    ): PendingExecutionResult<T> = withPendingWithdrawal(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        additionalData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Reserves a transfer, executes [block], and commits both sides on normal completion.
@@ -200,6 +330,8 @@ interface Transactional {
      * @param additionalReceiverData receiver-side immutable transaction metadata
      * @param rollbackOn policy identifying failures for which rollback is safe
      * @param block external suspending operation receiving the sender transaction identifier
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingTransfer(
@@ -214,8 +346,39 @@ interface Transactional {
         additionalSenderData: Set<TransactionData> = objectSetOf(),
         additionalReceiverData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> T
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingTransfer(
+        initiator: UUID,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: Set<TransactionData> = objectSetOf(),
+        additionalReceiverData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> T
+    ): PendingExecutionResult<T> = withPendingTransfer(
+        initiator,
+        sender,
+        amount,
+        currency,
+        receiver,
+        timeout,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Reserves a deposit and lets [block] explicitly select commit or rollback from its normal
@@ -235,6 +398,8 @@ interface Transactional {
      * @param additionalData immutable transaction metadata
      * @param rollbackOn policy identifying thrown failures for which rollback is safe
      * @param block external operation receiving the identifier and returning the lifecycle decision
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingDepositDecision(
@@ -246,8 +411,33 @@ interface Transactional {
         ignoreMinimum: Boolean = false,
         additionalData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingDepositDecision(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        additionalData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> PendingExecutionDecision<T>
+    ): PendingExecutionResult<T> = withPendingDepositDecision(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        additionalData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Reserves a withdrawal and lets [block] explicitly select commit or rollback from its normal
@@ -267,6 +457,8 @@ interface Transactional {
      * @param additionalData immutable transaction metadata
      * @param rollbackOn policy identifying thrown failures for which rollback is safe
      * @param block external operation receiving the identifier and returning the lifecycle decision
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingWithdrawalDecision(
@@ -278,8 +470,33 @@ interface Transactional {
         ignoreMinimum: Boolean = false,
         additionalData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingWithdrawalDecision(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreMinimum: Boolean = false,
+        additionalData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> PendingExecutionDecision<T>
+    ): PendingExecutionResult<T> = withPendingWithdrawalDecision(
+        account,
+        initiator,
+        amount,
+        currency,
+        timeout,
+        ignoreMinimum,
+        additionalData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Reserves a transfer and lets [block] explicitly select commit or rollback from its normal
@@ -305,6 +522,8 @@ interface Transactional {
      * @param additionalReceiverData receiver-side immutable transaction metadata
      * @param rollbackOn policy identifying thrown failures for which rollback is safe
      * @param block external operation receiving the identifier and returning the lifecycle decision
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of failing the
+     *   reservation with [PendingTransactionResult.CurrencyDisabled]
      * @return the typed execution result
      */
     suspend fun <T> withPendingTransferDecision(
@@ -319,8 +538,39 @@ interface Transactional {
         additionalSenderData: Set<TransactionData> = objectSetOf(),
         additionalReceiverData: Set<TransactionData> = objectSetOf(),
         rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        ignoreDisabled: Boolean = false,
         block: suspend (UUID) -> PendingExecutionDecision<T>
     ): PendingExecutionResult<T>
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun <T> withPendingTransferDecision(
+        initiator: UUID,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
+        timeout: Duration = PendingTransactions.DEFAULT_TIMEOUT,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: Set<TransactionData> = objectSetOf(),
+        additionalReceiverData: Set<TransactionData> = objectSetOf(),
+        rollbackOn: PendingRollbackPolicy = PendingRollbackPolicy.Never,
+        block: suspend (UUID) -> PendingExecutionDecision<T>
+    ): PendingExecutionResult<T> = withPendingTransferDecision(
+        initiator,
+        sender,
+        amount,
+        currency,
+        receiver,
+        timeout,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData,
+        rollbackOn,
+        false,
+        block
+    )
 
     /**
      * Deposits an amount into the given [account].
@@ -331,6 +581,8 @@ interface Transactional {
      * @param currency the currency of the amount
      * @param ignoreMinimum whether the currency minimum amount should be ignored
      * @param additionalData optional additional transaction metadata
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [TransactionResult.CurrencyDisabled]
      *
      * @return the result of the transaction
      */
@@ -340,8 +592,27 @@ interface Transactional {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean = false,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean = false
     ): TransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun deposit(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ): TransactionResult = deposit(
+        account,
+        initiator,
+        amount,
+        currency,
+        ignoreMinimum,
+        *additionalData,
+        ignoreDisabled = false
+    )
 
     /**
      * Withdraws an amount from the given [account].
@@ -352,6 +623,8 @@ interface Transactional {
      * @param currency the currency of the amount
      * @param ignoreMinimum whether the currency minimum amount should be ignored
      * @param additionalData optional additional transaction metadata
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [TransactionResult.CurrencyDisabled]
      *
      * @return the result of the transaction
      */
@@ -361,8 +634,27 @@ interface Transactional {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean = false,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean = false
     ): TransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun withdraw(
+        account: Account,
+        initiator: UUID,
+        amount: BigDecimal,
+        currency: Currency,
+        ignoreMinimum: Boolean = false,
+        vararg additionalData: TransactionData
+    ): TransactionResult = withdraw(
+        account,
+        initiator,
+        amount,
+        currency,
+        ignoreMinimum,
+        *additionalData,
+        ignoreDisabled = false
+    )
 
     /**
      * Transfers an amount from one account to another.
@@ -379,6 +671,8 @@ interface Transactional {
      * @param ignoreReceiverMinimum whether the receiver's currency minimum should be ignored
      * @param additionalSenderData additional transaction metadata for the sender side
      * @param additionalReceiverData additional transaction metadata for the receiver side
+     * @param ignoreDisabled whether to proceed when [currency] is disabled instead of returning
+     *   [TransactionResult.CurrencyDisabled]
      *
      * @return the result of the transaction
      */
@@ -391,16 +685,51 @@ interface Transactional {
         ignoreSenderMinimum: Boolean = false,
         ignoreReceiverMinimum: Boolean = false,
         additionalSenderData: Set<TransactionData> = objectSetOf(),
-        additionalReceiverData: Set<TransactionData> = objectSetOf()
+        additionalReceiverData: Set<TransactionData> = objectSetOf(),
+        ignoreDisabled: Boolean = false
     ): TransactionResult
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun transfer(
+        initiator: UUID,
+        sender: Account,
+        amount: BigDecimal,
+        currency: Currency,
+        receiver: Account,
+        ignoreSenderMinimum: Boolean = false,
+        ignoreReceiverMinimum: Boolean = false,
+        additionalSenderData: Set<TransactionData> = objectSetOf(),
+        additionalReceiverData: Set<TransactionData> = objectSetOf()
+    ): TransactionResult = transfer(
+        initiator,
+        sender,
+        amount,
+        currency,
+        receiver,
+        ignoreSenderMinimum,
+        ignoreReceiverMinimum,
+        additionalSenderData,
+        additionalReceiverData,
+        ignoreDisabled = false
+    )
 
     /**
      * Returns the current balance of the given [account] for the specified [currency].
      *
      * @param account the account whose balance should be queried
      * @param currency the currency of the balance
+     * @param ignoreDisabled whether to query when [currency] is disabled instead of throwing
+     *   [CurrencyDisabledException]
      *
      * @return the current balance
      */
-    suspend fun balance(account: Account, currency: Currency): BigDecimal
+    suspend fun balance(
+        account: Account,
+        currency: Currency,
+        ignoreDisabled: Boolean = false
+    ): BigDecimal
+
+    @Deprecated("Retained for binary compatibility", level = DeprecationLevel.HIDDEN)
+    suspend fun balance(account: Account, currency: Currency): BigDecimal =
+        balance(account, currency, ignoreDisabled = false)
 }

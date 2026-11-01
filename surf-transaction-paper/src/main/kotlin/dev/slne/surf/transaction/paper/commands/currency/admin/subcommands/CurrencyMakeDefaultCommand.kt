@@ -17,7 +17,7 @@ import org.bukkit.command.CommandSender
 fun Argument<*>.currencyMakeDefaultCommand() = literalArgument("makeDefault") {
     withPermission(CommandPermission.CURRENCY_ADMIN_MAKE_DEFAULT)
 
-    currencyArgument("currencyName") {
+    currencyArgument("currencyName", includeDisabled = true) {
         anyExecutorSuspend { sender, args ->
             makeDefault(sender, args.getUnchecked("currencyName")!!)
         }

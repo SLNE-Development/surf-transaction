@@ -12,6 +12,7 @@ import dev.slne.surf.transaction.api.account.result.AccountDeleteResult
 import dev.slne.surf.transaction.core.common.account.AccountImpl
 import dev.slne.surf.transaction.core.common.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyDefaultResult
+import dev.slne.surf.transaction.core.common.currency.CurrencyEnabledResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
 import java.util.*
 import dev.slne.surf.transaction.api.account.Account as ApiAccount
@@ -178,6 +179,41 @@ object Components {
                     error("Die Währung ")
                     append(currency)
                     error(" wurde nicht gefunden")
+                }
+
+                CurrencyDefaultResult.DISABLED -> {
+                    appendErrorPrefix()
+                    error("Die Währung ")
+                    append(currency)
+                    error(" ist deaktiviert und kann nicht die Standardwährung werden")
+                }
+            }
+        }
+
+        fun formatCurrencyEnabledResult(
+            currency: CurrencyImpl,
+            enabled: Boolean,
+            result: CurrencyEnabledResult
+        ) = buildText {
+            when (result) {
+                CurrencyEnabledResult.SUCCESS -> {
+                    appendSuccessPrefix()
+                    append(currency)
+                    success(if (enabled) " ist nun aktiviert" else " ist nun deaktiviert")
+                }
+
+                CurrencyEnabledResult.NOT_FOUND -> {
+                    appendErrorPrefix()
+                    error("Die Währung ")
+                    append(currency)
+                    error(" wurde nicht gefunden")
+                }
+
+                CurrencyEnabledResult.IS_DEFAULT -> {
+                    appendErrorPrefix()
+                    error("Die Standardwährung ")
+                    append(currency)
+                    error(" kann nicht deaktiviert werden")
                 }
             }
         }

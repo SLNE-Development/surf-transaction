@@ -9,6 +9,7 @@ import dev.slne.surf.database.libs.org.jetbrains.exposed.v1.r2dbc.transactions.s
 import dev.slne.surf.database.utils.asDataIntegrityViolation
 import dev.slne.surf.transaction.core.common.currency.CurrencyCreateResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyDefaultResult
+import dev.slne.surf.transaction.core.common.currency.CurrencyEnabledResult
 import dev.slne.surf.transaction.core.common.currency.CurrencyImpl
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.singleOrNull
@@ -59,7 +60,7 @@ class CurrencyRepositoryImpl : CurrencyRepository {
             .toList()
 
         val targetRow = CurrencyTable
-            .select(CurrencyTable.id, CurrencyTable.defaultCurrency)
+            .select(CurrencyTable.id, CurrencyTable.defaultCurrency, CurrencyTable.enabled)
             .where { CurrencyTable.name eq currencyName }
             .limit(1)
             .forUpdate()
@@ -68,6 +69,10 @@ class CurrencyRepositoryImpl : CurrencyRepository {
 
         if (targetRow[CurrencyTable.defaultCurrency]) {
             return@suspendTransaction CurrencyDefaultResult.SUCCESS
+        }
+
+        if (!targetRow[CurrencyTable.enabled]) {
+            return@suspendTransaction CurrencyDefaultResult.DISABLED
         }
 
         CurrencyTable.update({ CurrencyTable.defaultCurrency eq true }) {
@@ -81,6 +86,41 @@ class CurrencyRepositoryImpl : CurrencyRepository {
         CurrencyDefaultResult.SUCCESS
     }
 
+    override suspend fun setCurrencyEnabled(
+        currencyName: String,
+        enabled: Boolean
+    ): CurrencyEnabledResult = suspendTransaction {
+        // Locks the row so a concurrent makeDefaultCurrency cannot interleave with the check.
+        val targetRow = CurrencyTable
+            .select(CurrencyTable.id, CurrencyTable.defaultCurrency)
+            .where { CurrencyTable.name eq currencyName }
+            .limit(1)
+            .forUpdate()
+            .singleOrNull()
+            ?: return@suspendTransaction CurrencyEnabledResult.NOT_FOUND
+
+        if (!enabled && targetRow[CurrencyTable.defaultCurrency]) {
+            return@suspendTransaction CurrencyEnabledResult.IS_DEFAULT
+        }
+
+        CurrencyTable.update({ CurrencyTable.id eq targetRow[CurrencyTable.id] }) {
+            it[CurrencyTable.enabled] = enabled
+        }
+
+        CurrencyEnabledResult.SUCCESS
+    }
+
+    override suspend fun isCurrencyEnabled(
+        currencyName: String
+    ): Boolean? = suspendTransaction(readOnly = true) {
+        CurrencyTable
+            .select(CurrencyTable.enabled)
+            .where { CurrencyTable.name eq currencyName }
+            .limit(1)
+            .singleOrNull()
+            ?.get(CurrencyTable.enabled)
+    }
+
     private fun fromResultRow(row: ResultRow) = CurrencyImpl(
         name = row[CurrencyTable.name],
         symbol = row[CurrencyTable.symbol],
@@ -88,7 +128,8 @@ class CurrencyRepositoryImpl : CurrencyRepository {
         symbolDisplay = row[CurrencyTable.symbolDisplay],
         scale = row[CurrencyTable.scale],
         defaultCurrency = row[CurrencyTable.defaultCurrency],
-        minimumAmount = row[CurrencyTable.minimumAmount]
+        minimumAmount = row[CurrencyTable.minimumAmount],
+        enabled = row[CurrencyTable.enabled]
     )
 
     private fun CurrencyTable.insertCurrency(currency: CurrencyImpl, stm: UpdateBuilder<*>) {
@@ -99,5 +140,6 @@ class CurrencyRepositoryImpl : CurrencyRepository {
         stm[scale] = currency.scale
         stm[defaultCurrency] = currency.defaultCurrency
         stm[minimumAmount] = currency.minimumAmount
+        stm[enabled] = currency.enabled
     }
 }

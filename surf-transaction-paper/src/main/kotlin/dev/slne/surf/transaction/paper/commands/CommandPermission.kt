@@ -13,6 +13,8 @@ object CommandPermission : PermissionRegistry() {
     val CURRENCY_ADMIN_CREATE = create(TransactionPermissions.CURRENCY_ADMIN_CREATE)
     val CURRENCY_ADMIN_MAKE_DEFAULT = create(TransactionPermissions.CURRENCY_ADMIN_MAKE_DEFAULT)
     val CURRENCY_ADMIN_LIST = create(TransactionPermissions.CURRENCY_ADMIN_LIST)
+    val CURRENCY_ADMIN_ENABLE = create(TransactionPermissions.CURRENCY_ADMIN_ENABLE)
+    val CURRENCY_ADMIN_DISABLE = create(TransactionPermissions.CURRENCY_ADMIN_DISABLE)
 
     val PAY = create(TransactionPermissions.PAY)
 

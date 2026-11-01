@@ -90,6 +90,56 @@ class CurrencyRegistryTest {
         assertSame(result.defaultCurrency, result.byName(result.defaultCurrency.name))
     }
 
+    @Test
+    fun `disabling a currency updates only that currency`() {
+        val default = currency("taler", default = true)
+        val other = currency("crown")
+        val registry = CurrencyRegistry(listOf(default, other), default)
+
+        val updated = checkNotNull(registry.withEnabled("CROWN", false))
+
+        assertFalse(checkNotNull(updated.byName("crown")).enabled)
+        assertTrue(checkNotNull(updated.byName("taler")).enabled)
+        assertSame(default, updated.defaultCurrency)
+        assertEquals(2, updated.currencies.size)
+    }
+
+    @Test
+    fun `re-enabling restores the enabled state`() {
+        val default = currency("taler", default = true)
+        val disabled = currency("crown").copy(enabled = false)
+        val registry = CurrencyRegistry(listOf(default, disabled), default)
+
+        val updated = checkNotNull(registry.withEnabled("crown", true))
+
+        assertTrue(checkNotNull(updated.byName("crown")).enabled)
+    }
+
+    @Test
+    fun `setting the current enabled state keeps the registry unchanged`() {
+        val default = currency("taler", default = true)
+        val registry = CurrencyRegistry(listOf(default), default)
+
+        assertSame(registry, registry.withEnabled("taler", true))
+    }
+
+    @Test
+    fun `toggling an unknown currency reports no change`() {
+        val default = currency("taler", default = true)
+
+        assertNull(CurrencyRegistry(listOf(default), default).withEnabled("guilder", false))
+    }
+
+    @Test
+    fun `toggling the default currency keeps the default reference consistent`() {
+        val default = currency("taler", default = true)
+        val registry = CurrencyRegistry(listOf(default), default)
+
+        val updated = checkNotNull(registry.withEnabled("taler", false))
+
+        assertSame(updated.byName("taler"), updated.defaultCurrency)
+    }
+
     private fun currency(name: String, default: Boolean = false) = CurrencyImpl(
         name = name,
         displayName = Component.text(name),

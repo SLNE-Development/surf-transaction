@@ -6,5 +6,6 @@ import dev.slne.surf.transaction.core.common.user.TransactionUserImpl
 import java.util.*
 
 class ClientTransactionUserImpl(userUuid: UUID) : TransactionUserImpl(userUuid) {
-    override fun cachedBalance(currency: Currency) = BalanceCache.cachedBalance(userUuid, currency)
+    override fun cachedBalance(currency: Currency, ignoreDisabled: Boolean) =
+        BalanceCache.cachedBalance(userUuid, currency, ignoreDisabled)
 }

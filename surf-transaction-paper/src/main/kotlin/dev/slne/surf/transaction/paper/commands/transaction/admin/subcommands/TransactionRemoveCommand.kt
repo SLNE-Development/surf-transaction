@@ -30,7 +30,7 @@ fun Argument<*>.transactionRemoveCommand() = literalArgument("remove") {
     withPermission(CommandPermission.TRANSACTION_ADMIN_REMOVE)
 
     argument(AsyncPlayerProfileArgument("player")) {
-        currencyArgument("currency") {
+        currencyArgument("currency", includeDisabled = true) {
             doubleArgument("amount", min = 1.0) {
                 anyExecutorSuspend { sender, args ->
                     remove(
@@ -62,6 +62,7 @@ private suspend fun remove(
     val result = TransactionUser.byUuid(targetUuid).withdraw(
         amount = amount.toBigDecimal(),
         currency = currency,
+        ignoreDisabled = true,
         ignoreMinimum = true,
         additionalData = arrayOf(
             TransactionData.of(

@@ -17,7 +17,7 @@ import net.minestom.server.command.CommandSender
 fun Argument<String>.currencyMakeDefaultCommand() = literalArgument("makeDefault") {
     withPermission(TransactionPermissions.CURRENCY_ADMIN_MAKE_DEFAULT)
 
-    currencyArgument("currencyName") {
+    currencyArgument("currencyName", includeDisabled = true) {
         anyExecutorSuspend { sender, args ->
             makeDefault(sender, args.get("currencyName"))
         }

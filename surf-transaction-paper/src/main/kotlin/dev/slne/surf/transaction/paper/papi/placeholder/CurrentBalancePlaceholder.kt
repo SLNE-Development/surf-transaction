@@ -12,6 +12,7 @@ object CurrentBalancePlaceholder : PapiPlaceholder("current-balance") {
     ): String? {
         val currencyName = args.getOrNull(0) ?: return null
         val currency = Currency.byName(currencyName) ?: return null
+        if (!currency.enabled) return ""
 
         val balance = TransactionUser.byUuid(player.uniqueId).cachedBalance(currency) ?: return "..."
 

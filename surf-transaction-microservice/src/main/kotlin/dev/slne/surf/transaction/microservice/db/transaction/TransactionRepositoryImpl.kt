@@ -145,6 +145,8 @@ private inline fun TransactionWriteResult.asTransactionResult(
     TransactionWriteResult.UnknownAccountOrCurrency ->
         TransactionResult.DatabaseError(TransactionErrors.unknownAccountOrCurrency())
 
+    is TransactionWriteResult.CurrencyDisabled -> TransactionResult.CurrencyDisabled(currencyName)
+
     is TransactionWriteResult.IdentifierConflict ->
         TransactionResult.DatabaseError(TransactionErrors.identifierConflict(identifier))
 
@@ -161,6 +163,9 @@ private inline fun TransactionWriteResult.asPendingResult(
     TransactionWriteResult.UnknownAccountOrCurrency -> PendingTransactionResult.InvalidRequest(
         TransactionErrors.unknownAccountOrCurrency()
     )
+
+    is TransactionWriteResult.CurrencyDisabled ->
+        PendingTransactionResult.CurrencyDisabled(currencyName)
 
     is TransactionWriteResult.IdentifierConflict -> PendingTransactionResult.InvalidRequest(
         TransactionErrors.identifierConflict(identifier)

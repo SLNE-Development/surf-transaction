@@ -29,7 +29,7 @@ fun Argument<String>.transactionRemoveCommand() = literalArgument("remove") {
     withPermission(TransactionPermissions.TRANSACTION_ADMIN_REMOVE)
 
     surfOfflinePlayerArgument("player") {
-        currencyArgument("currency") {
+        currencyArgument("currency", includeDisabled = true) {
             doubleArgument("amount", min = 1.0) {
                 anyExecutorSuspend { sender, args ->
                     remove(
@@ -64,7 +64,8 @@ private suspend fun remove(
         ignoreMinimum = true,
         additionalData = arrayOf(
             TransactionData.of("admin.transaction.remove", sender.senderId)
-        )
+        ),
+        ignoreDisabled = true
     )
 
     if (result.success) {

@@ -19,7 +19,8 @@ interface CoreTransactionService : TransactionService {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult
 
     suspend fun beginWithdrawal(
@@ -29,7 +30,8 @@ interface CoreTransactionService : TransactionService {
         currency: Currency,
         timeout: Duration,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult
 
     suspend fun beginTransfer(
@@ -42,7 +44,8 @@ interface CoreTransactionService : TransactionService {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): PendingTransactionResult
 
     suspend fun deposit(
@@ -51,7 +54,8 @@ interface CoreTransactionService : TransactionService {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult
 
     suspend fun withdraw(
@@ -60,7 +64,8 @@ interface CoreTransactionService : TransactionService {
         amount: BigDecimal,
         currency: Currency,
         ignoreMinimum: Boolean,
-        vararg additionalData: TransactionData
+        vararg additionalData: TransactionData,
+        ignoreDisabled: Boolean
     ): TransactionResult
 
     suspend fun transfer(
@@ -72,12 +77,14 @@ interface CoreTransactionService : TransactionService {
         ignoreSenderMinimum: Boolean,
         ignoreReceiverMinimum: Boolean,
         additionalSenderData: Set<TransactionData>,
-        additionalReceiverData: Set<TransactionData>
+        additionalReceiverData: Set<TransactionData>,
+        ignoreDisabled: Boolean
     ): TransactionResult
 
     suspend fun balance(
         account: Account,
-        currency: Currency
+        currency: Currency,
+        ignoreDisabled: Boolean
     ): BigDecimal
 
     companion object :
