@@ -144,7 +144,6 @@ public final class dev/slne/surf/transaction/api/currency/Currency$DefaultImpls 
 	public static fun format (Ldev/slne/surf/transaction/api/currency/Currency;DLnet/kyori/adventure/text/format/TextColor;)Lnet/kyori/adventure/text/Component;
 	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;DLnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
 	public static synthetic fun format$default (Ldev/slne/surf/transaction/api/currency/Currency;Ljava/math/BigDecimal;Lnet/kyori/adventure/text/format/TextColor;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
-	public static fun getEnabled (Ldev/slne/surf/transaction/api/currency/Currency;)Z
 }
 
 public final class dev/slne/surf/transaction/api/currency/CurrencyDisabledException : java/lang/RuntimeException {
